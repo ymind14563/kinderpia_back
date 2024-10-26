@@ -2,6 +2,7 @@ package sesac_3rd.sesac_3rd.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,4 +51,6 @@ public class User {
 
     @Column(name = "updatedAt", nullable = false)
     private LocalDateTime updatedAt;   // 수정일자
+
+
 }

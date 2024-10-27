@@ -3,13 +3,14 @@ package sesac_3rd.sesac_3rd.service.user;
 import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
+import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
 
 public interface UserService {
     // 로그인
     boolean userLogin(LoginFormDTO dto);
 
     // 회원가입
-    void register(UserFormDTO dto);
+    UserResponseDTO register(UserFormDTO dto);
 
     // 회원가입 - 닉네임 중복 검사
     boolean isNicknameDuplicate(String nickname);
@@ -24,7 +25,7 @@ public interface UserService {
     UserDTO getUser(Long userId);
 
     // 회원 정보 수정
-    UserFormDTO updateUser(UserFormDTO dto);
+    UserDTO updateUser(Long userId, UserFormDTO dto);
 
     // 회원 탈퇴
 

@@ -2,6 +2,7 @@ package sesac_3rd.sesac_3rd.mapper.user;
 
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
+import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
 import sesac_3rd.sesac_3rd.entity.User;
 
 import java.time.LocalDateTime;
@@ -10,10 +11,19 @@ public class UserMapper {
     // entity to dto
     public static UserDTO toUserDTO(User user){
         return UserDTO.builder()
-                .userPw(user.getUserPw())
+//                .userPw(user.getUserPw())
                 .loginId(user.getLoginId())
                 .nickname(user.getNickname())
                 .email(user.getEmail())
+                .phoneNum(user.getPhoneNum())
+                .profileImg(user.getProfileImg())
+                .build();
+    }
+
+    // entity to formdto
+    public static UserFormDTO toUserFormDTO(User user){
+        return UserFormDTO.builder()
+                .nickname(user.getNickname())
                 .phoneNum(user.getPhoneNum())
                 .profileImg(user.getProfileImg())
                 .build();
@@ -41,6 +51,18 @@ public class UserMapper {
                 // 프로필 이미지는 dto에서 값 넘어오고 그 값이 비어있지 않다면 entity에 넣기
                 .profileImg(formDTO.getProfileImg() != null && !formDTO.getProfileImg().isEmpty() ? formDTO.getProfileImg() : null)
                 .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
+    // entity to responsedto for return signup
+    public static UserResponseDTO toResponseDTO(User user){
+        return UserResponseDTO.builder()
+                .userId(user.getUserId())
+                .loginId(user.getLoginId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .phoneNum(user.getPhoneNum())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 }

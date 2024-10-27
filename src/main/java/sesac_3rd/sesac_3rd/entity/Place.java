@@ -3,6 +3,8 @@ package sesac_3rd.sesac_3rd.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 
 @Data
 @Builder
@@ -32,11 +34,11 @@ public class Place {
     @Column(name = "operating_date", nullable = false, length = 30)
     private String operatingDate;  // 운영일자
 
-    @Column(name = "latitude", nullable = false)
-    private float latitude;  // 위도
+    @Column(name = "latitude", nullable = false, precision = 10, scale = 8)
+    private BigDecimal latitude;  // 위도 (DECIMAL(10, 8))
 
-    @Column(name = "longitude", nullable = false)
-    private float longitude;  // 경도
+    @Column(name = "longitude", nullable = false, precision = 11, scale = 8)
+    private BigDecimal longitude;  // 경도 (DECIMAL(11, 8))
 
     @Column(name = "place_img", nullable = false, length = 300)
     private String placeImg;  // 장소이미지

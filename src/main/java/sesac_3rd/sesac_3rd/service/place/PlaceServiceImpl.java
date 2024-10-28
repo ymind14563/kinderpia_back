@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.service.place;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
@@ -7,9 +8,15 @@ import sesac_3rd.sesac_3rd.repository.PlaceRepository;
 
 import java.util.List;
 
+@Slf4j
 @Service
-public interface PlaceService {
+public class PlaceServiceImpl implements PlaceService{
 
-    // 장소 목록 조회
-    List<PlaceDTO> getAllPlace();
+    @Autowired
+    private PlaceRepository placeRepository;
+
+    @Override
+    public List<PlaceDTO> getAllPlace(){
+        return List.of();
+    }
 }

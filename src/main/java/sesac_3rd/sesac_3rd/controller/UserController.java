@@ -128,10 +128,10 @@ public class UserController {
 //    void logout();
 
     // 회원 정보 단건 조회
-    // 에러 처리 필요
-    @GetMapping("/{userid}")
+    // security로 처리해야 할수도???
+    // 그리고 params에 userId 노출은 웬만하면 안하는 걸로 바꾸는게 나을듯
+    @GetMapping("/{userId}")
     public ResponseEntity<ResponseHandler<UserDTO>> getUser(@PathVariable Long userId){
-        try {
             UserDTO user = userService.getUser(userId);
 
             ResponseHandler<UserDTO> response = new ResponseHandler<>(
@@ -141,21 +141,13 @@ public class UserController {
             );
 
             return ResponseEntity.ok(response);
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-//        catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        return null;
     }
 
     // 회원 정보 수정
-    @PutMapping("/{userid}")
-    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userid, @RequestBody UserFormDTO dto){
+    @PutMapping("/{userId}")
+    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId, @RequestBody UserFormDTO dto){
         try {
-            UserDTO updatedUser = userService.updateUser(userid, dto);
+            UserDTO updatedUser = userService.updateUser(userId, dto);
             ResponseHandler<UserDTO> response = new ResponseHandler<>(
                     updatedUser,
                     HttpStatus.OK.value(),  // 200
@@ -167,5 +159,19 @@ public class UserController {
             throw new RuntimeException(e);
         }
 
+    }
+
+    // 이거도 body에서 userId빼오는 방식 말고 다른 방식으로 구현 가능성
+    @PatchMapping("/")
+    public ResponseEntity<ResponseHandler<Boolean>> deleteUser(@RequestBody Long userId){
+        userService.deleteUser(userId);
+
+        ResponseHandler<Boolean> response = new ResponseHandler<>(
+                true,
+                HttpStatus.OK.value(),
+                "사용자 탈퇴 처리 완료"
+        );
+
+        return ResponseEntity.ok(response);
     }
 }

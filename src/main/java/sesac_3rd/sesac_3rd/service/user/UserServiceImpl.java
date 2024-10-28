@@ -100,12 +100,16 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void deleteUser(Long userId) {
+
+    }
+
     // 회원 정보 단건 조회
-    // 커스텀 예외 처리 필요
     @Override
     public UserDTO getUser(Long userId) {
         log.info("get user : {}", userId);
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException());  //new CustomException(ErrorCode.USER_NOT_FOUND)
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));  //new CustomException(ErrorCode.USER_NOT_FOUND)
         UserDTO userDTO = UserMapper.toUserDTO(user);
         return userDTO;
     }
@@ -118,7 +122,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(Long userId, UserFormDTO dto) {
         log.info("update user : {}", userId);
         // 1. 사용자 조회
-        User existingUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException());  //new CustomException(ErrorCode.USER_NOT_FOUND)
+        User existingUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
 
         // 2. 변경하려는 필드 중복 검사(닉네임, 전화번호)
         validateDuplicateFieldsForUpdate(userId, dto);
@@ -159,39 +163,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    // 회원가입 시 모든 예외
-    // 커스텀 에러 뭐할지 정하기
-    private void validateUserDetails(UserFormDTO formDTO) {
-        // 유효성 검사
-        validateNickname(formDTO.getNickname());
-        validateLoginId(formDTO.getLoginId());
-        validatePassword(formDTO.getUserPw());
-        validateEmail(formDTO.getEmail());
-        validatePhoneNumber(formDTO.getPhoneNum());
-
-        // 중복 검사
-//        validateDuplicateFields(formDTO);
-    }
-
-
-    // 회원가입 시 중복 검사
-    private void validateDuplicateFields(UserFormDTO dto) {
-        // 이메일 중복 검사
-        if (userRepository.existsByEmail(dto.getEmail())) {
-//            throw new CustomException(ErrorCode.DUPLICATE_EMAIL); 이미 사용 중인 이메일입니다.
-        }
-
-        // 전화번호 중복 검사
-        if (userRepository.existsByPhoneNum(dto.getPhoneNum())) {
-//            throw new CustomException(ErrorCode.DUPLICATE_PHONE); 이미 사용 중인 전화번호입니다.
-        }
-
-        // 로그인 ID 중복 검사
-//        if (userRepository.existsByLoginId(dto.getLoginId())) {
-//            throw new CustomException(ErrorCode.DUPLICATE_LOGIN_ID); 이미 사용 중인 아이디입니다.
-//        }
-    }
-
     // 닉네임 유효성 검사
     private void validateNickname(String nickname) {
         if (nickname == null || !Pattern.matches("^[가-힣a-zA-Z0-9]{2,15}$", nickname)) {
@@ -231,19 +202,19 @@ public class UserServiceImpl implements UserService {
 
     // 수정시 중복 검사(자신의 현재 값은 제외)
     private void validateDuplicateFieldsForUpdate(Long userId, UserFormDTO dto) {
-        User currentUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException());
+        User currentUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
 
         // 전화번호 중복 검사(현재 사용자 제외)
         if (StringUtils.hasText(dto.getPhoneNum()) && !dto.getPhoneNum().equals(currentUser.getPhoneNum())) {
             if (userRepository.existsByPhoneNum(dto.getPhoneNum())) {
-//                throw new CustomException(ErrorCode.DUPLICATE_PHONE); 이미 사용 중인 전화번호입니다.
+                throw new CustomException(ExceptionStatus.DUPLICATE_PHONE); // 이미 사용 중인 전화번호입니다.
             }
         }
 
         // 닉네임 중복 검사(현재 사용자 제외)
         if (StringUtils.hasText(dto.getNickname()) && !dto.getNickname().equals(currentUser.getNickname())) {
             if (userRepository.existsByNickname(dto.getNickname())) {
-//                throw new CustomException(ErrorCode.DUPLICATE_NICKNAME); 이미 사용 중인 닉네임입니다.
+                throw new CustomException(ExceptionStatus.DUPLICATE_NICKNAME); // 이미 사용 중인 닉네임입니다.
             }
         }
 

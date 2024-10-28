@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// 모임 목록 (전체)
+// 모임 목록 (default - 최신순 정렬)
 public class MeetingDTO {
     private Long meetingId;
     private Long placeId;
@@ -23,4 +23,5 @@ public class MeetingDTO {
     private String meetingLocation; // 모임장소
     private LocalDateTime meetingTime; // 모임일시
     private MeetingStatus meetingStatus; // 모임 상태
+    private LocalDateTime createdAt; // 생성일자
 }

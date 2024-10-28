@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import sesac_3rd.sesac_3rd.entity.PlaceCategory;
 
 import java.math.BigDecimal;
 
@@ -13,7 +14,7 @@ import java.math.BigDecimal;
 @Builder
 public class PlaceDTO {
     private Long placeId;
-    private Long placeCtgId;
+    private PlaceCategory placeCategory;
     private String placeName;
     private String location;
     private String detailAddress;

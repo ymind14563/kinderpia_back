@@ -12,7 +12,7 @@ import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.user.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 //    @GetMapping("/status-with-code")
 //    public ResponseEntity<?> getStatusWithCode() {
@@ -66,10 +66,22 @@ public class UserController {
         UserResponseDTO registeredUser = userService.register(dto);
         ResponseHandler<UserResponseDTO> response = new ResponseHandler<>(
                 registeredUser,
-                HttpStatus.OK.value(),   // 200
+                HttpStatus.CREATED.value(),   // 201
                 "회원가입 완료"
         );
         return ResponseEntity.ok(response);
+//        {
+//            "data": {
+//                    "userId": 1,
+//                    "loginId": "user1",
+//                    "nickname": "춘식이",
+//                    "email": "abc@aaa.com",
+//                    "phoneNum": "01022543369",
+//                    "createdAt": "2024-10-28T14:58:21.8197911"
+//        },
+//            "status": 201,
+//                "message": "회원가입 완료"
+//        }
     }
 
     // 회원가입 - 닉네임 중복 검사

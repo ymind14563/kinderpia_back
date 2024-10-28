@@ -50,8 +50,9 @@ public class UserServiceImpl implements UserService {
     // 회원가입 - 닉네임 중복 검사
     @Override
     public boolean isNicknameDuplicate(String nickname) {
-        log.info("check nickname duplicated");
+        log.info("check nickname duplicated -==-=-= {}", nickname);
         boolean isDuplicated = userRepository.existsByNickname(nickname);
+        log.info("isDuplicated --- {}", isDuplicated);
         return isDuplicated;
     }
 

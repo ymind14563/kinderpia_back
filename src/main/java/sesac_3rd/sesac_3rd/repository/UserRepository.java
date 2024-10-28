@@ -5,6 +5,9 @@ import sesac_3rd.sesac_3rd.entity.User;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
+    // 아이디로 사용자 조회
+    User findByLoginId(String loginId);
+
     // 아이디 중복 확인
     boolean existsByLoginId(String loginId);
 

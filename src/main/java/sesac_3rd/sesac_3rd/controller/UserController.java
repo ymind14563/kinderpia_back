@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
@@ -53,10 +54,22 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // 로그인
+    // 로그인 완료 후 리턴값을 뭘 해야할지는 정해야함
     @PostMapping("/login")
-    public ResponseEntity<ResponseHandler> userLogin(@RequestBody LoginFormDTO dto){
-        return null;
+    public ResponseEntity<ResponseHandler<LoginFormDTO>> userLogin(@RequestBody LoginFormDTO dto){
+        LoginFormDTO formDTO = userService.userLogin(dto.getLoginId(), dto.getUserPw());
+
+        ResponseHandler<LoginFormDTO> response = new ResponseHandler<>(
+                formDTO,
+                HttpStatus.OK.value(),
+                "로그인 완료"
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     // 회원가입
@@ -162,13 +175,14 @@ public class UserController {
     }
 
     // 이거도 body에서 userId빼오는 방식 말고 다른 방식으로 구현 가능성
-    @PatchMapping("/")
-    public ResponseEntity<ResponseHandler<Boolean>> deleteUser(@RequestBody Long userId){
-        userService.deleteUser(userId);
+    // 회원 탈퇴
+    @DeleteMapping("/")
+    public ResponseEntity<ResponseHandler<Boolean>> deleteUser(@RequestBody LoginFormDTO dto){
+        userService.deleteUser(dto.getLoginId(), dto.getUserPw());
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
                 true,
-                HttpStatus.OK.value(),
+                HttpStatus.OK.value(),   // 200
                 "사용자 탈퇴 처리 완료"
         );
 

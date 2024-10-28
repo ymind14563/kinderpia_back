@@ -7,7 +7,7 @@ import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
 
 public interface UserService {
     // 로그인
-    boolean userLogin(LoginFormDTO dto);
+    LoginFormDTO userLogin(String loginId, String userPw);
 
     // 회원가입
     UserResponseDTO register(UserFormDTO dto);
@@ -34,7 +34,7 @@ public interface UserService {
     UserDTO updateUser(Long userId, UserFormDTO dto);
 
     // 회원 탈퇴
-    void deleteUser(Long userId);
+    void deleteUser(String loginId, String userPw);
 
     // 비밀번호 일치 확인(탈퇴시)
 }

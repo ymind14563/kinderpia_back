@@ -32,8 +32,23 @@ public class UserServiceImpl implements UserService {
 
     // 로그인
     @Override
-    public boolean userLogin(LoginFormDTO dto) {
-        return false;
+    public LoginFormDTO userLogin(final String loginId, final String userPw) {
+        final User originUser = userRepository.findByLoginId(loginId);
+        // 로그인 아이디가 없을때
+        // 커스텀에러는 '아이디 또는 비밀번호를 찾을 수 없습니다' 하나로 통일 시켜도 될듯
+        // 로직 다시 확인
+        if (originUser == null){
+            throw new CustomException(ExceptionStatus.USER_NOT_FOUND);   // 404
+        }
+        // 비번 불일치
+        if (!passwordEncoder.matches(userPw, originUser.getUserPw())){
+            throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
+        }
+        // 비번 일치
+        // 무슨 데이터 리턴할지는 좀 더 고민
+        LoginFormDTO formDTO = UserMapper.toLoginFormDTO(originUser);
+        return formDTO;
+
     }
 
     // 회원가입
@@ -53,7 +68,7 @@ public class UserServiceImpl implements UserService {
     // 회원가입 - 닉네임 중복 검사
     @Override
     public void isNicknameDuplicate(String nickname) {
-        log.info("check nickname duplicated -==-=-= {}", nickname);
+        log.info("check nickname duplicated");
         validateNickname(nickname);
         boolean isDuplicated = userRepository.existsByNickname(nickname);
         if (isDuplicated){
@@ -100,9 +115,25 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // 회원 탈퇴
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUser(final String loginId, final String userPw) {
+        // 사용자가 입력한 비번이 해당 사용자의 비번이어야 함
+        User originUser = userRepository.findByLoginId(loginId);
 
+        if (originUser == null){
+            throw new CustomException(ExceptionStatus.USER_NOT_FOUND);
+        }
+        // 비번 불일치
+        if (!passwordEncoder.matches(userPw, originUser.getUserPw())){
+            throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
+        }
+
+        // 탈퇴한 사람이 작성한 리뷰나 모임, 채팅은 삭제하지 않음
+        // 모임글은 '닫힘 모임' 처리 -> 이게 정확하게 MeetingStatus에서 무슨 상태인지 확인 필요
+        // 해당 사용자의 탈퇴 여부를 true로 변경
+        originUser.setDeleted(true);
+        userRepository.save(originUser);
     }
 
     // 회원 정보 단건 조회

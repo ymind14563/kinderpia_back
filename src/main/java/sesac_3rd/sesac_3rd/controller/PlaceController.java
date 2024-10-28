@@ -1,10 +1,7 @@
 package sesac_3rd.sesac_3rd.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.service.place.PlaceService;
@@ -20,8 +17,14 @@ public class PlaceController {
 
     // 장소 목록 조회
     @GetMapping
-    private List<PlaceDTO> getAllPlace() {
-        return placeService.getAllPlace();
+    private List<PlaceDTO> getAllPlace(
+            @RequestParam(defaultValue = "date") String sort, //정렬 순서
+            @RequestParam(defaultValue = "0") int page, //시작 페이지
+            @RequestParam(defaultValue = "10") int limit //크기
+//            @RequestParam String category, //검색 카테고리
+//            @RequestParam String keyword
+    ) { // 검색 키워드
+        return placeService.getAllPlace(page, limit);
     }
 
     // 장소 상세 조회
@@ -29,5 +32,8 @@ public class PlaceController {
     private PlaceDTO getPlaceById(@PathVariable long placeId){
         return placeService.getPlaceById(placeId);
     }
+
+    // 장소 검색
+
 
 }

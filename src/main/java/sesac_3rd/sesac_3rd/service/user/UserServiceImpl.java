@@ -12,6 +12,8 @@ import sesac_3rd.sesac_3rd.dto.user.UserDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
 import sesac_3rd.sesac_3rd.entity.User;
+import sesac_3rd.sesac_3rd.exception.CustomException;
+import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.mapper.user.UserMapper;
 import sesac_3rd.sesac_3rd.repository.UserRepository;
 
@@ -39,6 +41,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO register(UserFormDTO dto) {
         log.info("register user");
         validateUserDetails(dto);   // 커스텀 에러 처리 필요
+        // 중복검사는 따로 안함
         // 비번 인코딩 후 insert
         String encodedPw = passwordEncoder.encode(dto.getUserPw());
         User newUser = UserMapper.toUserEntityForSignup(dto, encodedPw);
@@ -49,11 +52,13 @@ public class UserServiceImpl implements UserService {
 
     // 회원가입 - 닉네임 중복 검사
     @Override
-    public boolean isNicknameDuplicate(String nickname) {
+    public void isNicknameDuplicate(String nickname) {
         log.info("check nickname duplicated -==-=-= {}", nickname);
+        validateNickname(nickname);
         boolean isDuplicated = userRepository.existsByNickname(nickname);
-        log.info("isDuplicated --- {}", isDuplicated);
-        return isDuplicated;
+        if (isDuplicated){
+            throw new CustomException(ExceptionStatus.DUPLICATE_NICKNAME);
+        }
     }
 
     // 회원가입 - 아이디 중복 검사
@@ -61,6 +66,22 @@ public class UserServiceImpl implements UserService {
     public boolean isLoginIdDuplicate(String loginId) {
         log.info("check loginid duplicated");
         boolean isDuplicated = userRepository.existsByLoginId(loginId);
+        return isDuplicated;
+    }
+
+    // 회원가입 - 이메일 중복 검사
+    @Override
+    public boolean isEmailDuplicate(String email) {
+        log.info("check email duplicated");
+        boolean isDuplicated = userRepository.existsByEmail(email);
+        return isDuplicated;
+    }
+
+    // 회원가입 - 전화번호 중복 검사
+    @Override
+    public boolean isPhonenumDuplicate(String phoneNum) {
+        log.info("check phonenum duplicated");
+        boolean isDuplicated = userRepository.existsByPhoneNum(phoneNum);
         return isDuplicated;
     }
 
@@ -140,18 +161,9 @@ public class UserServiceImpl implements UserService {
         validatePhoneNumber(formDTO.getPhoneNum());
 
         // 중복 검사
-        validateDuplicateFields(formDTO);
+//        validateDuplicateFields(formDTO);
     }
-    // User Registration
-//    INVALID_NICKNAME_FORMAT(400, "U001", "닉네임은 2글자 이상 15글자 이하이며, 한글, 영어, 숫자만 가능합니다."),
-//    INVALID_LOGIN_ID_FORMAT(400, "U002", "아이디는 6글10자 이상 12글자 이하이며, 영어 소문자와 숫자만 가능합니다."),
-//    INVALID_PASSWORD_FORMAT(400, "U003", "비밀번호는 8글자 이상 16글자 이하이며, 영어와 숫자를 포함해야 합니다."),
-//    INVALID_EMAIL_FORMAT(400, "U004", "유효한 이메일 형식이 아닙니다."),
-//    INVALID_PHONE_FORMAT(400, "U005", "전화번호는 10~11자리 숫자여야 합니다."),
-//    DUPLICATE_EMAIL(409, "U006", "이미 사용 중인 이메일입니다."),
-//    DUPLICATE_PHONE(409, "U007", "이미 사용 중인 전화번호입니다."),
-//    DUPLICATE_LOGIN_ID(409, "U008", "이미 사용 중인 아이디입니다.");
-    //    DUPLICATE_NICKNAME(409, "U008", "이미 사용 중인 닉네임입니다.");
+
 
     // 회원가입 시 중복 검사
     private void validateDuplicateFields(UserFormDTO dto) {
@@ -174,7 +186,7 @@ public class UserServiceImpl implements UserService {
     // 닉네임 유효성 검사
     private void validateNickname(String nickname) {
         if (nickname == null || !Pattern.matches("^[가-힣a-zA-Z0-9]{2,15}$", nickname)) {
-//            throw new CustomException(ErrorCode.INVALID_NICKNAME_FORMAT); 닉네임은 2글자 이상 15글자 이하이며, 한글, 영어, 숫자만 가능합니다.
+            throw new CustomException(ExceptionStatus.INVALID_NICKNAME_FORMAT); // 닉네임은 2글자 이상 15글자 이하이며, 한글, 영어, 숫자만 가능합니다.
         }
     }
 

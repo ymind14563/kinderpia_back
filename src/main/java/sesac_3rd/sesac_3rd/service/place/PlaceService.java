@@ -12,4 +12,6 @@ public interface PlaceService {
 
     // 장소 목록 조회
     List<PlaceDTO> getAllPlace();
+
+    PlaceDTO getPlaceById(Long placeId);
 }

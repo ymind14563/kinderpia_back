@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,8 @@ public class Place {
     @Column(name = "place_id", nullable = false)
     private Long placeId;  // 장소아이디 (PK)
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "place_ctg_id", nullable = false)  // 외래 키 설정 (FK)
     private PlaceCategory placeCategory;  // 장소카테고리 (다대일 관계)
 
@@ -34,13 +36,13 @@ public class Place {
     @Column(name = "operating_date", nullable = false, length = 30)
     private String operatingDate;  // 운영일자
 
-    @Column(name = "latitude", nullable = false, precision = 10, scale = 8)
+    @Column(name = "latitude", nullable = true, precision = 10, scale = 8)
     private BigDecimal latitude;  // 위도 (DECIMAL(10, 8))
 
-    @Column(name = "longitude", nullable = false, precision = 11, scale = 8)
+    @Column(name = "longitude", nullable = true, precision = 11, scale = 8)
     private BigDecimal longitude;  // 경도 (DECIMAL(11, 8))
 
-    @Column(name = "place_img", nullable = false, length = 300)
+    @Column(name = "place_img", nullable = true, length = 300)
     private String placeImg;  // 장소이미지
 
     @Column(name = "is_paid", nullable = false)

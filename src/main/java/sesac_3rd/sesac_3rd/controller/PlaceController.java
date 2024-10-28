@@ -12,7 +12,7 @@ import sesac_3rd.sesac_3rd.service.place.PlaceService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/place")
+@RequestMapping("/api/place")
 public class PlaceController {
 
     @Autowired
@@ -25,9 +25,9 @@ public class PlaceController {
     }
 
     // 장소 상세 조회
-//    @GetMapping("/{id}")
-//    private PlaceDTO getPlaceById(@PathVariable long placeId){
-//        return placeService.getPlaceById(placeId);
-//    }
+    @GetMapping("/{id}")
+    private PlaceDTO getPlaceById(@PathVariable long placeId){
+        return placeService.getPlaceById(placeId);
+    }
 
 }

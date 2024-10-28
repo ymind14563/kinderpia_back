@@ -1,6 +1,7 @@
 package sesac_3rd.sesac_3rd.service.meeting;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
@@ -14,10 +15,10 @@ public class MeetingServiceImpl implements MeetingService {
     @Autowired
     private MeetingRepository meetingRepository;
 
-    // 모임 목록 (전체)
+    // 모임 목록 (default - 최신순 정렬)
     @Override
     public List<MeetingDTO> getAllMeetings() {
-        List<Meeting> meetings = meetingRepository.findAll();
+        List<Meeting> meetings = meetingRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
 
         List<MeetingDTO> meetingDTOS = new ArrayList<>();
 
@@ -31,6 +32,7 @@ public class MeetingServiceImpl implements MeetingService {
                     .meetingLocation(meeting.getMeetingLocation()) // 모임장소
                     .meetingTime(meeting.getMeetingTime()) // 모임일시
                     .meetingStatus(meeting.getMeetingStatus()) // 모임 상태
+                    .createdAt(meeting.getCreatedAt()) // 생성일자
                     .build();
 
             meetingDTOS.add(meetingDTO);

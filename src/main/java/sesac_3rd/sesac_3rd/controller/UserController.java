@@ -87,12 +87,12 @@ public class UserController {
     // 회원가입 - 닉네임 중복 검사
     @PostMapping("/check/nickname")
     public ResponseEntity<ResponseHandler<Boolean>> checkNicknameDuplicate(@RequestBody String nickname){
-        boolean isDuplicated = userService.isNicknameDuplicate(nickname);
+        userService.isNicknameDuplicate(nickname);
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
-                isDuplicated,
-                isDuplicated ? HttpStatus.CONFLICT.value() : HttpStatus.OK.value(),   // 409, 200
-                isDuplicated ? "이미 사용중인 닉네임" : "사용 가능한 닉네임"
+                false,
+                HttpStatus.OK.value(),   // 200
+                "사용 가능한 닉네임입니다."
         );
         return ResponseEntity.ok(response);
     }
@@ -101,6 +101,32 @@ public class UserController {
     @PostMapping("/check/loginid")
     public ResponseEntity<ResponseHandler<Boolean>> checkLoginIdDuplicate(@RequestBody String loginId){
         boolean isDuplicated = userService.isLoginIdDuplicate(loginId);
+
+        ResponseHandler<Boolean> response = new ResponseHandler<>(
+                isDuplicated,
+                isDuplicated ? HttpStatus.CONFLICT.value() : HttpStatus.OK.value(),   // 409, 200
+                isDuplicated ? "이미 사용중인 사용자 아이디" : "사용 가능한 사용자 아이디"
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    // 회원가입 - 이메일 중복 검사
+    @PostMapping("/check/email")
+    public ResponseEntity<ResponseHandler<Boolean>> checkEmailDuplicate(@RequestBody String email){
+        boolean isDuplicated = userService.isEmailDuplicate(email);
+
+        ResponseHandler<Boolean> response = new ResponseHandler<>(
+                isDuplicated,
+                isDuplicated ? HttpStatus.CONFLICT.value() : HttpStatus.OK.value(),   // 409, 200
+                isDuplicated ? "이미 사용중인 사용자 아이디" : "사용 가능한 사용자 아이디"
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    // 회원가입 - 전화번호 중복 검사
+    @PostMapping("/check/phonenum")
+    public ResponseEntity<ResponseHandler<Boolean>> checkPhonenumDuplicate(@RequestBody String phoneNum){
+        boolean isDuplicated = userService.isPhonenumDuplicate(phoneNum);
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
                 isDuplicated,

@@ -1,5 +1,7 @@
 package sesac_3rd.sesac_3rd.mapper.chat;
 
+
+import org.springframework.stereotype.Component;
 import sesac_3rd.sesac_3rd.dto.chat.ChatMessageDTO;
 import sesac_3rd.sesac_3rd.dto.chat.ChatRoomDTO;
 import sesac_3rd.sesac_3rd.entity.*;
@@ -9,8 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static sesac_3rd.sesac_3rd.mapper.chat.ChatMessageMapper.getLastMessageContent;
 
+@Component
 public class ChatRoomMapper {
 
 //    // 채팅방 단일 조회
@@ -45,16 +47,21 @@ public class ChatRoomMapper {
                 })
                 .collect(Collectors.toList());
 
+        ChatRoomDTO.LastMessageInfo lastMessageInfo = ChatMessageMapper.getLastMessageInfo(chatRoom);
+
+
         return ChatRoomDTO.ChatRoom.builder()
                 .chatroomId(chatRoom.getChatroomId())
                 .meetingId(chatRoom.getMeeting().getMeetingId())
                 .meetingTitle(chatRoom.getMeeting().getMeetingTitle())
                 .meetingCategory(chatRoom.getMeeting().getMeetingCategory())
-                .lastMessage(getLastMessageContent(chatRoom))
+                .lastMessage(lastMessageInfo.getMessageContent())
+                .lastMessageCreatedAt(lastMessageInfo.getCreatedAt())
                 .capacity(chatRoom.getMeeting().getTotalCapacity())
                 .isActive(chatRoom.getIsActive())
                 .users(userListInChatRoom)
                 .build();
+
     }
 
 
@@ -63,17 +70,26 @@ public class ChatRoomMapper {
 
     // 채팅방 목록 조회
     public static ChatRoomDTO.ChatRoomList ChatRoomListToChatRoomListResponseDTO(Long userId, List<ChatRoom> chatRooms, int page, int pageSize, int totalPages) {
+
+
+
         List<ChatRoomDTO.ChatRoom> chatroomList = chatRooms.stream()
-                .map(chatRoom -> ChatRoomDTO.ChatRoom.builder()
-                        .chatroomId(chatRoom.getChatroomId())
-                        .meetingId(chatRoom.getMeeting().getMeetingId())
-                        .meetingTitle(chatRoom.getMeeting().getMeetingTitle())
-                        .meetingCategory(chatRoom.getMeeting().getMeetingCategory())
-                        .lastMessage(getLastMessageContent(chatRoom))
-                        .capacity(chatRoom.getMeeting().getTotalCapacity())
-                        .isActive(chatRoom.getIsActive())
-                        .build())
+                .map(chatRoom -> {
+                    ChatRoomDTO.LastMessageInfo lastMessageInfo = ChatMessageMapper.getLastMessageInfo(chatRoom);
+
+                    return ChatRoomDTO.ChatRoom.builder()
+                            .chatroomId(chatRoom.getChatroomId())
+                            .meetingId(chatRoom.getMeeting().getMeetingId())
+                            .meetingTitle(chatRoom.getMeeting().getMeetingTitle())
+                            .meetingCategory(chatRoom.getMeeting().getMeetingCategory())
+                            .lastMessage(lastMessageInfo.getMessageContent())
+                            .lastMessageCreatedAt(lastMessageInfo.getCreatedAt())
+                            .capacity(chatRoom.getMeeting().getTotalCapacity())
+                            .isActive(chatRoom.getIsActive())
+                            .build();
+                })
                 .collect(Collectors.toList());
+
 
         return ChatRoomDTO.ChatRoomList.builder()
                 .userId(userId)

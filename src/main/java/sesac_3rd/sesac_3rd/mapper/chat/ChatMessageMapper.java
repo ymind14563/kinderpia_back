@@ -1,6 +1,8 @@
 package sesac_3rd.sesac_3rd.mapper.chat;
 
+import org.springframework.stereotype.Component;
 import sesac_3rd.sesac_3rd.dto.chat.ChatMessageDTO;
+import sesac_3rd.sesac_3rd.dto.chat.ChatRoomDTO;
 import sesac_3rd.sesac_3rd.entity.ChatMessage;
 import sesac_3rd.sesac_3rd.entity.ChatRoom;
 
@@ -8,14 +10,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class ChatMessageMapper {
 
     // 가장 최근 메시지 내용
-    public static String getLastMessageContent(ChatRoom chatRoom) {
+    public static ChatRoomDTO.LastMessageInfo getLastMessageInfo(ChatRoom chatRoom) {
         return chatRoom.getChatMessages().stream()
                 .max(Comparator.comparing(ChatMessage::getCreatedAt))
-                .map(ChatMessage::getChatmsgContent)
-                .orElse("아직 작성한 메세지가 없어요.");
+                .map(chatMessage -> new ChatRoomDTO.LastMessageInfo(
+                        chatMessage.getChatmsgContent(),
+                        chatMessage.getCreatedAt()))
+                .orElse(new ChatRoomDTO.LastMessageInfo("아직 작성한 메세지가 없어요.", null)); // 기본값 반환
     }
 
 

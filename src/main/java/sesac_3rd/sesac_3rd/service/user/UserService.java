@@ -13,10 +13,16 @@ public interface UserService {
     UserResponseDTO register(UserFormDTO dto);
 
     // 회원가입 - 닉네임 중복 검사
-    boolean isNicknameDuplicate(String nickname);
+    void isNicknameDuplicate(String nickname);
 
     // 회원가입 - 아이디 중복 검사
     boolean isLoginIdDuplicate(String loginId);
+
+    // 회원가입 - 이메일 중복 검사
+    boolean isEmailDuplicate(String email);
+
+    // 회원가입 - 전화번호 중복 검사
+    boolean isPhonenumDuplicate(String phoneNum);
 
     // 로그아웃
     void logout();

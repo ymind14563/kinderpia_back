@@ -7,8 +7,8 @@ public enum ExceptionStatus {
     // User
     // User Registration
     INVALID_NICKNAME_FORMAT(400, "닉네임은 2글자 이상 15글자 이하이며, 한글, 영어, 숫자만 가능합니다."),
-    INVALID_LOGIN_ID_FORMAT(400, "아이디는 6글10자 이상 12글자 이하이며, 영어 소문자와 숫자만 가능합니다."),
-    INVALID_PASSWORD_FORMAT(400, "비밀번호는 8글자 이상 16글자 이하이며, 영어와 숫자를 포함해야 합니다."),
+    INVALID_LOGIN_ID_FORMAT(400, "아이디는 6글자 이상 12글자 이하이며, 영어 소문자와 숫자만 가능합니다."),
+    INVALID_PASSWORD_FORMAT(400, "비밀번호는 8글자 이상 16글자 이하이며, 영어와 숫자를 포함해야 하고 특수문자 가능합니다."),
     INVALID_EMAIL_FORMAT(400, "유효한 이메일 형식이 아닙니다."),
     INVALID_PHONE_FORMAT(400, "전화번호는 10~11자리 숫자여야 합니다."),
     USER_NOT_FOUND(404, "사용자를 찾을 수 없습니다."),

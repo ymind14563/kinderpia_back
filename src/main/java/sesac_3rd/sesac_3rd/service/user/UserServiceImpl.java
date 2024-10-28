@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDTO register(UserFormDTO dto) {
         log.info("register user");
-        validateUserDetails(dto);   // 커스텀 에러 처리 필요
+        validatePassword(dto.getUserPw());   // 비번만 유효성 검사
         // 중복검사는 따로 안함
         // 비번 인코딩 후 insert
         String encodedPw = passwordEncoder.encode(dto.getUserPw());
@@ -63,26 +63,35 @@ public class UserServiceImpl implements UserService {
 
     // 회원가입 - 아이디 중복 검사
     @Override
-    public boolean isLoginIdDuplicate(String loginId) {
+    public void isLoginIdDuplicate(String loginId) {
         log.info("check loginid duplicated");
+        validateLoginId(loginId);
         boolean isDuplicated = userRepository.existsByLoginId(loginId);
-        return isDuplicated;
+        if (isDuplicated){
+            throw new CustomException(ExceptionStatus.DUPLICATE_LOGIN_ID);
+        }
     }
 
     // 회원가입 - 이메일 중복 검사
     @Override
-    public boolean isEmailDuplicate(String email) {
+    public void isEmailDuplicate(String email) {
         log.info("check email duplicated");
+        validateEmail(email);
         boolean isDuplicated = userRepository.existsByEmail(email);
-        return isDuplicated;
+        if (isDuplicated){
+            throw new CustomException(ExceptionStatus.DUPLICATE_EMAIL);
+        }
     }
 
     // 회원가입 - 전화번호 중복 검사
     @Override
-    public boolean isPhonenumDuplicate(String phoneNum) {
+    public void isPhonenumDuplicate(String phoneNum) {
         log.info("check phonenum duplicated");
+        validatePhoneNumber(phoneNum);
         boolean isDuplicated = userRepository.existsByPhoneNum(phoneNum);
-        return isDuplicated;
+        if (isDuplicated){
+            throw new CustomException(ExceptionStatus.DUPLICATE_PHONE);
+        }
     }
 
     // 로그아웃
@@ -193,15 +202,15 @@ public class UserServiceImpl implements UserService {
     // 아이디 유효성 검사
     private void validateLoginId(String loginId) {
         if (loginId == null || !Pattern.matches("^[a-z0-9]{6,12}$", loginId)) {
-//            throw new CustomException(ErrorCode.INVALID_LOGIN_ID_FORMAT); 아이디는 6글자 이상 12글자 이하이며, 영어 소문자와 숫자만 가능합니다.
+            throw new CustomException(ExceptionStatus.INVALID_LOGIN_ID_FORMAT); // 아이디는 6글자 이상 12글자 이하이며, 영어 소문자와 숫자만 가능합니다.
         }
     }
 
     // 비번 유효성 검사
     private void validatePassword(String password) {
         if (password == null ||
-                !Pattern.matches("^(?=.*[a-zA-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$", password)) {
-//            throw new CustomException(ErrorCode.INVALID_PASSWORD_FORMAT); 비밀번호는 8글자 이상 16글자 이하이며, 영어와 숫자를 포함해야 합니다.
+                !Pattern.matches("^(?=.*[a-zA-Z])(?=.*\\d)[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,16}$", password)) {
+            throw new CustomException(ExceptionStatus.INVALID_PASSWORD_FORMAT); // 비밀번호는 8글자 이상 16글자 이하이며, 영어와 숫자를 포함해야 합니다.
         }
     }
 
@@ -209,14 +218,14 @@ public class UserServiceImpl implements UserService {
     private void validateEmail(String email) {
         if (email == null ||
                 !Pattern.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$", email)) {
-//            throw new CustomException(ErrorCode.INVALID_EMAIL_FORMAT); 유효한 이메일 형식이 아닙니다.
+            throw new CustomException(ExceptionStatus.INVALID_EMAIL_FORMAT); // 유효한 이메일 형식이 아닙니다.
         }
     }
 
     // 전화번호 유효성 검사
     private void validatePhoneNumber(String phoneNum) {
         if (phoneNum == null || !Pattern.matches("^\\d{10,11}$", phoneNum)) {
-//            throw new CustomException(ErrorCode.INVALID_PHONE_FORMAT); 전화번호는 10~11자리 숫자여야 합니다.
+            throw new CustomException(ExceptionStatus.INVALID_PHONE_FORMAT); // 전화번호는 10~11자리 숫자여야 합니다.
         }
     }
 

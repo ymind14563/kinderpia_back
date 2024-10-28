@@ -16,13 +16,13 @@ public interface UserService {
     void isNicknameDuplicate(String nickname);
 
     // 회원가입 - 아이디 중복 검사
-    boolean isLoginIdDuplicate(String loginId);
+    void isLoginIdDuplicate(String loginId);
 
     // 회원가입 - 이메일 중복 검사
-    boolean isEmailDuplicate(String email);
+    void isEmailDuplicate(String email);
 
     // 회원가입 - 전화번호 중복 검사
-    boolean isPhonenumDuplicate(String phoneNum);
+    void isPhonenumDuplicate(String phoneNum);
 
     // 로그아웃
     void logout();

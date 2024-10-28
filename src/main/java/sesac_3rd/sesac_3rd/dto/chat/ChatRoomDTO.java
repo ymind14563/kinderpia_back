@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
 import sesac_3rd.sesac_3rd.entity.MeetingCategory;
 
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ChatRoomDTO {
@@ -18,7 +20,7 @@ public class ChatRoomDTO {
     @AllArgsConstructor
     public static class ChatRoomList {
         private Long userId;
-        private List<ChatRoom> chatroomList;
+        private List<ChatRoomDTO.ChatRoom> chatroomList;
         private int page;
         private int pageSize;
         private int totalPages;
@@ -35,6 +37,7 @@ public class ChatRoomDTO {
         private String meetingTitle;
         private MeetingCategory meetingCategory;
         private String lastMessage;
+        private LocalDateTime lastMessageCreatedAt;
         private int capacity;
         private boolean isActive;
         private List<UserInfo> users;
@@ -52,6 +55,15 @@ public class ChatRoomDTO {
         private String profileImg;
     }
 
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LastMessageInfo {
+        private String messageContent;
+        private LocalDateTime createdAt;
+    }
 
 
 }

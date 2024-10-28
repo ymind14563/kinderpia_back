@@ -17,7 +17,7 @@ public class ChatMessageDTO {
     @AllArgsConstructor
     public static class ChatMessageList {
         private Long chatroomId;
-        private List<ChatMessage> chatmsgList;
+        private List<ChatMessageDTO.ChatMessage> chatmsgList;
         private int page;
         private int pageSize;
         private int totalPages;

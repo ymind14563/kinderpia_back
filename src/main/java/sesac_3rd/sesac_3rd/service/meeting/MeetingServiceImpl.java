@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.service.meeting;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -8,11 +9,13 @@ import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
+import sesac_3rd.sesac_3rd.mapper.meeting.MeetingMapper;
 import sesac_3rd.sesac_3rd.repository.MeetingRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class MeetingServiceImpl implements MeetingService {
     @Autowired
@@ -30,20 +33,12 @@ public class MeetingServiceImpl implements MeetingService {
         List<MeetingDTO> meetingDTOS = new ArrayList<>();
 
         for (Meeting meeting : meetings) {
-            MeetingDTO meetingDTO = MeetingDTO.builder()
-                    .meetingId(meeting.getMeetingId())
-                    .placeId(meeting.getPlace().getPlaceId())
-                    .meetingCategory(meeting.getMeetingCategory().getMeetingCtgId()) // 카테고리
-                    .meetingTitle(meeting.getMeetingTitle()) // 타이틀
-                    .capacity(meeting.getCapacity()) // 참가인원
-                    .meetingLocation(meeting.getMeetingLocation()) // 모임장소
-                    .meetingTime(meeting.getMeetingTime()) // 모임일시
-                    .meetingStatus(meeting.getMeetingStatus()) // 모임 상태
-                    .createdAt(meeting.getCreatedAt()) // 생성일자
-                    .build();
-
+            MeetingDTO meetingDTO = MeetingMapper.toMeetingDTO(meeting);
             meetingDTOS.add(meetingDTO);
         }
+
+        log.info("모임 목록 조회[전체] 성공: 총 {}건", meetingDTOS.size());
+
         return meetingDTOS;
     }
 
@@ -59,20 +54,12 @@ public class MeetingServiceImpl implements MeetingService {
         List<MeetingDTO> meetingDTOS = new ArrayList<>();
 
         for (Meeting meeting : meetings) {
-            MeetingDTO meetingDTO = MeetingDTO.builder()
-                    .meetingId(meeting.getMeetingId())
-                    .placeId(meeting.getPlace().getPlaceId())
-                    .meetingCategory(meeting.getMeetingCategory().getMeetingCtgId()) // 카테고리
-                    .meetingTitle(meeting.getMeetingTitle()) // 타이틀
-                    .capacity(meeting.getCapacity()) // 참가인원
-                    .meetingLocation(meeting.getMeetingLocation()) // 모임장소
-                    .meetingTime(meeting.getMeetingTime()) // 모임일시
-                    .meetingStatus(meeting.getMeetingStatus()) // 모임 상태
-                    .createdAt(meeting.getCreatedAt()) // 생성일자
-                    .build();
-
+            MeetingDTO meetingDTO = MeetingMapper.toMeetingDTO(meeting);
             meetingDTOS.add(meetingDTO);
         }
+
+        log.info("모임 목록 조회[open] 성공: 총 {}건", meetingDTOS.size());
+
         return meetingDTOS;
     }
 
@@ -89,20 +76,12 @@ public class MeetingServiceImpl implements MeetingService {
         List<MeetingDTO> meetingDTOS = new ArrayList<>();
 
         for (Meeting meeting : meetings) {
-            MeetingDTO meetingDTO = MeetingDTO.builder()
-                    .meetingId(meeting.getMeetingId())
-                    .placeId(meeting.getPlace().getPlaceId())
-                    .meetingCategory(meeting.getMeetingCategory().getMeetingCtgId()) // 카테고리
-                    .meetingTitle(meeting.getMeetingTitle()) // 타이틀
-                    .capacity(meeting.getCapacity()) // 참가인원
-                    .meetingLocation(meeting.getMeetingLocation()) // 모임장소
-                    .meetingTime(meeting.getMeetingTime()) // 모임일시
-                    .meetingStatus(meeting.getMeetingStatus()) // 모임 상태
-                    .createdAt(meeting.getCreatedAt()) // 생성일자
-                    .build();
-
+            MeetingDTO meetingDTO = MeetingMapper.toMeetingDTO(meeting);
             meetingDTOS.add(meetingDTO);
         }
+
+        log.info("모임 목록 조회[keyword] 성공: 총 {}건", meetingDTOS.size());
+
         return meetingDTOS;
     }
 }

@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
@@ -53,14 +54,25 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // 로그인
+    // 로그인 완료 후 리턴값을 뭘 해야할지는 정해야함
     @PostMapping("/login")
-    public ResponseEntity<ResponseHandler> userLogin(@RequestBody LoginFormDTO dto){
-        return null;
+    public ResponseEntity<ResponseHandler<LoginFormDTO>> userLogin(@RequestBody LoginFormDTO dto){
+        LoginFormDTO formDTO = userService.userLogin(dto.getLoginId(), dto.getUserPw());
+
+        ResponseHandler<LoginFormDTO> response = new ResponseHandler<>(
+                formDTO,
+                HttpStatus.OK.value(),
+                "로그인 완료"
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     // 회원가입
-    // 에러 표시 어떻게 되는지 확인 필요
     @PostMapping("/signup")
     public ResponseEntity<ResponseHandler<UserResponseDTO>> register(@RequestBody UserFormDTO dto){
         UserResponseDTO registeredUser = userService.register(dto);
@@ -70,18 +82,6 @@ public class UserController {
                 "회원가입 완료"
         );
         return ResponseEntity.ok(response);
-//        {
-//            "data": {
-//                    "userId": 1,
-//                    "loginId": "user1",
-//                    "nickname": "춘식이",
-//                    "email": "abc@aaa.com",
-//                    "phoneNum": "01022543369",
-//                    "createdAt": "2024-10-28T14:58:21.8197911"
-//        },
-//            "status": 201,
-//                "message": "회원가입 완료"
-//        }
     }
 
     // 회원가입 - 닉네임 중복 검사
@@ -100,12 +100,12 @@ public class UserController {
     // 회원가입 - 아이디 중복 검사
     @PostMapping("/check/loginid")
     public ResponseEntity<ResponseHandler<Boolean>> checkLoginIdDuplicate(@RequestBody String loginId){
-        boolean isDuplicated = userService.isLoginIdDuplicate(loginId);
+        userService.isLoginIdDuplicate(loginId);
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
-                isDuplicated,
-                isDuplicated ? HttpStatus.CONFLICT.value() : HttpStatus.OK.value(),   // 409, 200
-                isDuplicated ? "이미 사용중인 사용자 아이디" : "사용 가능한 사용자 아이디"
+                false,
+                HttpStatus.OK.value(),   // 200
+                "사용 가능한 사용자 아이디입니다."
         );
         return ResponseEntity.ok(response);
     }
@@ -113,12 +113,12 @@ public class UserController {
     // 회원가입 - 이메일 중복 검사
     @PostMapping("/check/email")
     public ResponseEntity<ResponseHandler<Boolean>> checkEmailDuplicate(@RequestBody String email){
-        boolean isDuplicated = userService.isEmailDuplicate(email);
+        userService.isEmailDuplicate(email);
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
-                isDuplicated,
-                isDuplicated ? HttpStatus.CONFLICT.value() : HttpStatus.OK.value(),   // 409, 200
-                isDuplicated ? "이미 사용중인 사용자 아이디" : "사용 가능한 사용자 아이디"
+                false,
+                HttpStatus.OK.value(),   // 200
+                "사용 가능한 이메일 입니다."
         );
         return ResponseEntity.ok(response);
     }
@@ -126,12 +126,12 @@ public class UserController {
     // 회원가입 - 전화번호 중복 검사
     @PostMapping("/check/phonenum")
     public ResponseEntity<ResponseHandler<Boolean>> checkPhonenumDuplicate(@RequestBody String phoneNum){
-        boolean isDuplicated = userService.isPhonenumDuplicate(phoneNum);
+        userService.isPhonenumDuplicate(phoneNum);
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
-                isDuplicated,
-                isDuplicated ? HttpStatus.CONFLICT.value() : HttpStatus.OK.value(),   // 409, 200
-                isDuplicated ? "이미 사용중인 사용자 아이디" : "사용 가능한 사용자 아이디"
+                false,
+                HttpStatus.OK.value(),   // 200
+                "사용 가능한 전화번호입니다."
         );
         return ResponseEntity.ok(response);
     }
@@ -140,10 +140,10 @@ public class UserController {
 //    void logout();
 
     // 회원 정보 단건 조회
-    // 에러 처리 필요
-    @GetMapping("/{userid}")
+    // security로 처리해야 할수도???
+    // 그리고 params에 userId 노출은 웬만하면 안하는 걸로 바꾸는게 나을듯
+    @GetMapping("/{userId}")
     public ResponseEntity<ResponseHandler<UserDTO>> getUser(@PathVariable Long userId){
-        try {
             UserDTO user = userService.getUser(userId);
 
             ResponseHandler<UserDTO> response = new ResponseHandler<>(
@@ -153,21 +153,13 @@ public class UserController {
             );
 
             return ResponseEntity.ok(response);
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-//        catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        return null;
     }
 
     // 회원 정보 수정
-    @PutMapping("/{userid}")
-    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userid, @RequestBody UserFormDTO dto){
+    @PutMapping("/{userId}")
+    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId, @RequestBody UserFormDTO dto){
         try {
-            UserDTO updatedUser = userService.updateUser(userid, dto);
+            UserDTO updatedUser = userService.updateUser(userId, dto);
             ResponseHandler<UserDTO> response = new ResponseHandler<>(
                     updatedUser,
                     HttpStatus.OK.value(),  // 200
@@ -179,5 +171,34 @@ public class UserController {
             throw new RuntimeException(e);
         }
 
+    }
+
+    // 이거도 body에서 userId빼오는 방식 말고 다른 방식으로 구현 가능성
+    // 회원 탈퇴
+    @PatchMapping("/logical/{userId}")
+    public ResponseEntity<ResponseHandler<Boolean>> deleteUser(@PathVariable Long userId){
+        userService.deleteUser(userId);
+
+        ResponseHandler<Boolean> response = new ResponseHandler<>(
+                true,
+                HttpStatus.OK.value(),   // 200
+                "사용자 탈퇴 처리 완료"
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 비밀번호 일치 확인 - ( 회원 수정, 탈퇴시 )
+    @PostMapping("/check/userpw")
+    public ResponseEntity<ResponseHandler<Boolean>> checkUserPw(@RequestBody LoginFormDTO dto){
+        userService.checkUserPw(dto.getUserId(), dto.getUserPw());
+
+        ResponseHandler<Boolean> response = new ResponseHandler<>(
+                true,
+                HttpStatus.OK.value(),    // 200
+                "비밀번호 일치"
+        );
+
+        return ResponseEntity.ok(response);
     }
 }

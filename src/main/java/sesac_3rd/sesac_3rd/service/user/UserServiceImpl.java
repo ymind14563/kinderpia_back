@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
@@ -30,17 +31,40 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private TokenProvider tokenProvider;
+
     // 로그인
     @Override
-    public boolean userLogin(LoginFormDTO dto) {
-        return false;
+    public LoginFormDTO userLogin(final String loginId, final String userPw) {
+        final User originUser = userRepository.findByLoginId(loginId);
+        // 로그인 아이디가 없을때
+        // 커스텀에러는 '아이디 또는 비밀번호를 찾을 수 없습니다' 하나로 통일 시켜도 될듯
+        // 로직 다시 확인
+        if (originUser == null){
+            throw new CustomException(ExceptionStatus.USER_NOT_FOUND);   // 404
+        }
+        // 비번 불일치
+        if (!passwordEncoder.matches(userPw, originUser.getUserPw())){
+            throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
+        }
+        // 로그인 하려는 사용자가 탈퇴 여부가 true일때
+        if (originUser.isDeleted()){
+            throw new CustomException(ExceptionStatus.WITHDRAWN_USER); // 403
+        }
+        // 비번 일치
+        // 무슨 데이터 리턴할지는 좀 더 고민
+        final String token = tokenProvider.create(originUser);
+        LoginFormDTO formDTO = UserMapper.toLoginFormDTO(token, originUser);
+        return formDTO;
+
     }
 
     // 회원가입
     @Override
     public UserResponseDTO register(UserFormDTO dto) {
         log.info("register user");
-        validateUserDetails(dto);   // 커스텀 에러 처리 필요
+        validatePassword(dto.getUserPw());   // 비번만 유효성 검사
         // 중복검사는 따로 안함
         // 비번 인코딩 후 insert
         String encodedPw = passwordEncoder.encode(dto.getUserPw());
@@ -53,7 +77,7 @@ public class UserServiceImpl implements UserService {
     // 회원가입 - 닉네임 중복 검사
     @Override
     public void isNicknameDuplicate(String nickname) {
-        log.info("check nickname duplicated -==-=-= {}", nickname);
+        log.info("check nickname duplicated");
         validateNickname(nickname);
         boolean isDuplicated = userRepository.existsByNickname(nickname);
         if (isDuplicated){
@@ -63,26 +87,35 @@ public class UserServiceImpl implements UserService {
 
     // 회원가입 - 아이디 중복 검사
     @Override
-    public boolean isLoginIdDuplicate(String loginId) {
+    public void isLoginIdDuplicate(String loginId) {
         log.info("check loginid duplicated");
+        validateLoginId(loginId);
         boolean isDuplicated = userRepository.existsByLoginId(loginId);
-        return isDuplicated;
+        if (isDuplicated){
+            throw new CustomException(ExceptionStatus.DUPLICATE_LOGIN_ID);
+        }
     }
 
     // 회원가입 - 이메일 중복 검사
     @Override
-    public boolean isEmailDuplicate(String email) {
+    public void isEmailDuplicate(String email) {
         log.info("check email duplicated");
+        validateEmail(email);
         boolean isDuplicated = userRepository.existsByEmail(email);
-        return isDuplicated;
+        if (isDuplicated){
+            throw new CustomException(ExceptionStatus.DUPLICATE_EMAIL);
+        }
     }
 
     // 회원가입 - 전화번호 중복 검사
     @Override
-    public boolean isPhonenumDuplicate(String phoneNum) {
+    public void isPhonenumDuplicate(String phoneNum) {
         log.info("check phonenum duplicated");
+        validatePhoneNumber(phoneNum);
         boolean isDuplicated = userRepository.existsByPhoneNum(phoneNum);
-        return isDuplicated;
+        if (isDuplicated){
+            throw new CustomException(ExceptionStatus.DUPLICATE_PHONE);
+        }
     }
 
     // 로그아웃
@@ -91,12 +124,30 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // 회원 탈퇴
+    @Override
+    public void deleteUser(final Long userId) {
+        // 사용자가 입력한 비번이 해당 사용자의 비번이어야 함
+        User originUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));  // 404
+
+        // 비번 불일치
+//        if (!passwordEncoder.matches(userPw, originUser.getUserPw())){
+//            throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
+//        }
+
+        // 탈퇴한 사람이 작성한 리뷰나 모임, 채팅은 삭제하지 않음
+        // 모임글은 '닫힘 모임' 처리 -> 탈퇴한 사람이 작성한 모임 중 '모집중' 모임이 모두 '모임종료'로 업데이트
+
+        // 해당 사용자의 탈퇴 여부를 true로 변경
+        originUser.setDeleted(true);
+        userRepository.save(originUser);
+    }
+
     // 회원 정보 단건 조회
-    // 커스텀 예외 처리 필요
     @Override
     public UserDTO getUser(Long userId) {
         log.info("get user : {}", userId);
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException());  //new CustomException(ErrorCode.USER_NOT_FOUND)
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));  //new CustomException(ErrorCode.USER_NOT_FOUND)
         UserDTO userDTO = UserMapper.toUserDTO(user);
         return userDTO;
     }
@@ -105,11 +156,12 @@ public class UserServiceImpl implements UserService {
     // 닉네임, 비번, 전번, 프로필 이미지 수정 가능
     // 수정일자 현재 시간으로 삽입
     // 로직 프론트랑 얘기해서 바꿔야 될수도
+    // 바꿀 수 있는 4개 컬럼 중 일부만 바뀌어도 수정 되도록(해당 컬럼에 값 있는지 없는지 확인 필요)
     @Override
     public UserDTO updateUser(Long userId, UserFormDTO dto) {
         log.info("update user : {}", userId);
         // 1. 사용자 조회
-        User existingUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException());  //new CustomException(ErrorCode.USER_NOT_FOUND)
+        User existingUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
 
         // 2. 변경하려는 필드 중복 검사(닉네임, 전화번호)
         validateDuplicateFieldsForUpdate(userId, dto);
@@ -149,38 +201,15 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(updatedUser);
     }
 
+    // 비밀번호 일치 확인(회원 수정, 탈퇴시)
+    @Override
+    public void checkUserPw(Long userId, String userPw) {
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));  // 404
 
-    // 회원가입 시 모든 예외
-    // 커스텀 에러 뭐할지 정하기
-    private void validateUserDetails(UserFormDTO formDTO) {
-        // 유효성 검사
-        validateNickname(formDTO.getNickname());
-        validateLoginId(formDTO.getLoginId());
-        validatePassword(formDTO.getUserPw());
-        validateEmail(formDTO.getEmail());
-        validatePhoneNumber(formDTO.getPhoneNum());
-
-        // 중복 검사
-//        validateDuplicateFields(formDTO);
-    }
-
-
-    // 회원가입 시 중복 검사
-    private void validateDuplicateFields(UserFormDTO dto) {
-        // 이메일 중복 검사
-        if (userRepository.existsByEmail(dto.getEmail())) {
-//            throw new CustomException(ErrorCode.DUPLICATE_EMAIL); 이미 사용 중인 이메일입니다.
+        // 비번 불일치
+        if (!passwordEncoder.matches(userPw, findUser.getUserPw())){
+            throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
         }
-
-        // 전화번호 중복 검사
-        if (userRepository.existsByPhoneNum(dto.getPhoneNum())) {
-//            throw new CustomException(ErrorCode.DUPLICATE_PHONE); 이미 사용 중인 전화번호입니다.
-        }
-
-        // 로그인 ID 중복 검사
-//        if (userRepository.existsByLoginId(dto.getLoginId())) {
-//            throw new CustomException(ErrorCode.DUPLICATE_LOGIN_ID); 이미 사용 중인 아이디입니다.
-//        }
     }
 
     // 닉네임 유효성 검사
@@ -193,15 +222,15 @@ public class UserServiceImpl implements UserService {
     // 아이디 유효성 검사
     private void validateLoginId(String loginId) {
         if (loginId == null || !Pattern.matches("^[a-z0-9]{6,12}$", loginId)) {
-//            throw new CustomException(ErrorCode.INVALID_LOGIN_ID_FORMAT); 아이디는 6글자 이상 12글자 이하이며, 영어 소문자와 숫자만 가능합니다.
+            throw new CustomException(ExceptionStatus.INVALID_LOGIN_ID_FORMAT); // 아이디는 6글자 이상 12글자 이하이며, 영어 소문자와 숫자만 가능합니다.
         }
     }
 
     // 비번 유효성 검사
     private void validatePassword(String password) {
         if (password == null ||
-                !Pattern.matches("^(?=.*[a-zA-Z])(?=.*\\d)[A-Za-z\\d]{8,16}$", password)) {
-//            throw new CustomException(ErrorCode.INVALID_PASSWORD_FORMAT); 비밀번호는 8글자 이상 16글자 이하이며, 영어와 숫자를 포함해야 합니다.
+                !Pattern.matches("^(?=.*[a-zA-Z])(?=.*\\d)[A-Za-z\\d!@#$%^&*(),.?\":{}|<>]{8,16}$", password)) {
+            throw new CustomException(ExceptionStatus.INVALID_PASSWORD_FORMAT); // 비밀번호는 8글자 이상 16글자 이하이며, 영어와 숫자를 포함해야 합니다.
         }
     }
 
@@ -209,32 +238,32 @@ public class UserServiceImpl implements UserService {
     private void validateEmail(String email) {
         if (email == null ||
                 !Pattern.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$", email)) {
-//            throw new CustomException(ErrorCode.INVALID_EMAIL_FORMAT); 유효한 이메일 형식이 아닙니다.
+            throw new CustomException(ExceptionStatus.INVALID_EMAIL_FORMAT); // 유효한 이메일 형식이 아닙니다.
         }
     }
 
     // 전화번호 유효성 검사
     private void validatePhoneNumber(String phoneNum) {
         if (phoneNum == null || !Pattern.matches("^\\d{10,11}$", phoneNum)) {
-//            throw new CustomException(ErrorCode.INVALID_PHONE_FORMAT); 전화번호는 10~11자리 숫자여야 합니다.
+            throw new CustomException(ExceptionStatus.INVALID_PHONE_FORMAT); // 전화번호는 10~11자리 숫자여야 합니다.
         }
     }
 
     // 수정시 중복 검사(자신의 현재 값은 제외)
     private void validateDuplicateFieldsForUpdate(Long userId, UserFormDTO dto) {
-        User currentUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException());
+        User currentUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
 
         // 전화번호 중복 검사(현재 사용자 제외)
         if (StringUtils.hasText(dto.getPhoneNum()) && !dto.getPhoneNum().equals(currentUser.getPhoneNum())) {
             if (userRepository.existsByPhoneNum(dto.getPhoneNum())) {
-//                throw new CustomException(ErrorCode.DUPLICATE_PHONE); 이미 사용 중인 전화번호입니다.
+                throw new CustomException(ExceptionStatus.DUPLICATE_PHONE); // 이미 사용 중인 전화번호입니다.
             }
         }
 
         // 닉네임 중복 검사(현재 사용자 제외)
         if (StringUtils.hasText(dto.getNickname()) && !dto.getNickname().equals(currentUser.getNickname())) {
             if (userRepository.existsByNickname(dto.getNickname())) {
-//                throw new CustomException(ErrorCode.DUPLICATE_NICKNAME); 이미 사용 중인 닉네임입니다.
+                throw new CustomException(ExceptionStatus.DUPLICATE_NICKNAME); // 이미 사용 중인 닉네임입니다.
             }
         }
 

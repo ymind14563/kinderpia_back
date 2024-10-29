@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 // 로그인용
 public class LoginFormDTO {
+    private Long userId;
     private String loginId;
     private String userPw;
     private String token;

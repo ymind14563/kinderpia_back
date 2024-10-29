@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
@@ -30,6 +31,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private TokenProvider tokenProvider;
+
     // 로그인
     @Override
     public LoginFormDTO userLogin(final String loginId, final String userPw) {
@@ -44,9 +48,14 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(userPw, originUser.getUserPw())){
             throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
         }
+        // 로그인 하려는 사용자가 탈퇴 여부가 true일때
+        if (originUser.isDeleted()){
+            throw new CustomException(ExceptionStatus.WITHDRAWN_USER); // 403
+        }
         // 비번 일치
         // 무슨 데이터 리턴할지는 좀 더 고민
-        LoginFormDTO formDTO = UserMapper.toLoginFormDTO(originUser);
+        final String token = tokenProvider.create(originUser);
+        LoginFormDTO formDTO = UserMapper.toLoginFormDTO(token, originUser);
         return formDTO;
 
     }
@@ -117,20 +126,18 @@ public class UserServiceImpl implements UserService {
 
     // 회원 탈퇴
     @Override
-    public void deleteUser(final String loginId, final String userPw) {
+    public void deleteUser(final Long userId) {
         // 사용자가 입력한 비번이 해당 사용자의 비번이어야 함
-        User originUser = userRepository.findByLoginId(loginId);
+        User originUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));  // 404
 
-        if (originUser == null){
-            throw new CustomException(ExceptionStatus.USER_NOT_FOUND);
-        }
         // 비번 불일치
-        if (!passwordEncoder.matches(userPw, originUser.getUserPw())){
-            throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
-        }
+//        if (!passwordEncoder.matches(userPw, originUser.getUserPw())){
+//            throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
+//        }
 
         // 탈퇴한 사람이 작성한 리뷰나 모임, 채팅은 삭제하지 않음
-        // 모임글은 '닫힘 모임' 처리 -> 이게 정확하게 MeetingStatus에서 무슨 상태인지 확인 필요
+        // 모임글은 '닫힘 모임' 처리 -> 탈퇴한 사람이 작성한 모임 중 '모집중' 모임이 모두 '모임종료'로 업데이트
+
         // 해당 사용자의 탈퇴 여부를 true로 변경
         originUser.setDeleted(true);
         userRepository.save(originUser);
@@ -149,6 +156,7 @@ public class UserServiceImpl implements UserService {
     // 닉네임, 비번, 전번, 프로필 이미지 수정 가능
     // 수정일자 현재 시간으로 삽입
     // 로직 프론트랑 얘기해서 바꿔야 될수도
+    // 바꿀 수 있는 4개 컬럼 중 일부만 바뀌어도 수정 되도록(해당 컬럼에 값 있는지 없는지 확인 필요)
     @Override
     public UserDTO updateUser(Long userId, UserFormDTO dto) {
         log.info("update user : {}", userId);
@@ -193,6 +201,16 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(updatedUser);
     }
 
+    // 비밀번호 일치 확인(회원 수정, 탈퇴시)
+    @Override
+    public void checkUserPw(Long userId, String userPw) {
+        User findUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));  // 404
+
+        // 비번 불일치
+        if (!passwordEncoder.matches(userPw, findUser.getUserPw())){
+            throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
+        }
+    }
 
     // 닉네임 유효성 검사
     private void validateNickname(String nickname) {

@@ -34,7 +34,8 @@ public interface UserService {
     UserDTO updateUser(Long userId, UserFormDTO dto);
 
     // 회원 탈퇴
-    void deleteUser(String loginId, String userPw);
+    void deleteUser(Long userId);
 
-    // 비밀번호 일치 확인(탈퇴시)
+    // 비밀번호 일치 확인(회원 수정, 탈퇴시)
+    void checkUserPw(Long userId, String userPw);
 }

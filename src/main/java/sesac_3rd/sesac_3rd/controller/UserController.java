@@ -73,7 +73,6 @@ public class UserController {
     }
 
     // 회원가입
-    // 에러 표시 어떻게 되는지 확인 필요
     @PostMapping("/signup")
     public ResponseEntity<ResponseHandler<UserResponseDTO>> register(@RequestBody UserFormDTO dto){
         UserResponseDTO registeredUser = userService.register(dto);
@@ -176,14 +175,28 @@ public class UserController {
 
     // 이거도 body에서 userId빼오는 방식 말고 다른 방식으로 구현 가능성
     // 회원 탈퇴
-    @DeleteMapping("/")
-    public ResponseEntity<ResponseHandler<Boolean>> deleteUser(@RequestBody LoginFormDTO dto){
-        userService.deleteUser(dto.getLoginId(), dto.getUserPw());
+    @PatchMapping("/logical/{userId}")
+    public ResponseEntity<ResponseHandler<Boolean>> deleteUser(@PathVariable Long userId){
+        userService.deleteUser(userId);
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
                 true,
                 HttpStatus.OK.value(),   // 200
                 "사용자 탈퇴 처리 완료"
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 비밀번호 일치 확인 - ( 회원 수정, 탈퇴시 )
+    @PostMapping("/check/userpw")
+    public ResponseEntity<ResponseHandler<Boolean>> checkUserPw(@RequestBody LoginFormDTO dto){
+        userService.checkUserPw(dto.getUserId(), dto.getUserPw());
+
+        ResponseHandler<Boolean> response = new ResponseHandler<>(
+                true,
+                HttpStatus.OK.value(),    // 200
+                "비밀번호 일치"
         );
 
         return ResponseEntity.ok(response);

@@ -68,10 +68,11 @@ public class UserMapper {
     }
 
     // entity to loginformdto for return login success
-    public static LoginFormDTO toLoginFormDTO(User user){
+    public static LoginFormDTO toLoginFormDTO(String token, User user){
         return LoginFormDTO.builder()
                 .loginId(user.getLoginId())
                 .userId(user.getUserId())
+                .token(token)
                 .build();
     }
 }

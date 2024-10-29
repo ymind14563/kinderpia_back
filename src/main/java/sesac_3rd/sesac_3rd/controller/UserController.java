@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
@@ -56,6 +57,8 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+//    @AuthenticationPrincipal 어노테이션은 Spring Security에서 현재 인증된 사용자의 정보를 컨트롤러에서 직접 접근할 수 있게 해주는 어노테이션
 
     // 로그인
     // 로그인 완료 후 리턴값을 뭘 해야할지는 정해야함
@@ -157,8 +160,12 @@ public class UserController {
 
     // 회원 정보 수정
     @PutMapping("/{userId}")
-    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId, @RequestBody UserFormDTO dto){
-        try {
+    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId
+                                                                , @RequestBody UserFormDTO dto
+//                                                                , @RequestPart("user") UserFormDTO dto
+//  이미지는 선택                                                   , @RequestPart(value = "image", required = false) MultipartFile image
+                                                                )
+    {
             UserDTO updatedUser = userService.updateUser(userId, dto);
             ResponseHandler<UserDTO> response = new ResponseHandler<>(
                     updatedUser,
@@ -166,10 +173,6 @@ public class UserController {
                     "사용자 수정 완료"
             );
             return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
     }
 

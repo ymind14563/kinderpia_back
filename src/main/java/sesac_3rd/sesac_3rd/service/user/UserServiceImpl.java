@@ -157,6 +157,7 @@ public class UserServiceImpl implements UserService {
     // 수정일자 현재 시간으로 삽입
     // 로직 프론트랑 얘기해서 바꿔야 될수도
     // 바꿀 수 있는 4개 컬럼 중 일부만 바뀌어도 수정 되도록(해당 컬럼에 값 있는지 없는지 확인 필요)
+    // 입력받은 정보들이 기존과 같을때는???
     @Override
     public UserDTO updateUser(Long userId, UserFormDTO dto) {
         log.info("update user : {}", userId);
@@ -170,20 +171,20 @@ public class UserServiceImpl implements UserService {
         // 닉네임 수정
         if (StringUtils.hasText(dto.getNickname())) {
             validateNickname(dto.getNickname());
-            existingUser.setNickname(dto.getNickname());
+//            existingUser.setNickname(dto.getNickname());
         }
 
         // 비번 수정
         if (StringUtils.hasText(dto.getUserPw())) {
             validatePassword(dto.getUserPw());
             String encodedPw = passwordEncoder.encode(dto.getUserPw());
-            existingUser.setUserPw(encodedPw);
+//            existingUser.setUserPw(encodedPw);
         }
 
         // 전화번호 수정
         if (StringUtils.hasText(dto.getPhoneNum())) {
             validatePhoneNumber(dto.getPhoneNum());
-            existingUser.setPhoneNum(dto.getPhoneNum());
+//            existingUser.setPhoneNum(dto.getPhoneNum());
         }
 
         // 프로필 이미지 수정
@@ -192,9 +193,9 @@ public class UserServiceImpl implements UserService {
 //            existingUser.setProfileImg(dto.getProfileImg());
         }
         // 수정 날짜 업데이트
-        existingUser.setUpdatedAt(LocalDateTime.now());
+//        existingUser.setUpdatedAt(LocalDateTime.now());
         // 수정된 formdto를 entity로 변경
-//        User updateUser = UserMapper.toUserEntityForUpdate(dto);
+        User updateUser = UserMapper.toUserEntityForUpdate(dto);
 
         User updatedUser = userRepository.save(existingUser);
 //        UserDTO userDTO = UserMapper.toUserDTO(updatedUser);
@@ -205,6 +206,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void checkUserPw(Long userId, String userPw) {
         User findUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));  // 404
+
+        // 비번 유효성 검사
+        validatePassword(userPw);
 
         // 비번 불일치
         if (!passwordEncoder.matches(userPw, findUser.getUserPw())){
@@ -254,7 +258,10 @@ public class UserServiceImpl implements UserService {
         User currentUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
 
         // 전화번호 중복 검사(현재 사용자 제외)
+        // 전화번호 값이 비어있지 않고 현재 전화번호랑 입력된 전화번호가 일치하지 않을때
+        // 현재 전화번호랑 입력된 전화번호가 일치할때는??? -> 이건 프론트쪽에서 기존값이 변경되었다는 것을 감지할때 보내는 방식으로 하면 이 로직은 굳이??
         if (StringUtils.hasText(dto.getPhoneNum()) && !dto.getPhoneNum().equals(currentUser.getPhoneNum())) {
+            // 중복 검사
             if (userRepository.existsByPhoneNum(dto.getPhoneNum())) {
                 throw new CustomException(ExceptionStatus.DUPLICATE_PHONE); // 이미 사용 중인 전화번호입니다.
             }

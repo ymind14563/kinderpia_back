@@ -60,7 +60,7 @@ public class ChatMessageMapper {
     }
 
 
-    // 메시지 생성
+    // 일반 메시지 생성 (CHAT)
     public ChatMessage ChatMessageDTOtoEntity(ChatMessageDTO.ChatMessage messageDTO, ChatRoom chatRoom, User sender) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setChatRoom(chatRoom);
@@ -72,5 +72,16 @@ public class ChatMessageMapper {
         return chatMessage;
     }
 
+    // 시스템 메시지 생성 (JOIN, LEAVE)
+    public ChatMessage systemMessageToEntity(ChatRoom chatRoom, Long systemUserId, String messageContent, MessageType messageType) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setChatRoom(chatRoom);
+        chatMessage.setChatmsgContent(messageContent);
+        chatMessage.setMessageType(messageType);
+        chatMessage.setCreatedAt(LocalDateTime.now());
+        chatMessage.setSender(null); // 시스템 메시지는 sender 가 null
+
+        return chatMessage;
+    }
 
 }

@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.mapper.user;
 
+import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
@@ -63,6 +64,15 @@ public class UserMapper {
                 .nickname(user.getNickname())
                 .phoneNum(user.getPhoneNum())
                 .createdAt(user.getCreatedAt())
+                .build();
+    }
+
+    // entity to loginformdto for return login success
+    public static LoginFormDTO toLoginFormDTO(String token, User user){
+        return LoginFormDTO.builder()
+                .loginId(user.getLoginId())
+                .userId(user.getUserId())
+                .token(token)
                 .build();
     }
 }

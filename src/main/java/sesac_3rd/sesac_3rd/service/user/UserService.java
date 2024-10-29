@@ -7,7 +7,7 @@ import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
 
 public interface UserService {
     // 로그인
-    boolean userLogin(LoginFormDTO dto);
+    LoginFormDTO userLogin(String loginId, String userPw);
 
     // 회원가입
     UserResponseDTO register(UserFormDTO dto);
@@ -16,13 +16,13 @@ public interface UserService {
     void isNicknameDuplicate(String nickname);
 
     // 회원가입 - 아이디 중복 검사
-    boolean isLoginIdDuplicate(String loginId);
+    void isLoginIdDuplicate(String loginId);
 
     // 회원가입 - 이메일 중복 검사
-    boolean isEmailDuplicate(String email);
+    void isEmailDuplicate(String email);
 
     // 회원가입 - 전화번호 중복 검사
-    boolean isPhonenumDuplicate(String phoneNum);
+    void isPhonenumDuplicate(String phoneNum);
 
     // 로그아웃
     void logout();
@@ -34,7 +34,8 @@ public interface UserService {
     UserDTO updateUser(Long userId, UserFormDTO dto);
 
     // 회원 탈퇴
+    void deleteUser(Long userId);
 
-
-    // 비밀번호 일치 확인(탈퇴시)
+    // 비밀번호 일치 확인(회원 수정, 탈퇴시)
+    void checkUserPw(Long userId, String userPw);
 }

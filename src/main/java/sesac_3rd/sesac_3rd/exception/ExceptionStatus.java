@@ -19,8 +19,16 @@ public enum ExceptionStatus {
     DUPLICATE_LOGIN_ID(409, "이미 사용 중인 아이디입니다."),
     DUPLICATE_NICKNAME(409, "이미 사용 중인 닉네임입니다."),
 
+
+    //Place
+    PLACE_NOT_FOUND(404, "장소 정보를 찾을 수 없습니다."),
+
+    //Review
+    REVIEWID_NOT_FOUND(404,"리뷰아이디를 찾을 수 없습니다."),
+
     // Meeting
     MEETING_NOT_FOUND(404, "모임을 찾을 수 없습니다.");
+
 
     private final int status;
     private final String message;

@@ -19,7 +19,7 @@ public enum ExceptionStatus {
 
 
     //Place
-    PLACE_NOT_FOUND(404, "장소 정보를 찾을 수 없습니다.");
+    PLACE_NOT_FOUND(404, "장소 정보를 찾을 수 없습니다."),
 
     // Meeting
     MEETING_NOT_FOUND(404, "모임을 찾을 수 없습니다.");

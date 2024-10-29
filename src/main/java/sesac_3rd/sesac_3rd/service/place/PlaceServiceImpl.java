@@ -12,11 +12,12 @@ import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.repository.PlaceRepository;
+import static sesac_3rd.sesac_3rd.mapper.place.PlaceMapper.convertToDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static sesac_3rd.sesac_3rd.mapper.place.PlaceMapper.convertToDTO;
+
 
 @Slf4j
 @Service

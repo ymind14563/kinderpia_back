@@ -18,11 +18,11 @@ public class Review {
     @Column(name = "review_id", nullable = false)
     private Long reviewId;  // 리뷰아이디 (PK)
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "place_id", nullable = false)  // 장소아이디 (외래 키)
     private Place place;  // Place 엔티티와 다대일 관계
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)  // 유저아이디 (외래 키)
     private User user;  // User 엔티티와 다대일 관계
 

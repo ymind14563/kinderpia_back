@@ -5,7 +5,7 @@ import sesac_3rd.sesac_3rd.entity.Place;
 
 public class PlaceMapper {
     // dto to entity
-    public Place convertToEntity(PlaceDTO placeDTO){
+    public Place convertToEntity(PlaceDTO placeDTO) {
         return Place.builder()
                 .placeId(placeDTO.getPlaceId())
                 .placeCategory(placeDTO.getPlaceCategory())

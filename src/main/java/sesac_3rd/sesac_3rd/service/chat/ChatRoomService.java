@@ -12,7 +12,7 @@ import sesac_3rd.sesac_3rd.repository.chat.ChatRoomRepository;
 
 @Service
 @RequiredArgsConstructor
-public class ChatService {
+public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMapper chatRoomMapper;
 

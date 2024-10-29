@@ -18,6 +18,11 @@ messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoom.getChatroomId(), 
 특정 전송 경로나 복잡한 라우팅 규칙을 설정하거나 SockJS 같은 기능을 추가하려는 경우에는 WebSocketConfig 설정이 필요함
  */
 
+/* 참고: 채팅방에 관련하여 관례적인 표현법
+topic: 구독자들이 동일한 경로에 대해 구독(수신)하면, 하나의 메시지를 여러 구독자가 수신가능 (Pub-Sub 방식)
+queue: 특정 클라이언트만 메시지를 받을 수 있게 설계되어서, 1:1 채팅처럼 발신자와 수신자 사이에 독점적으로 메시지를 주고받는 경우 (Point-to-Point 방식)
+ */
+
 @Configuration // WebSocket 설정을 위한 클래스
 @EnableWebSocketMessageBroker // WebSocket 메시지 브로커를 활성화하여 STOMP 기반의 메시지 처리
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {

@@ -10,4 +10,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     @Query("SELECT cr FROM ChatRoom cr JOIN Meeting m ON cr.meeting.meetingId = m.meetingId JOIN UserMeeting um ON um.meeting.meetingId = m.meetingId WHERE um.user.userId = :userId")
     Page<ChatRoom> findByUserId(Long userId, Pageable pageable);
+
+    boolean existsByMeeting_MeetingId(Long meetingId);
 }

@@ -8,10 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sesac_3rd.sesac_3rd.config.security.TokenProvider;
-import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
+import sesac_3rd.sesac_3rd.dto.user.*;
 import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
@@ -36,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     // 로그인
     @Override
-    public LoginFormDTO userLogin(final String loginId, final String userPw) {
+    public LoginResponse userLogin(final String loginId, final String userPw) {
         final User originUser = userRepository.findByLoginId(loginId);
         // 로그인 아이디가 없을때
         // 커스텀에러는 '아이디 또는 비밀번호를 찾을 수 없습니다' 하나로 통일 시켜도 될듯
@@ -54,9 +51,10 @@ public class UserServiceImpl implements UserService {
         }
         // 비번 일치
         // 무슨 데이터 리턴할지는 좀 더 고민
+        // 리턴에 헤더에 토큰값 넣어서 리턴하고 로그인 여부 true/false만 body에 넣어서
         final String token = tokenProvider.create(originUser);
-        LoginFormDTO formDTO = UserMapper.toLoginFormDTO(token, originUser);
-        return formDTO;
+//        LoginFormDTO formDTO = UserMapper.toLoginFormDTO(originUser);
+        return new LoginResponse(token, true);
 
     }
 
@@ -121,7 +119,7 @@ public class UserServiceImpl implements UserService {
     // 로그아웃
     @Override
     public void logout() {
-
+        // 토큰 파기
     }
 
     // 회원 탈퇴
@@ -155,9 +153,8 @@ public class UserServiceImpl implements UserService {
     // 회원 정보 수정
     // 닉네임, 비번, 전번, 프로필 이미지 수정 가능
     // 수정일자 현재 시간으로 삽입
-    // 로직 프론트랑 얘기해서 바꿔야 될수도
     // 바꿀 수 있는 4개 컬럼 중 일부만 바뀌어도 수정 되도록(해당 컬럼에 값 있는지 없는지 확인 필요)
-    // 입력받은 정보들이 기존과 같을때는???
+    // 중복 검사 제외(수정 페이지에서도 회원가입 때처럼 중복검사는 input창에서 focusout될때 실행되도록)
     @Override
     public UserDTO updateUser(Long userId, UserFormDTO dto) {
         log.info("update user : {}", userId);
@@ -165,7 +162,7 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
 
         // 2. 변경하려는 필드 중복 검사(닉네임, 전화번호)
-        validateDuplicateFieldsForUpdate(userId, dto);
+//        validateDuplicateFieldsForUpdate(userId, dto);
 
         // 3. 각 필드 유효성 검사
         // 닉네임 수정
@@ -215,6 +212,12 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
         }
     }
+
+    // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인지 아닌지 필터링 요청 api 분리) - 페이지네이션
+
+    // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
+
+    // 사용자 리뷰 목록 조회(장소 정보까지 같이)
 
     // 닉네임 유효성 검사
     private void validateNickname(String nickname) {

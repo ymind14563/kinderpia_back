@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
+import sesac_3rd.sesac_3rd.dto.user.*;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.user.UserService;
 
@@ -63,16 +60,16 @@ public class UserController {
     // 로그인
     // 로그인 완료 후 리턴값을 뭘 해야할지는 정해야함
     @PostMapping("/login")
-    public ResponseEntity<ResponseHandler<LoginFormDTO>> userLogin(@RequestBody LoginFormDTO dto){
-        LoginFormDTO formDTO = userService.userLogin(dto.getLoginId(), dto.getUserPw());
+    public ResponseEntity<ResponseHandler<Boolean>> userLogin(@RequestBody LoginFormDTO dto){
+        LoginResponse loginResponse = userService.userLogin(dto.getLoginId(), dto.getUserPw());
 
-        ResponseHandler<LoginFormDTO> response = new ResponseHandler<>(
-                formDTO,
+        ResponseHandler<Boolean> response = new ResponseHandler<>(
+                loginResponse.isLogined(),
                 HttpStatus.OK.value(),
                 "로그인 완료"
         );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().header("Authorization", "Bearer " + loginResponse.getToken()).body(response);
     }
 
     // 회원가입

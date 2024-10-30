@@ -1,13 +1,10 @@
 package sesac_3rd.sesac_3rd.service.user;
 
-import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
+import sesac_3rd.sesac_3rd.dto.user.*;
 
 public interface UserService {
     // 로그인
-    LoginFormDTO userLogin(String loginId, String userPw);
+    LoginResponse userLogin(String loginId, String userPw);
 
     // 회원가입
     UserResponseDTO register(UserFormDTO dto);
@@ -38,4 +35,10 @@ public interface UserService {
 
     // 비밀번호 일치 확인(회원 수정, 탈퇴시)
     void checkUserPw(Long userId, String userPw);
+
+    // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인지 아닌지 필터링 요청 api 분리) - 페이지네이션
+
+    // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
+
+    // 사용자 리뷰 목록 조회(장소 정보까지 같이)
 }

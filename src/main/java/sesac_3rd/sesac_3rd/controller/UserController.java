@@ -5,12 +5,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
+import org.springframework.web.multipart.MultipartFile;
+import sesac_3rd.sesac_3rd.dto.user.*;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
+import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.service.user.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -57,19 +58,21 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+//    @AuthenticationPrincipal 어노테이션은 Spring Security에서 현재 인증된 사용자의 정보를 컨트롤러에서 직접 접근할 수 있게 해주는 어노테이션
+
     // 로그인
     // 로그인 완료 후 리턴값을 뭘 해야할지는 정해야함
     @PostMapping("/login")
-    public ResponseEntity<ResponseHandler<LoginFormDTO>> userLogin(@RequestBody LoginFormDTO dto){
-        LoginFormDTO formDTO = userService.userLogin(dto.getLoginId(), dto.getUserPw());
+    public ResponseEntity<ResponseHandler<Boolean>> userLogin(@RequestBody LoginFormDTO dto){
+        LoginResponse loginResponse = userService.userLogin(dto.getLoginId(), dto.getUserPw());
 
-        ResponseHandler<LoginFormDTO> response = new ResponseHandler<>(
-                formDTO,
+        ResponseHandler<Boolean> response = new ResponseHandler<>(
+                loginResponse.isLogined(),
                 HttpStatus.OK.value(),
                 "로그인 완료"
         );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().header("Authorization", "Bearer " + loginResponse.getToken()).body(response);
     }
 
     // 회원가입
@@ -157,8 +160,12 @@ public class UserController {
 
     // 회원 정보 수정
     @PutMapping("/{userId}")
-    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId, @RequestBody UserFormDTO dto){
-        try {
+    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId
+                                                                , @RequestBody UserFormDTO dto
+//                                                                , @RequestPart("user") UserFormDTO dto
+//  이미지는 선택                                                   , @RequestPart(value = "image", required = false) MultipartFile image
+                                                                )
+    {
             UserDTO updatedUser = userService.updateUser(userId, dto);
             ResponseHandler<UserDTO> response = new ResponseHandler<>(
                     updatedUser,
@@ -166,10 +173,6 @@ public class UserController {
                     "사용자 수정 완료"
             );
             return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
     }
 
@@ -201,4 +204,44 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+    // 사용자 리뷰 목록 조회(장소 정보까지 같이)
+    // 페이지네이션 필요할지도??
+    @GetMapping("/review/list/{userId}")
+    public ResponseEntity<ResponseHandler<List<UserReviewDTO.UserReviewListDTO>>> getUserReviewList(@PathVariable Long userId){
+        List<UserReviewDTO.UserReviewListDTO> getReviewList = userService.getUserReviewList(userId);
+
+        return ResponseHandler.response(getReviewList, HttpStatus.OK, "사용자 리뷰 목록 조회");
+    }
+
+    // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
+    @GetMapping("/meetingTime/list/{userId}")
+    public ResponseEntity<ResponseHandler<List<UserMeetingListDTO>>> getUserMeetingScheduleList(@PathVariable Long userId){
+        List<UserMeetingListDTO> getUserMettingSchlist = userService.getUserMeetingScheduleList(userId);
+
+        return ResponseHandler.response(getUserMettingSchlist, HttpStatus.OK, "사용자 모임 일정 목록 조회");
+    }
+
+    // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
+    @GetMapping("/meeting/list/{userId}")
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserMeetingListDTO>>> getUserMeetingList(@PathVariable Long userId,
+                                                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                                                         @RequestParam(defaultValue = "8") int size)
+    {
+        PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList = userService.getUserMeetingList(userId, size, page);
+
+        return ResponseHandler.response(getUserMeetingList, HttpStatus.OK, "사용자 모임 목록 조회");
+    }
+
+    // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
+    @GetMapping("/meeting/leader/list/{userId}")
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserMeetingListDTO>>> getUserLeaderMeetingList(@PathVariable Long userId,
+                                                                                                               @RequestParam(defaultValue = "0") int page,
+                                                                                                               @RequestParam(defaultValue = "8") int size
+                                                                                                               ){
+        PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList = userService.getUserLeaderMeetingList(userId, size, page);
+
+        return ResponseHandler.response(getUserLeaderMeetingList, HttpStatus.OK, "사용자 모임 목록 조회");
+    }
+
 }

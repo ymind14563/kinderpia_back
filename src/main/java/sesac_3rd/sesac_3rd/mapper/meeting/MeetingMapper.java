@@ -2,7 +2,11 @@ package sesac_3rd.sesac_3rd.mapper.meeting;
 
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
+import sesac_3rd.sesac_3rd.entity.MeetingCategory;
+import sesac_3rd.sesac_3rd.entity.Place;
+import sesac_3rd.sesac_3rd.entity.User;
 
 public class MeetingMapper {
     // [ 모임 목록 조회(검색)] entity to dto
@@ -39,6 +43,27 @@ public class MeetingMapper {
                 .meetingTime(meeting.getMeetingTime()) // 모임일시
                 .meetingStatus(meeting.getMeetingStatus()) // 모임상태
                 .createdAt(meeting.getCreatedAt()) // 생성일자
+                .build();
+    }
+
+    // [ 모임 생성 ] dto to entity
+    public static Meeting toMeetingFormEntity(MeetingFormDTO meetingFormDTO, User user, Place place, MeetingCategory meetingCategory) {
+        return Meeting.builder()
+                .user(user) // User 객체를 직접 할당
+                .place(place)
+                .meetingCategory(meetingCategory)
+
+                .meetingTitle(meetingFormDTO.getMeetingTitle()) // 모임명
+                .meetingContent(meetingFormDTO.getMeetingContent()) // 모임내용
+                .totalCapacity(meetingFormDTO.getTotalCapacity()) // 총원 (최대 99)
+                .isLimited(meetingFormDTO.isLimited()) // 총원제한여부 (기본값 FALSE)
+                .isAuthType(meetingFormDTO.isAuthType()) // 인증여부 (기본값 FALSE)
+                .capacity(meetingFormDTO.getCapacity()) // 참가인원 (기본값 1)
+                .meetingLocation(meetingFormDTO.getMeetingLocation()) // 모임장소(주소)
+                .latitude(meetingFormDTO.getLatitude()) // 위도 (DECIMAL(10, 8))
+                .longitude(meetingFormDTO.getLongitude()) // 경도 (DECIMAL(11, 8))
+                .meetingTime(meetingFormDTO.getMeetingTime()) // 모임일시 (시간)
+                .meetingStatus(meetingFormDTO.getMeetingStatus()) // 모임상태 (기본값 "ONGOING")
                 .build();
     }
 }

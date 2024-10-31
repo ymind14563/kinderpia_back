@@ -28,6 +28,7 @@ public class PaginationResponseDTO<T> {
     private PageInfo createPageInfo(Page page) {
         return new PageInfo(
                 page.getNumber() + 1,
+                page.getSize(),
                 page.getTotalElements(),
                 page.getTotalPages(),
                 page.getSort());

@@ -45,7 +45,8 @@ public class ChatMessageMapper {
 
 
     // 채팅방 메세지 목록 조회
-    public static ChatMessageDTO.ChatMessageList ChatMessageListToChatMessageListResponseDTO(Long chatroomId, List<ChatMessage> chatMessages, int page, int pageSize, int totalPages) {
+//    public static ChatMessageDTO.ChatMessageList ChatMessageListToChatMessageListResponseDTO(Long chatroomId, List<ChatMessage> chatMessages, int page, int pageSize, int totalPages) {
+    public static ChatMessageDTO.ChatMessageList ChatMessageListToChatMessageListResponseDTO(Long chatroomId, List<ChatMessage> chatMessages) {
         List<ChatMessageDTO.ChatMessage> chatmsgList = chatMessages.stream()
                 .map(ChatMessageMapper::ChatMessageToChatMessageResponseDTO)
                 .collect(Collectors.toList());
@@ -53,9 +54,9 @@ public class ChatMessageMapper {
         return ChatMessageDTO.ChatMessageList.builder()
                 .chatroomId(chatroomId)
                 .chatmsgList(chatmsgList)
-                .page(page)
-                .pageSize(pageSize)
-                .totalPages(totalPages)
+//                .page(page)
+//                .pageSize(pageSize)
+//                .totalPages(totalPages)
                 .build();
     }
 

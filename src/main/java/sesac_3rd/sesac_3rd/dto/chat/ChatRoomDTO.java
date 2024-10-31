@@ -21,9 +21,9 @@ public class ChatRoomDTO {
     public static class ChatRoomList {
         private Long userId;
         private List<ChatRoomDTO.ChatRoom> chatroomList;
-        private int page;
-        private int pageSize;
-        private int totalPages;
+//        private int page;
+//        private int pageSize;
+//        private int totalPages;
     }
 
     // 채팅방 단일

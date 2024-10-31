@@ -15,6 +15,6 @@ public interface MeetingService {
     // 키워드로 타이틀과 장소 검색
     PaginationResponseDTO<MeetingDTO> searchMeetingsByKeyword(String keyword, Pageable pageable);
 
-    // 특정 ID 로 모임 상세조회
+    // 특정 ID 로 모임 상세조회 (모임장 정보 포함)
     MeetingDetailDTO getDetailMeeting(Long meetingId);
 }

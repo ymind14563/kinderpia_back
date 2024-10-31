@@ -1,23 +1,18 @@
 package sesac_3rd.sesac_3rd.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/meeting")
@@ -75,6 +70,24 @@ public class MeetingController {
         return ResponseEntity.ok(
                 new ResponseHandler<>(paginationResponse, HttpStatus.OK.value(), "모임 목록 조회[keyword] 완료")
         );
+    }
+
+    // 모임 상세조회
+    @GetMapping("/{meetingId}")
+    public ResponseEntity<ResponseHandler<MeetingDetailDTO>> getMeetingDetail(@PathVariable Long meetingId) {
+        try {
+            MeetingDetailDTO meetingDetailDTO = meetingService.getDetailMeeting(meetingId);
+
+            ResponseHandler<MeetingDetailDTO> response = new ResponseHandler<>(
+                    meetingDetailDTO,
+                    HttpStatus.OK.value(), // 200
+                    "모임 상세 조회 완료"
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

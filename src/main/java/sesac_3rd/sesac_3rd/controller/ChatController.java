@@ -62,4 +62,20 @@ public class ChatController {
 
     }
 
+
+
+    // 메세지 내역 조회 (페이지네이션 적용 - 채팅생성시간 오름차순 적용)
+    @GetMapping("/chatmsg/{chatroomId}")
+    // /api/chatroom/chatmsg/{chatroomId}?page={page}&size={size}
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<ChatMessageDTO.ChatMessageList>>> getChatMessages(@PathVariable("chatroomId") Long chatroomId,
+                                                                                                                  @RequestParam int page,
+                                                                                                                  @RequestParam int size) {
+
+        PaginationResponseDTO<ChatMessageDTO.ChatMessageList> chatMessages = chatMessageService.getChatMessages(chatroomId, page, size);
+
+        return ResponseHandler.response(chatMessages, HttpStatus.OK, "채팅 메시지 리스트 조회 성공");
+    }
+
+
+
 }

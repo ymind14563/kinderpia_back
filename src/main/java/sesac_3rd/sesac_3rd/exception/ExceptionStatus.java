@@ -27,8 +27,13 @@ public enum ExceptionStatus {
     REVIEWID_NOT_FOUND(404,"리뷰아이디를 찾을 수 없습니다."),
 
     // Meeting
-    MEETING_NOT_FOUND(404, "모임을 찾을 수 없습니다.");
+    MEETING_NOT_FOUND(404, "모임을 찾을 수 없습니다."),
 
+    // Chat
+    CHATROOM_NOT_FOUND(404, "채팅방을 찾을 수 없습니다."),
+    USER_NOT_IN_CHATROOM(404, "채팅방에 소속된 회원이 아닙니다."),
+    CHATROOM_NOT_ACTIVE(404, "활성화된 채팅방이 아닙니다."),
+    INVALID_MESSAGE_TYPE(400,"유효한 메세지 타입이 아닙니다.");
 
     private final int status;
     private final String message;

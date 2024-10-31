@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sesac_3rd.sesac_3rd.constant.MessageType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,9 +33,11 @@ public class ChatMessageDTO {
         private Long chatmsgId;
         private Long chatroomId;
         private Long senderId;
+        private String senderNickname;
         private String senderProfileImg;
         private String chatmsgContent;
         private LocalDateTime createdAt;
+        private MessageType messageType;
     }
 
 

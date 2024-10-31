@@ -1,16 +1,20 @@
 package sesac_3rd.sesac_3rd.service.meeting;
 
+import org.springframework.data.domain.Pageable;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
-
-import java.util.List;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
+import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 
 public interface MeetingService {
     // 모임 목록 (default - 최신순 정렬)
-    List<MeetingDTO> getAllMeetings();
+    PaginationResponseDTO<MeetingDTO> getAllMeetings(Pageable pageable);
 
     // 모임 목록 (open - 열려있는것만 정렬)
-    List<MeetingDTO> getOpenMeetings();
+    PaginationResponseDTO<MeetingDTO> getOpenMeetings(Pageable pageable);
 
     // 키워드로 타이틀과 장소 검색
-    List<MeetingDTO> searchMeetingsByKeyword(String keyword);
+    PaginationResponseDTO<MeetingDTO> searchMeetingsByKeyword(String keyword, Pageable pageable);
+
+    // 특정 ID 로 모임 상세조회
+    MeetingDetailDTO getDetailMeeting(Long meetingId);
 }

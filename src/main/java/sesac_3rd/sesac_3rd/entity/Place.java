@@ -7,7 +7,8 @@ import lombok.*;
 import java.math.BigDecimal;
 
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,4 +54,10 @@ public class Place {
 
     @Column(name = "place_num", nullable = false, length = 30)
     private String placeNum;  // 전화번호
+    @Override
+    public String toString() {
+        return "Place{" +
+                "placeId=" + placeId +
+                '}';
+    }
 }

@@ -13,6 +13,7 @@ import static sesac_3rd.sesac_3rd.mapper.review.ReviewMapper.convertToDTO;
 import static sesac_3rd.sesac_3rd.mapper.review.ReviewMapper.convertToEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -25,10 +26,12 @@ public class ReviewServiceImpl implements ReviewService{
     // 장소별 리뷰 목록 조회
     @Override
     public List<Review> getAllReviewByPlaceId(Long placeId){
-            List<Review> reviews = reviewRepository.findByPlace_PlaceId(placeId);
+        System.out.println(">>>> getAllReviewByPlaceId");
+        List<Review> reviews = reviewRepository.findByPlace_PlaceId(placeId);
             System.out.println("reviews = " + reviews);
             log.info("reviews" + reviews);
-            return reviews;
+
+        return reviews;
     }
 
     // 리뷰 단건 조회
@@ -40,9 +43,9 @@ public class ReviewServiceImpl implements ReviewService{
 
     // 리뷰 작성
     @Override
-    public void createReview(ReviewDTO reviewDTO) {
+    public Review createReview(ReviewDTO reviewDTO) {
         Review review = convertToEntity(reviewDTO);
-        reviewRepository.save(review);
+        return reviewRepository.save(review);
     }
 
 

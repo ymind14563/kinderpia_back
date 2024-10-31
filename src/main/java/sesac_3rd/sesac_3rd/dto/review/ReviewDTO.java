@@ -8,6 +8,7 @@ import sesac_3rd.sesac_3rd.entity.User;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

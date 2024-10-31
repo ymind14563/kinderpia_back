@@ -33,7 +33,7 @@ public class PlaceController {
             @RequestParam(defaultValue = "none") String keyword // 검색 키워드
     ) {
         try{
-            Pageable pageable = PageRequest.of(page-1, size);
+            Pageable pageable = PageRequest.of(page, size);
             return placeService.getAllPlace(sort, page, size , category, keyword);
 
         } catch (Exception e) {

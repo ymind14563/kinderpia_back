@@ -1,9 +1,7 @@
 package sesac_3rd.sesac_3rd.mapper.user;
 
-import sesac_3rd.sesac_3rd.dto.user.LoginFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserFormDTO;
-import sesac_3rd.sesac_3rd.dto.user.UserResponseDTO;
+import sesac_3rd.sesac_3rd.dto.user.*;
+import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
 
 import java.time.LocalDateTime;
@@ -44,16 +42,16 @@ public class UserMapper {
     }
 
     // formdto to entity for update user
-    public static User toUserEntityForUpdate(UserFormDTO formDTO){
-        return User.builder()
-                .userPw(formDTO.getUserPw())
-                .nickname(formDTO.getNickname())
-                .phoneNum(formDTO.getPhoneNum())
-                // 프로필 이미지는 dto에서 값 넘어오고 그 값이 비어있지 않다면 entity에 넣기
-                .profileImg(formDTO.getProfileImg() != null && !formDTO.getProfileImg().isEmpty() ? formDTO.getProfileImg() : null)
-                .updatedAt(LocalDateTime.now())
-                .build();
-    }
+//    public static User toUserEntityForUpdate(UserFormDTO formDTO){
+//        return User.builder()
+//                .userPw(formDTO.getUserPw())
+//                .nickname(formDTO.getNickname())
+//                .phoneNum(formDTO.getPhoneNum())
+//                // 프로필 이미지는 dto에서 값 넘어오고 그 값이 비어있지 않다면 entity에 넣기
+//                .profileImg(formDTO.getProfileImg() != null && !formDTO.getProfileImg().isEmpty() ? formDTO.getProfileImg() : null)
+//                .updatedAt(LocalDateTime.now())
+//                .build();
+//    }
 
     // entity to responsedto for return signup
     public static UserResponseDTO toResponseDTO(User user){
@@ -72,6 +70,19 @@ public class UserMapper {
         return LoginFormDTO.builder()
                 .loginId(user.getLoginId())
                 .userId(user.getUserId())
+                .build();
+    }
+
+    // user review entity to userreviewdto
+    public static UserReviewDTO.UserReviewListDTO toUserReviewDTO(Review review){
+        return UserReviewDTO.UserReviewListDTO.builder()
+                .reviewId(review.getReviewId())
+                .star(review.getStar())
+                .reviewContent(review.getReviewContent())
+                .place(UserReviewDTO.PlaceInfoDTO.builder()
+                        .placeName(review.getPlace().getPlaceName())
+                        .placeId(review.getPlace().getPlaceId())
+                        .build())
                 .build();
     }
 }

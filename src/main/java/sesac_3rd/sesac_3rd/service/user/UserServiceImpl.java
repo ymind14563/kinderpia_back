@@ -9,14 +9,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.dto.user.*;
+import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
+import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.user.UserMapper;
 import sesac_3rd.sesac_3rd.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -161,38 +165,39 @@ public class UserServiceImpl implements UserService {
         // 1. 사용자 조회
         User existingUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
 
-        // 2. 변경하려는 필드 중복 검사(닉네임, 전화번호)
-//        validateDuplicateFieldsForUpdate(userId, dto);
-
-        // 3. 각 필드 유효성 검사
+        // 2. 각 필드 유효성 검사
         // 닉네임 수정
         if (StringUtils.hasText(dto.getNickname())) {
             validateNickname(dto.getNickname());
-//            existingUser.setNickname(dto.getNickname());
+            log.info("nickname update...");
+            existingUser.setNickname(dto.getNickname());
         }
 
         // 비번 수정
         if (StringUtils.hasText(dto.getUserPw())) {
             validatePassword(dto.getUserPw());
             String encodedPw = passwordEncoder.encode(dto.getUserPw());
-//            existingUser.setUserPw(encodedPw);
+            log.info("password update...");
+            existingUser.setUserPw(encodedPw);
         }
 
         // 전화번호 수정
         if (StringUtils.hasText(dto.getPhoneNum())) {
             validatePhoneNumber(dto.getPhoneNum());
-//            existingUser.setPhoneNum(dto.getPhoneNum());
+            log.info("phonenum update...");
+            existingUser.setPhoneNum(dto.getPhoneNum());
         }
 
         // 프로필 이미지 수정
         if (StringUtils.hasText(dto.getProfileImg())) {
             // 이미지 관련 S3 추가, String말고 MultipartFile 로 바꿔야 할수도
-//            existingUser.setProfileImg(dto.getProfileImg());
+            log.info("profileimg update...");
+            existingUser.setProfileImg(dto.getProfileImg());
         }
         // 수정 날짜 업데이트
-//        existingUser.setUpdatedAt(LocalDateTime.now());
+        existingUser.setUpdatedAt(LocalDateTime.now());
         // 수정된 formdto를 entity로 변경
-        User updateUser = UserMapper.toUserEntityForUpdate(dto);
+//        User updateUser = UserMapper.toUserEntityForUpdate(dto);
 
         User updatedUser = userRepository.save(existingUser);
 //        UserDTO userDTO = UserMapper.toUserDTO(updatedUser);
@@ -213,11 +218,39 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인지 아닌지 필터링 요청 api 분리) - 페이지네이션
+    // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
+    @Override
+    public PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId) {
+        return null;
+    }
+
+    // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
+    @Override
+    public PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId) {
+        return null;
+    }
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
+    @Override
+    public List<UserMeetingListDTO> getUserMeetingScheduleList(Long userId) {
+        return List.of();
+    }
 
-    // 사용자 리뷰 목록 조회(장소 정보까지 같이)
+    // 사용자 리뷰 목록 조회(장소 정보까지 같이), 삭제된 리뷰도 보이게 할건지??
+    @Override
+    public List<UserReviewDTO.UserReviewListDTO> getUserReviewList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));    // 404
+
+        List<Review> getUserReviewList = userRepository.findReviewListByUserIdWithPlace(user.getUserId());
+
+        // N+1 문제를 방지하기 위해 fetch join 사용
+//        Page<Review> reviews = reviewRepository.findReviewsByUserIdWithPlace(userId, pageable);
+//        return reviews.map(ReviewMapper::toResponseDTO);
+
+        return getUserReviewList.stream()
+                .map(UserMapper::toUserReviewDTO)
+                .collect(Collectors.toList());
+    }
 
     // 닉네임 유효성 검사
     private void validateNickname(String nickname) {

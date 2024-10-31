@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sesac_3rd.sesac_3rd.dto.user.*;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
+import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.service.user.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -200,5 +203,29 @@ public class UserController {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    // 사용자 리뷰 목록 조회(장소 정보까지 같이)
+    @GetMapping("/review/list/{userId}")
+    public ResponseEntity<ResponseHandler<List<UserReviewDTO.UserReviewListDTO>>> getUserReviewList(@PathVariable Long userId){
+        List<UserReviewDTO.UserReviewListDTO> getReviewList = userService.getUserReviewList(userId);
+
+        return ResponseHandler.response(getReviewList, HttpStatus.OK, "사용자 리뷰 목록 조회");
+    }
+
+    // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
+    @GetMapping("/meetingTime/list/{userId}")
+    public ResponseEntity<ResponseHandler<List<UserMeetingListDTO>>> getUserMeetingScheduleList(@PathVariable Long userId){
+        List<UserMeetingListDTO> getUserMettingSchlist = userService.getUserMeetingScheduleList(userId);
+
+        return ResponseHandler.response(getUserMettingSchlist, HttpStatus.OK, "사용자 모임 일정 목록 조회");
+    }
+
+    // 사용자 모임 목록 조회(모임 삭제 상태 제외) - 페이지네이션
+    @GetMapping("/meeting/list/{userId}")
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserMeetingListDTO>>> getUserMeetingList(@PathVariable Long userId){
+        PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList = userService.getUserMeetingList(userId);
+
+        return ResponseHandler.response(getUserMeetingList, HttpStatus.OK, "사용자 모임 목록 조회");
     }
 }

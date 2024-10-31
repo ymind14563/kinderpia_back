@@ -12,6 +12,7 @@ import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
+import sesac_3rd.sesac_3rd.service.usermeeting.UserMeetingService;
 
 
 @RestController
@@ -19,6 +20,9 @@ import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
 public class MeetingController {
     @Autowired
     private MeetingService meetingService;
+
+    @Autowired
+    private UserMeetingService userMeetingService;
 
     // 모임 목록 (default - 최신순 정렬)
     @GetMapping("/list")
@@ -72,9 +76,9 @@ public class MeetingController {
         );
     }
 
-    // 모임 상세조회
+    // 모임 상세조회 (모임장 정보 포함)
     @GetMapping("/{meetingId}")
-    public ResponseEntity<ResponseHandler<MeetingDetailDTO>> getMeetingDetail(@PathVariable Long meetingId) {
+    public ResponseEntity<ResponseHandler<MeetingDetailDTO>> getMeetingDetail(@PathVariable("meetingId") Long meetingId) {
         try {
             MeetingDetailDTO meetingDetailDTO = meetingService.getDetailMeeting(meetingId);
 

@@ -12,18 +12,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// 모임 상세페이지 조회
+// 모임 상세페이지 조회 (사용자 정보 포함)
 public class MeetingDetailDTO {
     private Long meetingId;
+    private Long userId; // 모임장 ID
+    private String nickname; // 모임장 닉네임
     private String meetingCategory; // 카테고리명
     private String meetingTitle; // 모임명
-    private String nickname; // 글쓴이
     private int capacity; // 참가인원
     private int totalCapacity; // 총원 (최대 99)
     private String meetingContent; // 모임내용
     private String meetingLocation; // 모임장소(주소)
     private boolean isAuthType; // 인증여부 (기본값 FALSE)
-    private Long userId;
     private String placeName; // 장소명
     private String location; // 지역구
     private LocalDateTime meetingTime; // 모임일시

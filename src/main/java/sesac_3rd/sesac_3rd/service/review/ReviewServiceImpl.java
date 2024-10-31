@@ -22,16 +22,13 @@ public class ReviewServiceImpl implements ReviewService{
     @Autowired
     private ReviewRepository reviewRepository;
 
-    // 리뷰 목록 조회
+    // 장소별 리뷰 목록 조회
     @Override
-    public List<ReviewDTO> getAllReview(Long placeId){
-            List<Review> review = reviewRepository.findAllById(placeId);
-            List<ReviewDTO> reviewDTO = new ArrayList<>();
-            for(Review r : review){
-                ReviewDTO dto = convertToDTO(r);
-                reviewDTO.add(dto);
-            }
-            return reviewDTO;
+    public List<Review> getAllReviewByPlaceId(Long placeId){
+            List<Review> reviews = reviewRepository.findByPlace_PlaceId(placeId);
+            System.out.println("reviews = " + reviews);
+            log.info("reviews" + reviews);
+            return reviews;
     }
 
     // 리뷰 단건 조회

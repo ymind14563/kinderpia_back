@@ -20,6 +20,10 @@ public class Meeting {
     private Long meetingId;  // 모임아이디 (PK)
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)  // 유저아이디 (외래 키)
+    private User user;  // 모임의 주최자
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id", nullable = true)  // 장소아이디 (외래 키, NULL 허용)
     private Place place;  // 장소 (다대일 관계)
 

@@ -40,10 +40,10 @@ public interface UserService {
     void checkUserPw(Long userId, String userPw);
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
-    PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId);
+    PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId, int size, int page);
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
-    PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId);
+    PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId, int size, int page);
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
     List<UserMeetingListDTO> getUserMeetingScheduleList(Long userId);

@@ -4,11 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import sesac_3rd.sesac_3rd.config.security.TokenProvider;
+import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 import sesac_3rd.sesac_3rd.dto.user.*;
+import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.exception.CustomException;
@@ -18,6 +22,7 @@ import sesac_3rd.sesac_3rd.mapper.user.UserMapper;
 import sesac_3rd.sesac_3rd.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -220,13 +225,25 @@ public class UserServiceImpl implements UserService {
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
     @Override
-    public PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId) {
-        return null;
+    public PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId, int size, int page) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        List<MeetingStatus> validStatus = Arrays.stream(MeetingStatus.values())
+                .filter(status -> status != MeetingStatus.DELETED)
+                .collect(Collectors.toList());
+        Page<Meeting> meetingPage = userRepository.findByUserId(userId, validStatus, pageRequest);
+
+        // meeting entity를 UserMeetingListDTO로 변환
+        List<UserMeetingListDTO> userMeetingList = meetingPage.getContent().stream()
+                .map(UserMapper::toUserMeetingListDTO)
+                .collect(Collectors.toList());
+
+        return new PaginationResponseDTO<>(userMeetingList, meetingPage);
     }
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
     @Override
-    public PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId) {
+    public PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId, int size, int page) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
         return null;
     }
 

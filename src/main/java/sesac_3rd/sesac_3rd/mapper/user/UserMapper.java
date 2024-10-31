@@ -1,6 +1,7 @@
 package sesac_3rd.sesac_3rd.mapper.user;
 
 import sesac_3rd.sesac_3rd.dto.user.*;
+import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
 
@@ -83,6 +84,21 @@ public class UserMapper {
                         .placeName(review.getPlace().getPlaceName())
                         .placeId(review.getPlace().getPlaceId())
                         .build())
+                .build();
+    }
+
+    // meeting entity to usermeetinglistDTO
+    public static UserMeetingListDTO toUserMeetingListDTO(Meeting meeting){
+        return UserMeetingListDTO.builder()
+                .meetingId(meeting.getMeetingId())
+                .meetingTitle(meeting.getMeetingTitle())
+                .meetingStatus(meeting.getMeetingStatus())
+                .meetingTime(meeting.getMeetingTime())
+                .meetingCtgName(meeting.getMeetingCategory().getMeetingCtgName())
+                .meetingLocation(meeting.getMeetingLocation())
+                .capacity(meeting.getCapacity())
+                .nickname(meeting.getUser().getNickname())
+                .profileImg(meeting.getUser().getProfileImg())
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.service.meeting;
 import org.springframework.data.domain.Pageable;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 
 public interface MeetingService {
@@ -17,4 +18,7 @@ public interface MeetingService {
 
     // 특정 ID 로 모임 상세조회 (모임장 정보 포함)
     MeetingDetailDTO getDetailMeeting(Long meetingId);
+
+    // 모임 생성
+    void createMeeting(Long userId, MeetingFormDTO meetingFormDTO);
 }

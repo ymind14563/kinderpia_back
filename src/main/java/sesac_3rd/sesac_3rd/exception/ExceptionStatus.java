@@ -29,6 +29,9 @@ public enum ExceptionStatus {
     // Meeting
     MEETING_NOT_FOUND(404, "모임을 찾을 수 없습니다."),
 
+    // MeetingCategory
+    MEETING_CATEGORY_NOT_FOUND(404, "모임 카테고리를 찾을 수 없습니다."),
+
     // Chat
     CHATROOM_NOT_FOUND(404, "채팅방을 찾을 수 없습니다."),
     USER_NOT_IN_CHATROOM(404, "채팅방에 소속된 회원이 아닙니다."),

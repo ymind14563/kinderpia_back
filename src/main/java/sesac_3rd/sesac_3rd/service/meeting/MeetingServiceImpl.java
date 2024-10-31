@@ -7,12 +7,19 @@ import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
+import sesac_3rd.sesac_3rd.entity.MeetingCategory;
+import sesac_3rd.sesac_3rd.entity.Place;
+import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.meeting.MeetingMapper;
+import sesac_3rd.sesac_3rd.repository.MeetingCategoryRepository;
 import sesac_3rd.sesac_3rd.repository.MeetingRepository;
+import sesac_3rd.sesac_3rd.repository.PlaceRepository;
+import sesac_3rd.sesac_3rd.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +29,15 @@ import java.util.List;
 public class MeetingServiceImpl implements MeetingService {
     @Autowired
     private MeetingRepository meetingRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PlaceRepository placeRepository;
+
+    @Autowired
+    private MeetingCategoryRepository meetingCategoryRepository;
 
     // 모임 목록 (default - 최신순 정렬)
     @Override
@@ -100,5 +116,28 @@ public class MeetingServiceImpl implements MeetingService {
 
         // Meeting 정보를 통해 DTO 변환
         return MeetingMapper.toMeetingDetailDTO(meeting);
+    }
+
+    // 모임 생성
+    public void createMeeting(Long userId, MeetingFormDTO meetingFormDTO) {
+        // User 조회
+        User user = userRepository.findById(meetingFormDTO.getUserId())
+                .orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
+
+        // Place 조회
+        Place place = placeRepository.findById(meetingFormDTO.getPlaceId())
+                .orElseThrow(() -> new CustomException(ExceptionStatus.PLACE_NOT_FOUND));
+
+        // MeetingCategory 조회
+        MeetingCategory meetingCategory = meetingCategoryRepository.findById(meetingFormDTO.getMeetingCategoryId())
+                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_CATEGORY_NOT_FOUND));
+
+        // DTO 를 Entity 로 변환 (User, Place, MeetingCategory 객체 포함)
+        Meeting meeting = MeetingMapper.toMeetingFormEntity(meetingFormDTO, user, place, meetingCategory);
+
+        // Meeting 엔티티 저장
+        meetingRepository.save(meeting);
+
+        log.info("모임 생성 성공: 모임장ID {}", userId);
     }
 }

@@ -47,7 +47,8 @@ public class Meeting {
     private boolean isAuthType = false;  // 인증여부 (기본값 FALSE)
 
     @Column(name = "capacity", nullable = false)
-    private int capacity;  // 참가인원
+    @Builder.Default
+    private int capacity = 1;  // 참가인원 (기본값 1)
 
     @Column(name = "meeting_location", nullable = true, length = 100)
     private String meetingLocation;  // 모임장소

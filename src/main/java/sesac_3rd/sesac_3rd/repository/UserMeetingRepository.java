@@ -12,4 +12,7 @@ import java.util.Optional;
 
 public interface UserMeetingRepository extends JpaRepository<UserMeeting, Long> {
     boolean existsByUser_UserIdAndMeeting_MeetingId(Long userId, Long meetingId);
+
+    List<UserMeeting> findByMeeting_MeetingId(Long meetingId);
+
 }

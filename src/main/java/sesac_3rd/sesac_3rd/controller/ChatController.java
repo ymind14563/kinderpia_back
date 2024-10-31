@@ -23,7 +23,7 @@ import sesac_3rd.sesac_3rd.service.chat.ChatRoomService;
 @RequestMapping("/api/chatroom")
 @RequiredArgsConstructor
 public class ChatController {
-    private final ChatRoomService chatService;
+    private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final ChatRoomMapper chatRoomMapper;
     private final ChatMessageMapper chatMessageMapper;
@@ -33,13 +33,23 @@ public class ChatController {
     // /api/chatroom/list/{userId}?page={page}&size={size}
     @GetMapping("/list/{userId}")
     public ResponseEntity<ResponseHandler<PaginationResponseDTO<ChatRoomDTO.ChatRoomList>>> getChatRoomList(@Positive @PathVariable("userId") Long userId,
-                                                                                            @RequestParam int page,
-                                                                                            @RequestParam int size)
+                                                                                                            @RequestParam int page,
+                                                                                                            @RequestParam int size)
     {
-        PaginationResponseDTO<ChatRoomDTO.ChatRoomList> chatRooms  = chatService.getChatRooms(userId, page, size);
+        PaginationResponseDTO<ChatRoomDTO.ChatRoomList> chatRooms  = chatRoomService.getChatRooms(userId, page, size);
 
         return ResponseHandler.response(chatRooms, HttpStatus.OK, "채팅방 목록 조회 성공");
     }
+
+
+    // 단일 채팅방 조회
+    @GetMapping("/{chatroomId}")
+    public ResponseEntity<ResponseHandler<ChatRoomDTO.ChatRoom>> getChatRoomById(@Positive @PathVariable Long chatroomId) {
+        ChatRoomDTO.ChatRoom chatRoom = chatRoomService.getChatRoomById(chatroomId);
+        return ResponseHandler.response(chatRoom, HttpStatus.OK, "채팅방 조회 성공");
+    }
+
+
 
     // 메시지 저장 및 전송
     @MessageMapping("/{chatroomId}/chatmsg")

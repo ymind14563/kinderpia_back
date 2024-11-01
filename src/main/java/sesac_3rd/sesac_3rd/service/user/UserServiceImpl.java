@@ -227,6 +227,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId, int size, int page) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
+        return null;
+    }
+
+    // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
+    @Override
+    public PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId, int size, int page) {
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
         List<MeetingStatus> validStatus = Arrays.stream(MeetingStatus.values())
                 .filter(status -> status != MeetingStatus.DELETED)
                 .collect(Collectors.toList());
@@ -238,13 +246,6 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
 
         return new PaginationResponseDTO<>(userMeetingList, meetingPage);
-    }
-
-    // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
-    @Override
-    public PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId, int size, int page) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return null;
     }
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)

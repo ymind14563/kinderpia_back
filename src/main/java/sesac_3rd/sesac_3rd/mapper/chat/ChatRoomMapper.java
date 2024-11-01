@@ -34,9 +34,6 @@ public class ChatRoomMapper {
     // 채팅방 단일 조회 (소속 유저 포함)
     public static ChatRoomDTO.ChatRoom ChatRoomToChatRoomResponseDTO(ChatRoom chatRoom, List<UserMeeting> userMeetings) {
         List<ChatRoomDTO.UserInfo> userListInChatRoom = userMeetings.stream()
-                // 같은 meetingId 를 가지면서, 수락여부가 true 인 것만 필터링 = 모임 소속 유저
-                .filter(userMeeting -> userMeeting.getMeeting().getMeetingId().equals(chatRoom.getMeeting().getMeetingId())
-                        && Boolean.TRUE.equals(userMeeting.getIsAccepted()))
                 .map(userMeeting -> {
                     User user = userMeeting.getUser();
                     return ChatRoomDTO.UserInfo.builder()
@@ -69,7 +66,7 @@ public class ChatRoomMapper {
 
 
     // 채팅방 목록 조회
-    public static ChatRoomDTO.ChatRoomList ChatRoomListToChatRoomListResponseDTO(Long userId, List<ChatRoom> chatRooms, int page, int pageSize, int totalPages) {
+    public static ChatRoomDTO.ChatRoomList ChatRoomListToChatRoomListResponseDTO(Long userId, List<ChatRoom> chatRooms) {
 
 
 
@@ -94,9 +91,9 @@ public class ChatRoomMapper {
         return ChatRoomDTO.ChatRoomList.builder()
                 .userId(userId)
                 .chatroomList(chatroomList)
-                .page(page)
-                .pageSize(pageSize)
-                .totalPages(totalPages)
+//                .page(page)
+//                .pageSize(pageSize)
+//                .totalPages(totalPages)
                 .build();
     }
 

@@ -19,9 +19,9 @@ public class ChatMessageDTO {
     public static class ChatMessageList {
         private Long chatroomId;
         private List<ChatMessageDTO.ChatMessage> chatmsgList;
-        private int page;
-        private int pageSize;
-        private int totalPages;
+//        private int page;
+//        private int pageSize;
+//        private int totalPages;
     }
 
     // 채팅 메세지 단일 (목록, 응답용)

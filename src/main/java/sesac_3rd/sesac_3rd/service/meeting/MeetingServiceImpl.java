@@ -7,15 +7,14 @@ import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
-import sesac_3rd.sesac_3rd.dto.usermeeting.UserMeetingDTO;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
-import sesac_3rd.sesac_3rd.entity.UserMeeting;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.meeting.MeetingMapper;
 import sesac_3rd.sesac_3rd.repository.MeetingRepository;
-import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
+import sesac_3rd.sesac_3rd.repository.chat.ChatRoomRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class MeetingServiceImpl implements MeetingService {
     private MeetingRepository meetingRepository;
 
     @Autowired
-    private UserMeetingRepository userMeetingRepository;
+    private ChatRoomRepository chatRoomRepository;
 
     // 모임 목록 (default - 최신순 정렬)
     @Override
@@ -97,18 +96,29 @@ public class MeetingServiceImpl implements MeetingService {
         return new PaginationResponseDTO<>(meetingDTOS, meetings);
     }
 
-    // 모임 상세 조회
+    // 모임 상세 조회 (모임장 정보 포함)
     @Override
     public MeetingDetailDTO getDetailMeeting(Long meetingId) {
-        // Meeting 조회
-        Meeting meeting = meetingRepository.findById(meetingId)
-                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+        // Meeting 조회 (모임장 정보 포함)
+        Meeting meeting = meetingRepository.findByMeetingIdWithUser(meetingId)
+                .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
-        // UserMeeting 조회 (작성자 정보 포함)
-        UserMeeting userMeeting = userMeetingRepository.findByMeetingId(meetingId)
-                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+        // Meeting 정보를 통해 DTO 변환
+        return MeetingMapper.toMeetingDetailDTO(meeting);
+    }
 
-        // Meeting 과 UserMeeting 정보를 통해 DTO 변환
-        return MeetingMapper.toMeetingDetailDTO(meeting, userMeeting);
+    // 모임 생성
+    public void createMeeting(Long userId, MeetingFormDTO meetingFormDTO) {
+        // 모임장 ID
+        meetingFormDTO.setUserId(userId); // userId를 DTO 에 직접 설정
+        // dto to entity
+        Meeting meeting = MeetingMapper.toMeetingFormEntity(meetingFormDTO);
+        // insert
+        meetingRepository.save(meeting);
+
+        // 채팅방 생성 로직...
+
+
+        log.info("모임 생성 성공: 모임장ID {}", userId);
     }
 }

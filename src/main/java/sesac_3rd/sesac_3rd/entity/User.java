@@ -20,6 +20,9 @@ public class User {
     private Long userId;   // 유저아이디
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<Meeting> meetings;  // Meeting과 일대다 관계
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Review> reviews;  // Review와 일대다 관계
 
     @Column(name = "user_pw", nullable = false, length = 100)

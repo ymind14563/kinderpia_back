@@ -26,9 +26,6 @@ public class UserMeeting {
     @JoinColumn(name = "meeting_id", nullable = false)
     private Meeting meeting;  // 모임아이디 (FK)
 
-    @Column(name = "is_leader", nullable = false)
-    private Boolean isLeader = false;  // 모임장여부 (기본값 FALSE)
-
     @Column(name = "is_blocked", nullable = false)
     private Boolean isBlocked = false;  // 차단여부 (기본값 FALSE)
 

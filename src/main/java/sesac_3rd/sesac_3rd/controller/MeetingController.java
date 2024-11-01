@@ -6,12 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
+import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
+import sesac_3rd.sesac_3rd.service.usermeeting.UserMeetingService;
 
 
 @RestController
@@ -19,6 +23,9 @@ import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
 public class MeetingController {
     @Autowired
     private MeetingService meetingService;
+
+    @Autowired
+    private UserMeetingService userMeetingService;
 
     // 모임 목록 (default - 최신순 정렬)
     @GetMapping("/list")
@@ -72,9 +79,9 @@ public class MeetingController {
         );
     }
 
-    // 모임 상세조회
+    // 모임 상세조회 (모임장 정보 포함)
     @GetMapping("/{meetingId}")
-    public ResponseEntity<ResponseHandler<MeetingDetailDTO>> getMeetingDetail(@PathVariable Long meetingId) {
+    public ResponseEntity<ResponseHandler<MeetingDetailDTO>> getMeetingDetail(@PathVariable("meetingId") Long meetingId) {
         try {
             MeetingDetailDTO meetingDetailDTO = meetingService.getDetailMeeting(meetingId);
 
@@ -82,6 +89,25 @@ public class MeetingController {
                     meetingDetailDTO,
                     HttpStatus.OK.value(), // 200
                     "모임 상세 조회 완료"
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 모임 생성
+    @PostMapping("/")
+    public ResponseEntity<ResponseHandler<Void>> createMeeting(
+            @AuthenticationPrincipal String userId, @RequestBody MeetingFormDTO meetingFormDTO) {
+        try {
+            meetingService.createMeeting(Long.parseLong(userId), meetingFormDTO);
+
+            ResponseHandler<Void> response = new ResponseHandler<>(
+                    null,
+                    HttpStatus.CREATED.value(), // 201
+                    "모임 생성 완료"
             );
 
             return ResponseEntity.ok(response);

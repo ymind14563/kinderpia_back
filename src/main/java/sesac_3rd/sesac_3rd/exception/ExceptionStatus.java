@@ -29,11 +29,21 @@ public enum ExceptionStatus {
     // Meeting
     MEETING_NOT_FOUND(404, "모임을 찾을 수 없습니다."),
 
+    // MeetingCategory
+    MEETING_CATEGORY_NOT_FOUND(404, "모임 카테고리를 찾을 수 없습니다."),
+
     // Chat
     CHATROOM_NOT_FOUND(404, "채팅방을 찾을 수 없습니다."),
     USER_NOT_IN_CHATROOM(404, "채팅방에 소속된 회원이 아닙니다."),
     CHATROOM_NOT_ACTIVE(404, "활성화된 채팅방이 아닙니다."),
-    INVALID_MESSAGE_TYPE(400,"유효한 메세지 타입이 아닙니다.");
+    INVALID_MESSAGE_TYPE(400,"유효한 메세지 타입이 아닙니다."),
+    CHATMSG_NOT_FOUND(404, "채팅 메세지를 찾을 수 없습니다."),
+
+
+    // Report
+    DUPLICATE_REPORT(409, "이미 유효한 신고입니다."),
+    REPORTRS_NOT_FOUND(404, "존재하지 않는 신고유형입니다.");
+
 
     private final int status;
     private final String message;

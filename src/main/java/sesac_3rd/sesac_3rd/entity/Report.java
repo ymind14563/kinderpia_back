@@ -35,6 +35,10 @@ public class Report {
     private User reporter;  // 신고자아이디 (FK)
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "repoted_id", nullable = false)
+    private User reported;  // 피신고자아이디 (FK)
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "report_rs_id")
     private ReportReason reportReason;  // 신고사유아이디 (FK)
 

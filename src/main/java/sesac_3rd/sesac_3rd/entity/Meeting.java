@@ -20,6 +20,10 @@ public class Meeting {
     private Long meetingId;  // 모임아이디 (PK)
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)  // 유저아이디 (외래 키)
+    private User user;  // 모임의 주최자
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id", nullable = true)  // 장소아이디 (외래 키, NULL 허용)
     private Place place;  // 장소 (다대일 관계)
 
@@ -43,7 +47,8 @@ public class Meeting {
     private boolean isAuthType = false;  // 인증여부 (기본값 FALSE)
 
     @Column(name = "capacity", nullable = false)
-    private int capacity;  // 참가인원
+    @Builder.Default
+    private int capacity = 1;  // 참가인원 (기본값 1)
 
     @Column(name = "meeting_location", nullable = true, length = 100)
     private String meetingLocation;  // 모임장소

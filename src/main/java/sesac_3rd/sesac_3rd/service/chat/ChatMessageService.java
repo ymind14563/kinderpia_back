@@ -2,6 +2,9 @@ package sesac_3rd.sesac_3rd.service.chat;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.constant.MessageType;
@@ -11,6 +14,7 @@ import sesac_3rd.sesac_3rd.entity.ChatRoom;
 import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
+import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.chat.ChatMessageMapper;
 import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
 import sesac_3rd.sesac_3rd.repository.UserRepository;
@@ -119,4 +123,33 @@ public class ChatMessageService {
         log.info("퇴장 시스템 채팅메세지: {}", responseMessage);
 
     }
+
+
+    // 채팅 메시지 목록 조회
+    public PaginationResponseDTO<ChatMessageDTO.ChatMessageList> getChatMessages(Long chatroomId, int page, int size) {
+        Sort sort = Sort.by(Sort.Order.asc("createdAt")); // 생성시간으로 오름차순
+
+        /*
+        Sort.Direction direction = Sort.Direction.fromOptionalString(sortDirection).orElse(Sort.Direction.ASC); // asc, desc 등
+        Sort.Direction.fromOptionalString 사용 이유: String 값을 [Sort.Direction 값으로 바꾸고, asc, desc 가 아닌 경우 예외 처리] 를 위함
+        Sort sort = Sort.by(direction, sortProperty); // 순서 및 적용 필드명 직접 적용 (String sortDirection, String sortProperty 파라미터로 직접 받음)
+
+        * 만약 ASC, DESC 가 정확하게 입력된다면 Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortProperty); 만 사용해도 무방함(추천안함)
+        */
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
+
+        Page<ChatMessage> chatMessagesPage = chatMessageRepository.findByChatRoomChatroomId(chatroomId, pageRequest);
+
+        ChatMessageDTO.ChatMessageList chatMessageList = chatMessageMapper.ChatMessageListToChatMessageListResponseDTO(
+                chatroomId,
+                chatMessagesPage.getContent()
+//                chatMessagesPage.getNumber() + 1,
+//                chatMessagesPage.getSize(),
+//                chatMessagesPage.getTotalPages()
+        );
+
+        return new PaginationResponseDTO<>(chatMessageList, chatMessagesPage);
+    }
+
 }

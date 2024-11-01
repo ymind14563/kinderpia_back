@@ -22,4 +22,17 @@ public class ReportController {
         return ResponseHandler.response(createdReport, HttpStatus.CREATED, "신고 성공");
     }
 
+
+
+    // 중복 신고 확인
+    @PostMapping("/check")
+    public ResponseEntity<ResponseHandler<Boolean>> checkReport(@RequestBody ReportDTO.Report request) {
+        boolean isReportCheck = reportService.isReportExist(request.getReporterId(),
+                                                        request.getChatMessageId(),
+                                                        request.getReviewId(),
+                                                        request.getMeetingId());
+
+        return ResponseHandler.response(isReportCheck, HttpStatus.OK, "중복 신고 여부 확인 완료");
+    }
+
 }

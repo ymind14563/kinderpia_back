@@ -43,8 +43,9 @@ public class ChatController {
 
 
     // 단일 채팅방 조회
-    @GetMapping("/{chatroomId}")
-    public ResponseEntity<ResponseHandler<ChatRoomDTO.ChatRoom>> getChatRoomById(@Positive @PathVariable Long chatroomId) {
+    // /api/chatroom/{chatroomId}/{userId}
+    @PostMapping("/{chatroomId}")
+    public ResponseEntity<ResponseHandler<ChatRoomDTO.ChatRoom>> getChatRoomById(@Positive @RequestBody Long chatroomId) {
         ChatRoomDTO.ChatRoom chatRoom = chatRoomService.getChatRoomById(chatroomId);
         return ResponseHandler.response(chatRoom, HttpStatus.OK, "채팅방 조회 성공");
     }
@@ -75,7 +76,5 @@ public class ChatController {
 
         return ResponseHandler.response(chatMessages, HttpStatus.OK, "채팅 메시지 리스트 조회 성공");
     }
-
-
 
 }

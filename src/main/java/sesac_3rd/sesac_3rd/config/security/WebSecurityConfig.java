@@ -40,6 +40,7 @@ public class WebSecurityConfig {
                                 "/api/user/**",
                                 "/api/place/**",
                                 "/api/meeting/**",
+                                "/api/userMeeting/**",
                                 "/api/review/**",
                                 "/api/chatroom/**",
                                 "/api/chatmsg/**",

@@ -20,5 +20,11 @@ public interface MeetingService {
     MeetingDetailDTO getDetailMeeting(Long meetingId);
 
     // 모임 생성
-    void createMeeting(Long userId, MeetingFormDTO meetingFormDTO);
+    void createMeeting(MeetingFormDTO meetingFormDTO);
+
+    // 모임 수정
+    void updateMeeting(Long meetingId, MeetingFormDTO meetingFormDTO);
+
+    // 모임 삭제
+    void deleteMeeting(Long meetingId);
 }

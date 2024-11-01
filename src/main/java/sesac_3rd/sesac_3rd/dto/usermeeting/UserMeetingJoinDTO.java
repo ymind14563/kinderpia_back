@@ -11,11 +11,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserMeetingDTO {
-    private Long userMeetingId;
+// 모임 참가
+public class UserMeetingJoinDTO {
     private Long userId;
     private Long meetingId;
-    private boolean isLeader; // 모임장여부 (기본값 FALSE)
+    private int capacity;
+
     private boolean isBlocked; // 차단여부 (기본값 FALSE)
     private boolean isAccepted; // 수락여부 (NULL: 대기 중)
     private boolean isWithdraw; // 탈퇴여부 (기본값 FALSE)

@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 // 모임 목록 조회(검색)
 public class MeetingDTO {
     private Long meetingId;
+    private String nickname; // 모임장 닉네임
+    private int totalCapacity; // 총원 (최대 99)
     private String placeName; // 장소명
     private String location; // 지역구
     private String meetingCategory; // 카테고리명

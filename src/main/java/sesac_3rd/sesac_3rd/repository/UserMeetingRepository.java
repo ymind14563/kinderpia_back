@@ -11,7 +11,7 @@ import java.util.Optional;
 
 
 public interface UserMeetingRepository extends JpaRepository<UserMeeting, Long> {
-    boolean existsByUser_UserIdAndMeeting_MeetingId(Long userId, Long meetingId);
+    boolean existsByUser_UserIdAndMeeting_MeetingId(Long userId, Long meetingId); // 참가한 사용자 여부 확인
 
     List<UserMeeting> findByMeeting_MeetingId(Long meetingId);
 

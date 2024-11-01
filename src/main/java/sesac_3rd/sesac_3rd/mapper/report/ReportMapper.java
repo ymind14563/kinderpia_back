@@ -12,18 +12,27 @@ import java.util.stream.Collectors;
 public class ReportMapper {
 
     public ReportDTO.Report reportToReportResponseDto(Report report) {
-        return ReportDTO.Report.builder()
+        ReportDTO.Report.ReportBuilder reportBuilder = ReportDTO.Report.builder()
                 .reportId(report.getReportId())
-                .chatMessageId(report.getChatMessage() != null ? report.getChatMessage().getSender().getUserId() : null)
-                .reviewId(report.getReview() != null ? report.getReview().getUser().getUserId() : null)
-                .meetingId(report.getMeeting() != null ? report.getMeeting().getMeetingId() : null)
                 .reporterId(report.getReporter().getUserId())
                 .reportedId(report.getReported().getUserId())
                 .reportReasonId(report.getReportReason().getReportRsId())
                 .reportReasonName(report.getReportReason().getReportRsName())
                 .reportMessageContent(report.getReportMessageContent())
-                .createdAt(report.getCreatedAt())
-                .build();
+                .createdAt(report.getCreatedAt());
+
+        // 조건부로 추가 (값이 있는 거만)
+        if (report.getChatMessage() != null) {
+            reportBuilder.chatMessageId(report.getChatMessage().getChatmsgId());
+        }
+        if (report.getReview() != null) {
+            reportBuilder.reviewId(report.getReview().getReviewId());
+        }
+        if (report.getMeeting() != null) {
+            reportBuilder.meetingId(report.getMeeting().getMeetingId());
+        }
+
+        return reportBuilder.build();
     }
 
     public ReportDTO.ReportList reportListToReportListResponseDto(List<Report> reports) {

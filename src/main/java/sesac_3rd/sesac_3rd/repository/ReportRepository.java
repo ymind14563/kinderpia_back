@@ -8,4 +8,5 @@ import sesac_3rd.sesac_3rd.entity.*;
 public interface ReportRepository extends JpaRepository<Report, Long> {
     boolean existsByReporterAndChatMessageOrReviewOrMeeting(User reporter, ChatMessage chatMessage, Review review, Meeting meeting);
 
+    long countByReported(User reported);
 }

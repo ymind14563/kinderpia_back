@@ -2,9 +2,6 @@ package sesac_3rd.sesac_3rd.dto.meeting;
 
 import lombok.*;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
-import sesac_3rd.sesac_3rd.entity.MeetingCategory;
-import sesac_3rd.sesac_3rd.entity.Place;
-import sesac_3rd.sesac_3rd.entity.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

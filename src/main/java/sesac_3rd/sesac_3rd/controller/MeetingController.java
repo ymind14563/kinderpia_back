@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
-import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
@@ -98,7 +97,7 @@ public class MeetingController {
     }
 
     // 모임 생성
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<ResponseHandler<Void>> createMeeting(
             @AuthenticationPrincipal String userId, @RequestBody MeetingFormDTO meetingFormDTO) {
         try {

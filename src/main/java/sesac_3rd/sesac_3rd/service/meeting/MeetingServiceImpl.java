@@ -9,11 +9,13 @@ import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
+import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.meeting.MeetingMapper;
 import sesac_3rd.sesac_3rd.repository.MeetingRepository;
+import sesac_3rd.sesac_3rd.repository.PlaceRepository;
 import sesac_3rd.sesac_3rd.repository.chat.ChatRoomRepository;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class MeetingServiceImpl implements MeetingService {
     private MeetingRepository meetingRepository;
 
     @Autowired
-    private ChatRoomRepository chatRoomRepository;
+    private PlaceRepository placeRepository;
 
     // 모임 목록 (default - 최신순 정렬)
     @Override
@@ -107,17 +109,20 @@ public class MeetingServiceImpl implements MeetingService {
         return MeetingMapper.toMeetingDetailDTO(meeting);
     }
 
-    // 모임 생성
+    // 모임 생성 (placeId 조회해서 넣기 포함)
     public void createMeeting(Long userId, MeetingFormDTO meetingFormDTO) {
         // 모임장 ID
         meetingFormDTO.setUserId(userId); // userId를 DTO 에 직접 설정
+        // Place 조회
+        Place place = placeRepository.findById(meetingFormDTO.getPlaceId())
+                .orElseThrow(() -> new CustomException(ExceptionStatus.PLACE_NOT_FOUND));
         // dto to entity
-        Meeting meeting = MeetingMapper.toMeetingFormEntity(meetingFormDTO);
+        Meeting meeting = MeetingMapper.toMeetingFormEntity(meetingFormDTO); // Meeting 엔티티 생성
+        meeting.setPlace(place); // Place 엔티티 설정
         // insert
         meetingRepository.save(meeting);
 
         // 채팅방 생성 로직...
-
 
         log.info("모임 생성 성공: 모임장ID {}", userId);
     }

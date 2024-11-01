@@ -76,7 +76,7 @@ public class UserController {
     }
 
     // 회원가입
-    @PostMapping("/signup")
+    @PostMapping("/register")
     public ResponseEntity<ResponseHandler<UserResponseDTO>> register(@RequestBody UserFormDTO dto){
         UserResponseDTO registeredUser = userService.register(dto);
         ResponseHandler<UserResponseDTO> response = new ResponseHandler<>(

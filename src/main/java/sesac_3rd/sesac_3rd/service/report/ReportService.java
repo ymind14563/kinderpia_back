@@ -33,7 +33,7 @@ public class ReportService {
         Meeting meeting = getMeetingIfExists(reportDto.getMeetingId());
 
         ReportReason reportReason = reportReasonRepository.findById(reportDto.getReportReasonId())
-                .orElseThrow(() -> new CustomException(ExceptionStatus.REPORTRS_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ExceptionStatus.REPORT_RS_NOT_FOUND));
 
         // 피신고자 설정
         User reported = getReportedUser(chatMessage, review, meeting);
@@ -117,7 +117,22 @@ public class ReportService {
         return reported;
     }
 
+    // 중복 신고 확인
+    public boolean isReportExist(Long reporterId, Long chatMessageId, Long reviewId, Long meetingId) {
+        User reporter = userRepository.findById(reporterId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
 
 
+        ChatMessage chatMessage = chatMessageId != null ? getChatMessageIfExists(chatMessageId) : null;
+        Review review = reviewId != null ? getReviewIfExists(reviewId) : null;
+        Meeting meeting = meetingId != null ? getMeetingIfExists(meetingId) : null;
+
+        // 아무런 신고가 없는 경우
+        if (chatMessage == null && review == null && meeting == null) {
+            throw new CustomException(ExceptionStatus.NO_REPORT_FOUND);
+        }
+
+        return reportRepository.existsByReporterAndChatMessageOrReviewOrMeeting(reporter, chatMessage, review, meeting);
+    }
 
 }

@@ -42,8 +42,10 @@ public enum ExceptionStatus {
 
     // Report
     DUPLICATE_REPORT(409, "이미 유효한 신고입니다."),
-    REPORTRS_NOT_FOUND(404, "존재하지 않는 신고유형입니다."),
-    INVALID_REPORT_TARGET(400, "신고에 대상이 없습니다.");
+    REPORT_RS_NOT_FOUND(404, "존재하지 않는 신고유형입니다."),
+    INVALID_REPORT_TARGET(400, "신고에 대상이 없습니다."),
+    NO_REPORT_FOUND(404,"신고 내역이 존재하지 않습니다.");
+
 
 
     private final int status;

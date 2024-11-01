@@ -2,6 +2,9 @@ package sesac_3rd.sesac_3rd.dto.meeting;
 
 import lombok.*;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
+import sesac_3rd.sesac_3rd.entity.MeetingCategory;
+import sesac_3rd.sesac_3rd.entity.Place;
+import sesac_3rd.sesac_3rd.entity.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 // 모임 생성, 모임 수정
 public class MeetingFormDTO {
-    private Long userId;  // 주최자 ID
+    private Long userId;  // 모임장 ID
     private Long placeId;  // 장소 ID
     private Long meetingCategoryId;  // 모임 카테고리 ID
 

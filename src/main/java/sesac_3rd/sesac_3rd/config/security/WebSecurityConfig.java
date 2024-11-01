@@ -34,7 +34,16 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // JWT 를 사용하고 있으므로 세션 관리하지 않음
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/auth/**", "/api/user/**","/api/place/**", "/api/meeting/**", "/api/review/**")
+                        .requestMatchers("/",
+                                "/auth/**",
+                                "/api/user/**",
+                                "/api/place/**",
+                                "/api/meeting/**",
+                                "/api/review/**",
+                                "/api/chatroom/**",
+                                "/api/chatmsg/**",
+                                "/api/report"
+                        )
                         .permitAll()
                         .anyRequest().authenticated());
         // 요청의 인증을 "/", "/auth/**"경로는 인증없이 접근 가능 (그 외 모든 경로는 인증 필요)

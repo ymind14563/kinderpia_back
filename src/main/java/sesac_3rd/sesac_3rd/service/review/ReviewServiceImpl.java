@@ -11,10 +11,11 @@ import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.repository.ReviewRepository;
 
-import static sesac_3rd.sesac_3rd.mapper.review.ReviewMapper.convertToDTO;
-import static sesac_3rd.sesac_3rd.mapper.review.ReviewMapper.convertToEntity;
-
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static sesac_3rd.sesac_3rd.mapper.review.ReviewMapper.convertToDTO;
+import sesac_3rd.sesac_3rd.mapper.review.ReviewMapper;
 
 @Slf4j
 @Service
@@ -23,13 +24,17 @@ public class ReviewServiceImpl implements ReviewService{
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private ReviewMapper reviewMapper;
+
     // 장소별 리뷰 목록 조회
     @Override
     public List<Review> getAllReviewByPlaceId(Long placeId){
-        System.out.println(">>>> getAllReviewByPlaceId");
         List<Review> reviews = reviewRepository.findByPlace_PlaceId(placeId);
             System.out.println("reviews = " + reviews);
-            log.info("reviews" + reviews);
+        List<ReviewDTO> rDTOs = reviews.stream()
+                .map(review -> new ReviewDTO(review.getReviewId(), review.getStar(), review.getReviewContent()))
+                .collect(Collectors.toList());
 
         return reviews;
     }
@@ -44,7 +49,7 @@ public class ReviewServiceImpl implements ReviewService{
     // 리뷰 작성
     @Override
     public Review createReview(ReviewFormDTO reviewformDTO, User user) {
-        Review review = convertToEntity(reviewformDTO, user);
+        Review review = reviewMapper.convertToEntity(reviewformDTO, user);
         return reviewRepository.save(review);
     }
 
@@ -69,7 +74,10 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public boolean deleteReview(Long reviewId){
         try{
-            reviewRepository.deleteById(reviewId);
+            Review review = reviewRepository.findById(reviewId)
+                    .orElseThrow(()->new CustomException(ExceptionStatus.REVIEWID_NOT_FOUND));
+            review.setDeleted(true);
+            reviewRepository.save(review);
             return true;
         } catch (Exception e) {
             throw new RuntimeException(e);

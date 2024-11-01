@@ -31,7 +31,7 @@ public class ReviewController {
                     HttpStatus.OK.value(), //200
                     "리뷰 목록 조회 완료"
             );
-          return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -55,9 +55,15 @@ public class ReviewController {
 
     // 리뷰 작성
     @PostMapping
-    private Review createReview(@RequestBody ReviewFormDTO dto, User user){
+    private ResponseEntity<ResponseHandler<Review>> createReview(@RequestBody ReviewFormDTO dto, User user){
         try{
-             return reviewService.createReview(dto, user);
+            Review review = reviewService.createReview(dto, user);
+            ResponseHandler<Review> response = new ResponseHandler<>(
+                    review,
+                    HttpStatus.OK.value(), //200
+                    "리뷰 작성 완료"
+            );
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -82,7 +88,7 @@ public class ReviewController {
     private ResponseEntity<ResponseHandler<Boolean>> deleteReview(@PathVariable("id") Long reviewId, @RequestBody ReviewFormDTO dto){
         try{
 
-             Boolean result = reviewService.deleteReview(reviewId);
+            Boolean result = reviewService.deleteReview(reviewId);
             ResponseHandler<Boolean> response = new ResponseHandler<>(
                     result, //true
                     HttpStatus.OK.value(), // 200

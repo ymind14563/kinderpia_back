@@ -28,7 +28,8 @@ public class WebSecurityConfig {
     // 보안 필터 체인 구현
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(withDefaults()) // cors 설정 (기본으로)
+        http
+//                .cors(withDefaults()) // cors 설정 (기본으로)
                 .csrf(CsrfConfigurer::disable) // REST API 서버에서는 일반적으로 CSRF 보호가 필요 없어서 끔
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -55,19 +56,20 @@ public class WebSecurityConfig {
     }
 
     // cors 설정 정의
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-
-        // 모든 출처, 메소드, 헤더에 대해 허용하는 cors 설정
-        config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(Arrays.asList("*"));
-        config.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT", "PATCH"));
-        config.setAllowedHeaders(Arrays.asList("*"));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration config = new CorsConfiguration();
+//
+//        // 모든 출처, 메소드, 헤더에 대해 허용하는 cors 설정
+//        config.setAllowCredentials(true);
+//        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+////        config.setAllowedOriginPatterns(Arrays.asList("*"));
+//        config.setAllowedMethods(Arrays.asList("OPTIONS", "POST", "GET", "DELETE", "PUT", "PATCH"));
+//        config.setAllowedHeaders(Arrays.asList("*"));
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", config);
+//
+//        return source;
+//    }
 }

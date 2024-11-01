@@ -89,8 +89,8 @@ public class UserController {
 
     // 회원가입 - 닉네임 중복 검사
     @PostMapping("/check/nickname")
-    public ResponseEntity<ResponseHandler<Boolean>> checkNicknameDuplicate(@RequestBody String nickname){
-        userService.isNicknameDuplicate(nickname);
+    public ResponseEntity<ResponseHandler<Boolean>> checkNicknameDuplicate(@RequestBody UserFormDTO dto){
+        userService.isNicknameDuplicate(dto.getNickname());
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
                 false,
@@ -101,9 +101,9 @@ public class UserController {
     }
 
     // 회원가입 - 아이디 중복 검사
-    @PostMapping("/check/loginid")
-    public ResponseEntity<ResponseHandler<Boolean>> checkLoginIdDuplicate(@RequestBody String loginId){
-        userService.isLoginIdDuplicate(loginId);
+    @PostMapping("/check/loginId")
+    public ResponseEntity<ResponseHandler<Boolean>> checkLoginIdDuplicate(@RequestBody UserFormDTO dto){
+        userService.isLoginIdDuplicate(dto.getLoginId());
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
                 false,
@@ -115,8 +115,8 @@ public class UserController {
 
     // 회원가입 - 이메일 중복 검사
     @PostMapping("/check/email")
-    public ResponseEntity<ResponseHandler<Boolean>> checkEmailDuplicate(@RequestBody String email){
-        userService.isEmailDuplicate(email);
+    public ResponseEntity<ResponseHandler<Boolean>> checkEmailDuplicate(@RequestBody UserFormDTO dto){
+        userService.isEmailDuplicate(dto.getEmail());
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
                 false,
@@ -127,9 +127,9 @@ public class UserController {
     }
 
     // 회원가입 - 전화번호 중복 검사
-    @PostMapping("/check/phonenum")
-    public ResponseEntity<ResponseHandler<Boolean>> checkPhonenumDuplicate(@RequestBody String phoneNum){
-        userService.isPhonenumDuplicate(phoneNum);
+    @PostMapping("/check/phoneNum")
+    public ResponseEntity<ResponseHandler<Boolean>> checkPhonenumDuplicate(@RequestBody UserFormDTO dto){
+        userService.isPhonenumDuplicate(dto.getPhoneNum());
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
                 false,

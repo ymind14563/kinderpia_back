@@ -31,7 +31,7 @@ public class ReviewController {
                     HttpStatus.OK.value(), //200
                     "리뷰 목록 조회 완료"
             );
-          return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -88,7 +88,7 @@ public class ReviewController {
     private ResponseEntity<ResponseHandler<Boolean>> deleteReview(@PathVariable("id") Long reviewId, @RequestBody ReviewFormDTO dto){
         try{
 
-             Boolean result = reviewService.deleteReview(reviewId);
+            Boolean result = reviewService.deleteReview(reviewId);
             ResponseHandler<Boolean> response = new ResponseHandler<>(
                     result, //true
                     HttpStatus.OK.value(), // 200

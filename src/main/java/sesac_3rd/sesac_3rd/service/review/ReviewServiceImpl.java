@@ -12,6 +12,8 @@ import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.repository.ReviewRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import static sesac_3rd.sesac_3rd.mapper.review.ReviewMapper.convertToDTO;
 import sesac_3rd.sesac_3rd.mapper.review.ReviewMapper;
 
@@ -30,7 +32,9 @@ public class ReviewServiceImpl implements ReviewService{
     public List<Review> getAllReviewByPlaceId(Long placeId){
         List<Review> reviews = reviewRepository.findByPlace_PlaceId(placeId);
             System.out.println("reviews = " + reviews);
-            log.info("reviews" + reviews);
+        List<ReviewDTO> rDTOs = reviews.stream()
+                .map(review -> new ReviewDTO(review.getReviewId(), review.getStar(), review.getReviewContent()))
+                .collect(Collectors.toList());
 
         return reviews;
     }
@@ -70,7 +74,10 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public boolean deleteReview(Long reviewId){
         try{
-            reviewRepository.deleteById(reviewId);
+            Review review = reviewRepository.findById(reviewId)
+                    .orElseThrow(()->new CustomException(ExceptionStatus.REVIEWID_NOT_FOUND));
+            review.setDeleted(true);
+            reviewRepository.save(review);
             return true;
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -1,7 +1,10 @@
 package sesac_3rd.sesac_3rd.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,10 +22,12 @@ public class Review {
     private Long reviewId;  // 리뷰아이디 (PK)
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "place_id", nullable = false)  // 장소아이디 (외래 키)
     private Place place;  // Place 엔티티와 다대일 관계
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)  // 유저아이디 (외래 키)
     private User user;  // User 엔티티와 다대일 관계
 
@@ -40,4 +45,13 @@ public class Review {
 
     @Column(name = "updatedAt", nullable = false)
     private LocalDateTime updatedAt;  // 수정일자
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "reviewId=" + reviewId +
+                ", reviewContent='" + reviewContent + '\'' +
+                ", star=" + star +
+                '}';
+    }
 }

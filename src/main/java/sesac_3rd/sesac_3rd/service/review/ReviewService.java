@@ -10,7 +10,7 @@ import java.util.List;
 public interface ReviewService {
 
     // 리뷰 작성
-    public void createReview(ReviewDTO reviewDTO);
+    public Review createReview(ReviewDTO reviewDTO);
 
     // 장소별 리뷰 목록 조회
     List<Review> getAllReviewByPlaceId(Long placeId);

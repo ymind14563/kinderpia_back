@@ -8,11 +8,15 @@ import sesac_3rd.sesac_3rd.entity.MeetingCategory;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.entity.User;
 
+import java.time.LocalDateTime;
+
 public class MeetingMapper {
     // [ 모임 목록 조회(검색)] entity to dto
     public static MeetingDTO toMeetingDTO(Meeting meeting) {
         return MeetingDTO.builder()
                 .meetingId(meeting.getMeetingId())
+                .nickname(meeting.getUser().getNickname()) // 모임장 닉네임
+                .totalCapacity(meeting.getTotalCapacity()) // 총원 (최대 99)
                 .placeName(meeting.getPlace().getPlaceName()) // 장소명
                 .location(meeting.getPlace().getLocation()) // 지역구
                 .meetingCategory(meeting.getMeetingCategory().getMeetingCtgName()) // 카테고리명
@@ -69,6 +73,19 @@ public class MeetingMapper {
                 .longitude(meetingFormDTO.getLongitude()) // 경도 (DECIMAL(11, 8))
                 .meetingTime(meetingFormDTO.getMeetingTime()) // 모임일시 (시간)
                 .meetingStatus(meetingFormDTO.getMeetingStatus()) // 모임상태 (기본값 "ONGOING")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
+    // [ 모임 수정 ] dto to entity
+    public static Meeting toMeetingUpdateEntity(MeetingFormDTO meetingFormDTO) {
+        return Meeting.builder()
+                .meetingTitle(meetingFormDTO.getMeetingTitle())
+                .totalCapacity(meetingFormDTO.getTotalCapacity())
+                .meetingContent(meetingFormDTO.getMeetingContent())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
     }
 }

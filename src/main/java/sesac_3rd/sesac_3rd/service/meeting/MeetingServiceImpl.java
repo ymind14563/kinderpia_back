@@ -16,7 +16,7 @@ import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.meeting.MeetingMapper;
 import sesac_3rd.sesac_3rd.repository.MeetingRepository;
 import sesac_3rd.sesac_3rd.repository.PlaceRepository;
-import sesac_3rd.sesac_3rd.repository.chat.ChatRoomRepository;
+import sesac_3rd.sesac_3rd.service.chat.ChatRoomService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,9 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Autowired
     private PlaceRepository placeRepository;
+
+    @Autowired
+    private ChatRoomService chatRoomService;
 
     // 모임 목록 (default - 최신순 정렬)
     @Override
@@ -105,25 +108,61 @@ public class MeetingServiceImpl implements MeetingService {
         Meeting meeting = meetingRepository.findByMeetingIdWithUser(meetingId)
                 .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
-        // Meeting 정보를 통해 DTO 변환
+        log.info("모임 상세 조회 성공: 모임ID {}", meetingId);
+
+        // entity to dto
         return MeetingMapper.toMeetingDetailDTO(meeting);
     }
 
-    // 모임 생성 (placeId 조회해서 넣기 포함)
-    public void createMeeting(Long userId, MeetingFormDTO meetingFormDTO) {
-        // 모임장 ID
-        meetingFormDTO.setUserId(userId); // userId를 DTO 에 직접 설정
+    // 모임 생성
+    public void createMeeting(MeetingFormDTO meetingFormDTO) {
+        // 임시로 userId 설정
+        Long userId = 1L; // JWT 없이 임시로 설정한 userId
+        meetingFormDTO.setUserId(userId);
+
+        // 네이버 (모임장소)
+        meetingFormDTO.setMeetingLocation(meetingFormDTO.getMeetingLocation());
         // Place 조회
         Place place = placeRepository.findById(meetingFormDTO.getPlaceId())
                 .orElseThrow(() -> new CustomException(ExceptionStatus.PLACE_NOT_FOUND));
+
         // dto to entity
         Meeting meeting = MeetingMapper.toMeetingFormEntity(meetingFormDTO); // Meeting 엔티티 생성
         meeting.setPlace(place); // Place 엔티티 설정
         // insert
         meetingRepository.save(meeting);
 
-        // 채팅방 생성 로직...
+        // 채팅방 생성
+        chatRoomService.createChatRoomIfNotExists(meeting.getMeetingId());
 
         log.info("모임 생성 성공: 모임장ID {}", userId);
+    }
+
+    // 모임 수정
+    public void updateMeeting(Long meetingId, MeetingFormDTO meetingFormDTO) {
+        // meetingId 로 기존 Meeting entity 조회
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+
+        // dto to entity
+        Meeting updateMeeting = MeetingMapper.toMeetingUpdateEntity(meetingFormDTO);
+
+        // 기존 entity 필드에 업데이트할 필드만 덮어쓰기
+        meeting.setMeetingTitle(updateMeeting.getMeetingTitle());
+        meeting.setTotalCapacity(updateMeeting.getTotalCapacity());
+        meeting.setMeetingContent(updateMeeting.getMeetingContent());
+        meeting.setUpdatedAt(updateMeeting.getUpdatedAt());
+
+        // 변경된 entity 저장
+        meetingRepository.save(meeting);
+
+        log.info("모임 수정 성공: 모임ID {}", meetingId);
+    }
+
+    // 모임 삭제
+    public void deleteMeeting(Long meetingId) {
+        meetingRepository.deleteById(meetingId);
+
+        log.info("모임 삭제 성공: 모임ID {}", meetingId);
     }
 }

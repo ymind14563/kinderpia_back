@@ -23,9 +23,6 @@ public class MeetingController {
     @Autowired
     private MeetingService meetingService;
 
-    @Autowired
-    private UserMeetingService userMeetingService;
-
     // 모임 목록 (default - 최신순 정렬)
     @GetMapping("/list")
     public ResponseEntity<ResponseHandler<PaginationResponseDTO<MeetingDTO>>> getAllMeetings(
@@ -99,14 +96,51 @@ public class MeetingController {
     // 모임 생성
     @PostMapping
     public ResponseEntity<ResponseHandler<Void>> createMeeting(
-            @AuthenticationPrincipal String userId, @RequestBody MeetingFormDTO meetingFormDTO) {
+            @RequestBody MeetingFormDTO meetingFormDTO) {
         try {
-            meetingService.createMeeting(Long.parseLong(userId), meetingFormDTO);
+            meetingService.createMeeting(meetingFormDTO);
 
             ResponseHandler<Void> response = new ResponseHandler<>(
                     null,
                     HttpStatus.CREATED.value(), // 201
                     "모임 생성 완료"
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 모임 수정
+    @PutMapping("/{meetingId}")
+    public ResponseEntity<ResponseHandler<Void>> updateMeeting(
+            @PathVariable("meetingId") Long meetingId, @RequestBody MeetingFormDTO meetingFormDTO) {
+        try {
+            meetingService.updateMeeting(meetingId, meetingFormDTO);
+
+            ResponseHandler<Void> response = new ResponseHandler<>(
+                    null,
+                    HttpStatus.CREATED.value(), // 201
+                    "모임 수정 완료"
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 모임 삭제
+    @DeleteMapping("/{meetingId}")
+    public ResponseEntity<ResponseHandler<Void>> deleteMeeting(@PathVariable("meetingId") Long meetingId) {
+        try {
+            meetingService.deleteMeeting(meetingId);
+
+            ResponseHandler<Void> response = new ResponseHandler<>(
+                    null,
+                    HttpStatus.CREATED.value(), // 201
+                    "모임 삭제 완료"
             );
 
             return ResponseEntity.ok(response);

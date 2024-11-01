@@ -32,14 +32,16 @@ public class ChatController {
     // 전체 채팅 목록 조회 (페이지네이션 적용)
     // /api/chatroom/list/{userId}?page={page}&size={size}
     @GetMapping("/list/{userId}")
-    public ResponseEntity<ResponseHandler<PaginationResponseDTO<ChatRoomDTO.ChatRoomList>>> getChatRoomList(@Positive @PathVariable("userId") Long userId,
-                                                                                                            @RequestParam int page,
-                                                                                                            @RequestParam int size)
-    {
-        PaginationResponseDTO<ChatRoomDTO.ChatRoomList> chatRooms  = chatRoomService.getChatRooms(userId, page, size);
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<ChatRoomDTO.ChatRoomList>>> getChatRoomList(
+            @Positive @PathVariable("userId") Long userId,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
+        PaginationResponseDTO<ChatRoomDTO.ChatRoomList> chatRooms = chatRoomService.getChatRooms(userId, page, size);
 
         return ResponseHandler.response(chatRooms, HttpStatus.OK, "채팅방 목록 조회 성공");
     }
+
 
 
     // 단일 채팅방 조회

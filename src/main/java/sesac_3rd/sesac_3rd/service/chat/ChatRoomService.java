@@ -32,8 +32,19 @@ public class ChatRoomService {
 
     // 유저 소속 채팅방 목록 조회
     public PaginationResponseDTO<ChatRoomDTO.ChatRoomList> getChatRooms(Long userId, int page, int size) {
+
+
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        Page<ChatRoom> chatPage = chatRoomRepository.findByUserId(userId, pageRequest);
+
+        // userMeeting 에서 승인된 모임 조회
+        List<Long> meetingWithAccept = userMeetingRepository.findByUser_UserIdAndIsAcceptedTrue(userId)
+                .stream()
+                .map(userMeeting -> userMeeting.getMeeting().getMeetingId())
+                .collect(Collectors.toList());
+
+        // meetingId 리스트를 기반으로 채팅방 목록 조회
+        Page<ChatRoom> chatPage = chatRoomRepository.findByMeeting_MeetingIdIn(meetingWithAccept, pageRequest);
+
 
         ChatRoomDTO.ChatRoomList chatRoomList = chatRoomMapper.ChatRoomListToChatRoomListResponseDTO(
                 userId,

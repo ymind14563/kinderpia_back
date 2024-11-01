@@ -22,7 +22,7 @@ public class Place {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "place_ctg_id", nullable = false)  // 외래 키 설정 (FK)
+    @JoinColumn(name = "place_ctg_id", referencedColumnName = "place_ctg_id", nullable = false)  // 외래 키 설정 (FK)
     private PlaceCategory placeCategory;  // 장소카테고리 (다대일 관계)
 
     @Column(name = "place_name", nullable = false, length = 100)

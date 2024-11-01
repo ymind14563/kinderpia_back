@@ -14,13 +14,13 @@ import java.math.BigDecimal;
 @Builder
 public class PlaceDTO {
     private Long placeId;
-    private PlaceCategory placeCategory;
+    private String placeCategoryName;
     private String placeName;
     private String location;
     private String detailAddress;
     private String operatingDate;
     private BigDecimal latitude;
-    private BigDecimal longtitude;
+    private BigDecimal longitude;
     private String placeImg;
     private boolean isPaid;
     private String homepageUrl;

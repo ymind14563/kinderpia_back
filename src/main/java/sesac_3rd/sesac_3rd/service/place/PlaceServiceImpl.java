@@ -17,8 +17,6 @@ import static sesac_3rd.sesac_3rd.mapper.place.PlaceMapper.convertToDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 @Slf4j
 @Service
 public class PlaceServiceImpl implements PlaceService{
@@ -27,36 +25,31 @@ public class PlaceServiceImpl implements PlaceService{
     private PlaceRepository placeRepository;
 
     @Override
-    public Page<Place> getAllPlace(String sort, int page, int limit, String category, String keyword){
+    public Page<Place> getAllPlace(int page, int limit){
 
         List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("placeId"));
+        sorts.add(Sort.Order.desc("place_id"));
         Pageable pageable = PageRequest.of(page, limit, Sort.by(sorts));
-        // 메인 페이지 및 정렬
-        switch(sort){
-            case "date":
-                return this.placeRepository.findAll(pageable);
-            default:
-                throw new IllegalArgumentException("Invalid condition: " + sort);
-        }
-    }
 
+        return this.placeRepository.getAllPlaceRepo(pageable);
+
+    }
     @Override
     public Page<Place> findByContaining(String sort, int page, int limit, String category, String keyword){
-        // 검색 결과
-        List<Sort.Order> resultPlace = new ArrayList<>();
-        resultPlace.add(Sort.Order.desc("placeId"));
-        Pageable pageable = PageRequest.of(page, limit, Sort.by(resultPlace));
-        System.out.println("category : "  + category);
-        switch (category){
-            case "title":
-                return placeRepository.findByPlaceNameContaining(keyword, pageable);
-            case "address":
-                return placeRepository.findByLocationContaining(keyword, pageable);
-            default:
-                return this.placeRepository.findAll(pageable);
-        }
+    // 검색 결과
+    List<Sort.Order> resultPlace = new ArrayList<>();
+    resultPlace.add(Sort.Order.desc("placeId"));
+    Pageable pageable = PageRequest.of(page, limit, Sort.by(resultPlace));
+    System.out.println("category : "  + category);
+    switch (category){
+        case "title":
+            return placeRepository.findByPlaceNameContaining(keyword, pageable);
+        case "address":
+            return placeRepository.findByLocationContaining(keyword, pageable);
+        default:
+            return this.placeRepository.findAll(pageable);
     }
+}
 
     @Override
     public PlaceDTO getPlaceById(Long placeId){
@@ -65,3 +58,6 @@ public class PlaceServiceImpl implements PlaceService{
         return convertToDTO(place);
     }
 }
+
+
+//}

@@ -41,11 +41,9 @@ public class Review {
     private boolean isDeleted = false;  // 삭제여부 (기본값 FALSE)
 
     @Column(name = "createdAt", nullable = false)
-    @CreatedDate
     private LocalDateTime createdAt;  // 생성일자
 
     @Column(name = "updatedAt", nullable = false)
-    @LastModifiedDate
     private LocalDateTime updatedAt;  // 수정일자
 
     @Override

@@ -20,18 +20,16 @@ public class ReviewController {
 
     // 리뷰 목록 조회
     @GetMapping("/{placeId}")
-//    private ResponseEntity<ResponseHandler<List<Review>>> getAllReviewByPlaceId(@PathVariable("placeId") Long placeId){
-    private List<Review> getAllReviewByPlaceId(@PathVariable("placeId") Long placeId){
+    private ResponseEntity<ResponseHandler<List<Review>>> getAllReviewByPlaceId(@PathVariable("placeId") Long placeId){
         try{
             List<Review> reviewDTO = reviewService.getAllReviewByPlaceId(placeId);
             System.out.println("reviews" + reviewDTO);
-            return reviewDTO;
-//            ResponseHandler<List<Review>> response = new ResponseHandler<>(
-//                    reviewDTO,
-//                    HttpStatus.OK.value(),
-//                    "리뷰 목록 조회 완료"
-//            );
-//          return ResponseEntity.ok(response);
+            ResponseHandler<List<Review>> response = new ResponseHandler<>(
+                    reviewDTO,
+                    HttpStatus.OK.value(), //200
+                    "리뷰 목록 조회 완료"
+            );
+          return ResponseEntity.ok(response);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -44,7 +42,7 @@ public class ReviewController {
             ReviewDTO reviewDTO = reviewService.getReviewById(reviewId);
             ResponseHandler<ReviewDTO> response = new ResponseHandler<>(
                     reviewDTO,
-                    HttpStatus.OK.value(),
+                    HttpStatus.OK.value(), //200
                     "리뷰 단건 조회 완료"
             );
             return ResponseEntity.ok(response);

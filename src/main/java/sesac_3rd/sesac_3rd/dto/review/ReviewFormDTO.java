@@ -15,8 +15,8 @@ import sesac_3rd.sesac_3rd.entity.User;
 public class ReviewFormDTO {
     // 리뷰 생성, 리뷰 수정
     private Long reviewId;
-    private Place place;
-    private User user;
+    private Long placeId;
+    private Long userId;
     private int star;
     private String reviewContent;
 }

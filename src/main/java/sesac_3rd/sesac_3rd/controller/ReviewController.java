@@ -55,9 +55,15 @@ public class ReviewController {
 
     // 리뷰 작성
     @PostMapping
-    private Review createReview(@RequestBody ReviewFormDTO dto, User user){
+    private ResponseEntity<ResponseHandler<Review>> createReview(@RequestBody ReviewFormDTO dto, User user){
         try{
-             return reviewService.createReview(dto, user);
+            Review review = reviewService.createReview(dto, user);
+            ResponseHandler<Review> response = new ResponseHandler<>(
+                    review,
+                    HttpStatus.OK.value(), //200
+                    "리뷰 작성 완료"
+            );
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

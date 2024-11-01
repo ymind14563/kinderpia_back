@@ -31,6 +31,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 전화번호 중복 확인
     boolean existsByPhoneNum(String phoneNum);
 
+    // userid 로 조회
+    User findByUserId(Long userId);
+
     // 사용자 리뷰 목록 조회(장소 포함)
     @Query("SELECT r FROM Review r JOIN FETCH r.place WHERE r.user.userId = :userId")
     List<Review> findReviewListByUserIdWithPlace(@Param("userId") Long userId);

@@ -20,7 +20,7 @@ public class Place {
     @Column(name = "place_id", nullable = false)
     private Long placeId;  // 장소아이디 (PK)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "place_ctg_id", referencedColumnName = "place_ctg_id", nullable = false)  // 외래 키 설정 (FK)
     private PlaceCategory placeCategory;  // 장소카테고리 (다대일 관계)

@@ -11,6 +11,7 @@ import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
+import sesac_3rd.sesac_3rd.mapper.place.PlaceMapper;
 import sesac_3rd.sesac_3rd.repository.PlaceRepository;
 import static sesac_3rd.sesac_3rd.mapper.place.PlaceMapper.convertToDTO;
 
@@ -25,14 +26,11 @@ public class PlaceServiceImpl implements PlaceService{
     private PlaceRepository placeRepository;
 
     @Override
-    public Page<Place> getAllPlace(int page, int limit){
+    public Page<PlaceDTO> getAllPlace(int page, int limit){
+        Pageable pageable = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "placeId"));
+        Page<Place> places = placeRepository.getAllPlaceRepo(pageable); // Place 엔티티 페이지 조회
 
-        List<Sort.Order> sorts = new ArrayList<>();
-        sorts.add(Sort.Order.desc("place_id"));
-        Pageable pageable = PageRequest.of(page, limit, Sort.by(sorts));
-
-        return this.placeRepository.getAllPlaceRepo(pageable);
-
+        return places.map(PlaceMapper::convertToDTO); // 인스턴스 메소드로 변환
     }
     @Override
     public Page<Place> findByContaining(String sort, int page, int limit, String category, String keyword){

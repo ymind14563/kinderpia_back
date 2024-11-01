@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.review.ReviewDTO;
+import sesac_3rd.sesac_3rd.dto.review.ReviewFormDTO;
 import sesac_3rd.sesac_3rd.entity.Review;
+import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.review.ReviewService;
 
@@ -53,10 +55,41 @@ public class ReviewController {
 
     // 리뷰 작성
     @PostMapping
-    private Review createReview(@RequestBody ReviewDTO dto){
+    private Review createReview(@RequestBody ReviewFormDTO dto, User user){
         try{
-             return reviewService.createReview(dto);
+             return reviewService.createReview(dto, user);
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    // 리뷰 수정
+    @PutMapping("/update/{id}")
+    private ResponseEntity<ResponseHandler<ReviewFormDTO>> updateReview(@PathVariable("id") Long reviewId, @RequestBody ReviewFormDTO rfdto){
+        try{
+            ReviewFormDTO reviewFormDTO = reviewService.updateReview(reviewId, rfdto);
+            ResponseHandler<ReviewFormDTO> response = new ResponseHandler<>(
+                    reviewFormDTO,
+                    HttpStatus.OK.value(), //200
+                    "리뷰 수정 완료"
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    // 리뷰 삭제
+    @DeleteMapping("/delete/{id}")
+    private ResponseEntity<ResponseHandler<Boolean>> deleteReview(@PathVariable("id") Long reviewId, @RequestBody ReviewFormDTO dto){
+        try{
+
+             Boolean result = reviewService.deleteReview(reviewId);
+            ResponseHandler<Boolean> response = new ResponseHandler<>(
+                    result, //true
+                    HttpStatus.OK.value(), // 200
+                    "리뷰 삭제 완료"
+            );
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
             throw new RuntimeException(e);
         }
     }

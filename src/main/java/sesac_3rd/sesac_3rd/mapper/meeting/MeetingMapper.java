@@ -57,7 +57,6 @@ public class MeetingMapper {
                 .user(user)
                 .place(place)
                 .meetingCategory(meetingCategory)
-
                 .meetingTitle(meetingFormDTO.getMeetingTitle()) // 모임명
                 .meetingContent(meetingFormDTO.getMeetingContent()) // 모임내용
                 .totalCapacity(meetingFormDTO.getTotalCapacity()) // 총원 (최대 99)

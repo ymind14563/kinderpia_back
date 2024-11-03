@@ -33,6 +33,7 @@ public enum ExceptionStatus {
 
     // UserMeeting
     MEETING_ALREADY_JOINED(409, "이미 참가한 모임입니다."),
+    MEETING_NOT_JOINED(403, "참가중인 모임이 아닙니다."),
 
     // Chat
     CHATROOM_NOT_FOUND(404, "채팅방을 찾을 수 없습니다."),

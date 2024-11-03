@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 장소 별 리뷰 목록 조회
-    @Query(value = "select * from Review where place_id= :placeId", nativeQuery = true)
+    @Query(value = "select * from Review where place_id= :placeId and is_deleted=false", nativeQuery = true)
     List<Review> findByPlace_PlaceId(@Param("placeId") Long placeId);
 
     // 장소 별 평균 별점 조회

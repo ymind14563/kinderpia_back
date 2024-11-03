@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.review.ReviewDTO;
 import sesac_3rd.sesac_3rd.dto.review.ReviewFormDTO;
+import sesac_3rd.sesac_3rd.dto.review.ReviewListDTO;
 import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
@@ -22,11 +23,11 @@ public class ReviewController {
 
     // 리뷰 목록 조회
     @GetMapping("/{placeId}")
-    private ResponseEntity<ResponseHandler<List<Review>>> getAllReviewByPlaceId(@PathVariable("placeId") Long placeId){
+    private ResponseEntity<ResponseHandler<ReviewListDTO>> getAllReviewByPlaceId(@PathVariable("placeId") Long placeId){
         try{
-            List<Review> reviewDTO = reviewService.getAllReviewByPlaceId(placeId);
+            ReviewListDTO reviewDTO = reviewService.getAllReviewByPlaceId(placeId);
             System.out.println("reviews" + reviewDTO);
-            ResponseHandler<List<Review>> response = new ResponseHandler<>(
+            ResponseHandler<ReviewListDTO> response = new ResponseHandler<>(
                     reviewDTO,
                     HttpStatus.OK.value(), //200
                     "리뷰 목록 조회 완료"

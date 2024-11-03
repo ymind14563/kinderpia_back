@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.dto.review.ReviewDTO;
 import sesac_3rd.sesac_3rd.dto.review.ReviewFormDTO;
+import sesac_3rd.sesac_3rd.dto.review.ReviewListDTO;
 import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.exception.CustomException;
@@ -29,14 +30,14 @@ public class ReviewServiceImpl implements ReviewService{
 
     // 장소별 리뷰 목록 조회
     @Override
-    public List<Review> getAllReviewByPlaceId(Long placeId){
+    public ReviewListDTO getAllReviewByPlaceId(Long placeId){
         List<Review> reviews = reviewRepository.findByPlace_PlaceId(placeId);
-            System.out.println("reviews = " + reviews);
-        List<ReviewDTO> rDTOs = reviews.stream()
-                .map(review -> new ReviewDTO(review.getReviewId(), review.getStar(), review.getReviewContent()))
-                .collect(Collectors.toList());
+        System.out.println("reviews = " + reviews);
 
-        return reviews;
+        Integer avgStar = reviewRepository.getAverageStar(placeId);
+        System.out.println("avgStar : " + avgStar);
+
+        return new ReviewListDTO(reviews, avgStar);
     }
 
     // 리뷰 단건 조회

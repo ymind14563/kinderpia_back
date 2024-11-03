@@ -58,7 +58,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //    OFFSET 0;  /* (페이지 번호 - 1) * 페이지당 데이터 수 */
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
-//    PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId, int size, int page);
     @Query("SELECT m, u.nickname, u.profileImg, c.meetingCtgName FROM Meeting m JOIN m.user u JOIN m.meetingCategory c WHERE u.userId = :userId AND m.meetingStatus IN :validStatus")
     Page<Meeting> findByUserId(@Param("userId") Long userId, @Param("validStatus") List<MeetingStatus> validStatus, Pageable pageable);
 

@@ -17,6 +17,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .phoneNum(user.getPhoneNum())
                 .profileImg(user.getProfileImg())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 

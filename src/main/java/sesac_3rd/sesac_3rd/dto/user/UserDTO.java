@@ -2,6 +2,8 @@ package sesac_3rd.sesac_3rd.dto.user;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,4 +16,5 @@ public class UserDTO {
     private String email;    // 이메일
     private String phoneNum;   // 전화번호
     private String profileImg;   // 프로필이미지
+    private LocalDateTime createdAt;   // 가입 일자
 }

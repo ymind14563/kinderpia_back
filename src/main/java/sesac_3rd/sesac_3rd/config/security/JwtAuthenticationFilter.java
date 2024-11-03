@@ -33,8 +33,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // token 검사
             if (token != null && !token.equalsIgnoreCase("null")){
-                String userId = tokenProvider.validateAndGetUserId(token);
-                log.info("Authenticated user id: " + userId);
+//                String userId = tokenProvider.validateAndGetUserId(token);
+                String userIdString = tokenProvider.validateAndGetUserId(token);
+                log.info("Authenticated user id: " + userIdString);
+
+                // String 타입의 userId를 Long 타입으로 변환
+                Long userId = Long.valueOf(userIdString);
 
                 // 이전에 추출한 userId로 인증 객체 생성
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, AuthorityUtils.NO_AUTHORITIES);

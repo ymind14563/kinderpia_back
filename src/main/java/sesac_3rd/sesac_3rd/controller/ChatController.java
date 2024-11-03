@@ -73,7 +73,16 @@ public class ChatController {
     @MessageMapping("/{chatroomId}/chatmsg")
     @SendTo("/topic/chatroom/{chatroomId}")
     public ResponseEntity<ResponseHandler<ChatMessageDTO.ChatMessage>> sendMessage(@DestinationVariable Long chatroomId,
+                                                                                   @AuthenticationPrincipal Long userId,
                                                                                    ChatMessageDTO.ChatMessage chatMessageDTO) {
+
+        if (userId == null) {
+            return ResponseHandler.unauthorizedResponse();
+        }
+
+        // token 의 userId를 DTO의 senderId로 직접 설정 - 값이 다를 가능성 애초에 차단
+        // 그러므로 서비스에서 userId와 senderId 비교할 필요가 없어짐
+        chatMessageDTO.setSenderId(userId);
 
         ChatMessageDTO.ChatMessage savedMessage = chatMessageService.saveMessage(chatroomId, chatMessageDTO);
 

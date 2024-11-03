@@ -39,8 +39,16 @@ public class ChatMessageService {
         // ChatRoom 과 User 존재 여부 확인
         ChatRoom chatRoom = chatRoomRepository.findById(chatroomId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.CHATROOM_NOT_FOUND));
+
+        // senderId 로 User 존재 여부 확인
         User sender = userRepository.findById(chatMessageDTO.getSenderId())
                 .orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
+
+        // 컨트롤러에서 직접 주입하면 senderId와 token의 userId를 비교할 필요가 없어짐
+//        // senderId와 token 에 userId가 일치하는지 확인
+//        if (!sender.getUserId().equals(userId)) {
+//            throw new CustomException(ExceptionStatus.CHATMSG_USER_NOT_MATCH);
+//        }
 
         // 채팅방 활동 여부 확인
         if (!chatRoom.getIsActive()) {

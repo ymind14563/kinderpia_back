@@ -40,6 +40,7 @@ public enum ExceptionStatus {
     CHATROOM_NOT_ACTIVE(404, "활성화된 채팅방이 아닙니다."),
     INVALID_MESSAGE_TYPE(400,"유효한 메세지 타입이 아닙니다."),
     CHATMSG_NOT_FOUND(404, "채팅 메세지를 찾을 수 없습니다."),
+    CHATMSG_USER_NOT_MATCH(403,"발신자 정보와 토큰이 일치하지 않습니다."),
 
 
     // Report

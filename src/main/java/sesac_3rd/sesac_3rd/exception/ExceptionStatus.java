@@ -35,7 +35,7 @@ public enum ExceptionStatus {
 
     // Chat
     CHATROOM_NOT_FOUND(404, "채팅방을 찾을 수 없습니다."),
-    USER_NOT_IN_CHATROOM(404, "채팅방에 소속된 회원이 아닙니다."),
+    USER_NOT_IN_CHATROOM(403, "채팅방에 소속된 회원이 아닙니다."),
     CHATROOM_NOT_ACTIVE(404, "활성화된 채팅방이 아닙니다."),
     INVALID_MESSAGE_TYPE(400,"유효한 메세지 타입이 아닙니다."),
     CHATMSG_NOT_FOUND(404, "채팅 메세지를 찾을 수 없습니다."),
@@ -45,8 +45,11 @@ public enum ExceptionStatus {
     DUPLICATE_REPORT(409, "이미 유효한 신고입니다."),
     REPORT_RS_NOT_FOUND(404, "존재하지 않는 신고유형입니다."),
     INVALID_REPORT_TARGET(400, "신고에 대상이 없습니다."),
-    NO_REPORT_FOUND(404,"신고 내역이 존재하지 않습니다.");
+    NO_REPORT_FOUND(404,"신고 내역이 존재하지 않습니다."),
 
+
+    // Authorization
+    UNAUTHORIZED_REQUEST(401, "유효하지 않은 토큰입니다.");
 
 
     private final int status;

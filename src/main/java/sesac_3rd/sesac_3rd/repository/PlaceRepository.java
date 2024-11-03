@@ -24,7 +24,4 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     // 검색 - 장소명
     Page<Place> findByPlaceNameContaining(String keyword, Pageable pageable);
 
-    // 장소 아이디 찾기
-
-
 }

@@ -1,9 +1,11 @@
 package sesac_3rd.sesac_3rd.service.review;
 
 import org.springframework.stereotype.Service;
+import sesac_3rd.sesac_3rd.dto.review.LikesDTO;
 import sesac_3rd.sesac_3rd.dto.review.ReviewDTO;
 import sesac_3rd.sesac_3rd.dto.review.ReviewFormDTO;
 import sesac_3rd.sesac_3rd.dto.review.ReviewListDTO;
+import sesac_3rd.sesac_3rd.entity.Likes;
 import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
 
@@ -27,4 +29,6 @@ public interface ReviewService {
     // 리뷰 삭제
     public boolean deleteReview(Long reviewId);
 
+    // 리뷰 좋아요
+    public Likes postLike(Long reviewId, LikesDTO likesDTO, User user, Review review);
 }

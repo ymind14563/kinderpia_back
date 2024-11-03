@@ -10,9 +10,6 @@ import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.repository.PlaceRepository;
 import sesac_3rd.sesac_3rd.repository.UserRepository;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 @Component
 public class ReviewMapper {
 

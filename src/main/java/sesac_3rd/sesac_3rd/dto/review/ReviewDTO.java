@@ -19,6 +19,4 @@ public class ReviewDTO {
     private String reviewContent;
     private boolean isDeleted;
 
-    public ReviewDTO(Long reviewId, int star, String reviewContent) {
-    }
 }

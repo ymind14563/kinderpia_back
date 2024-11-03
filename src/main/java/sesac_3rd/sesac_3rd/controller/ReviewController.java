@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sesac_3rd.sesac_3rd.dto.review.LikesDTO;
 import sesac_3rd.sesac_3rd.dto.review.ReviewDTO;
 import sesac_3rd.sesac_3rd.dto.review.ReviewFormDTO;
+import sesac_3rd.sesac_3rd.dto.review.ReviewListDTO;
+import sesac_3rd.sesac_3rd.entity.Likes;
 import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
@@ -22,11 +25,11 @@ public class ReviewController {
 
     // 리뷰 목록 조회
     @GetMapping("/{placeId}")
-    private ResponseEntity<ResponseHandler<List<Review>>> getAllReviewByPlaceId(@PathVariable("placeId") Long placeId){
+    private ResponseEntity<ResponseHandler<ReviewListDTO>> getAllReviewByPlaceId(@PathVariable("placeId") Long placeId){
         try{
-            List<Review> reviewDTO = reviewService.getAllReviewByPlaceId(placeId);
+            ReviewListDTO reviewDTO = reviewService.getAllReviewByPlaceId(placeId);
             System.out.println("reviews" + reviewDTO);
-            ResponseHandler<List<Review>> response = new ResponseHandler<>(
+            ResponseHandler<ReviewListDTO> response = new ResponseHandler<>(
                     reviewDTO,
                     HttpStatus.OK.value(), //200
                     "리뷰 목록 조회 완료"
@@ -96,6 +99,23 @@ public class ReviewController {
             );
             return ResponseEntity.ok(response);
         }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    // 리뷰 좋아요
+    @PostMapping("/likes/{id}")
+    private ResponseEntity<ResponseHandler<Likes>> postLike(@PathVariable("id") Long reviewId, @RequestBody LikesDTO likesDTO, User user, Review review){
+        try {
+            Likes result = reviewService.postLike(reviewId, likesDTO, user, review);
+            ResponseHandler<Likes> response = new ResponseHandler<>(
+                    result,
+                    HttpStatus.OK.value(), //200
+                    "좋아요 클릭"
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

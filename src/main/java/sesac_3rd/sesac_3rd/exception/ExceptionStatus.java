@@ -26,6 +26,7 @@ public enum ExceptionStatus {
 
     //Review
     REVIEWID_NOT_FOUND(404,"리뷰아이디를 찾을 수 없습니다."),
+    REVIEW_ALREADY_WRITE(409, "해당 장소에 대한 리뷰는 이미 작성하였습니다."),
 
     // Meeting
     MEETING_NOT_FOUND(404, "모임을 찾을 수 없습니다."),

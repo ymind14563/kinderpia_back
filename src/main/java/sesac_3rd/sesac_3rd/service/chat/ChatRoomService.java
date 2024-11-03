@@ -78,9 +78,15 @@ public class ChatRoomService {
 
 
     // 단일 채팅방 조회
-    public ChatRoomDTO.ChatRoom getChatRoomById(Long chatroomId) {
+    public ChatRoomDTO.ChatRoom getChatRoomById(Long userId, Long chatroomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatroomId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.CHATROOM_NOT_FOUND));
+
+        // 유저가 해당 채팅방에 소속되어 있는지 확인
+        boolean isUserInMeeting = userMeetingRepository.existsByUser_UserIdAndMeeting_MeetingIdAndIsAcceptedTrue(userId, chatRoom.getMeeting().getMeetingId());
+        if (!isUserInMeeting) {
+            throw new CustomException(ExceptionStatus.USER_NOT_IN_CHATROOM);
+        }
 
         List<UserMeeting> userMeetingListByMeetingId = userMeetingRepository.findByMeeting_MeetingId(chatRoom.getMeeting().getMeetingId());
 

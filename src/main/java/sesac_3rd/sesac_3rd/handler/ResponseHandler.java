@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 
 // 커스텀 예외 제외한 응답 구조 통일
 @Data
@@ -21,4 +22,11 @@ public class ResponseHandler<T> {
         return ResponseEntity.status(status)
                 .body(new ResponseHandler<>(data, status.value(), message));
     }
+
+    public static <T> ResponseEntity<ResponseHandler<T>> unauthorizedResponse() {
+        return response(null,
+                HttpStatus.valueOf(ExceptionStatus.UNAUTHORIZED_REQUEST.getStatus()),
+                ExceptionStatus.UNAUTHORIZED_REQUEST.getMessage());
+    }
+
 }

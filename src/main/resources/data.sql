@@ -46,3 +46,16 @@ insert into place (place_ctg_id, place_name, location, detail_address, latitude,
 (1, '서울형 키즈카페 양천구 신정7동점(5색깔깔KIDS)','양천구','서울특별시 양천구 목동남로 106-23  (신정동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2135-5946'),
 (1, '서울형 키즈카페 중랑구 면목4동점(중랑 실내놀이터)','중랑구','서울특별시 중랑구 용마산로 209 공공기여시설1층 (면목동, 쌍용 더 플래티넘 용마산)',NULL,NULL,NULL,'화요일 ~ 일요일 10:00~17:30', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2207-1123'),
 (1, '서울형 키즈카페 종로구 혜화동점(종로 혜명 아이들 상상놀이터)','종로구','서울특별시 종로구 성균관로 91 올림픽기념국민생활관 2층 (혜화동)',NULL,NULL,NULL,'화요일 ~ 일요일 (공휴일 제외)', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-742-3320');
+
+
+
+-- report reason (신고사유)
+insert ignore into report_reason (report_rs_id, report_rs_name) values
+(1, '부적절한 콘텐츠'),
+(2, '욕설 또는 폭력적인 언어 사용'),
+(3, '허위 정보 또는 스팸'),
+(4, '사기 또는 부정 행위'),
+(5, '개인정보 노출'),
+(6, '성적 또는 음란한 콘텐츠'),
+(8, '불법 행위 또는 범죄 유도'),
+(9, '기타 부적절한 행위');

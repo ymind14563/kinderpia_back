@@ -133,7 +133,11 @@ public class MeetingServiceImpl implements MeetingService {
         // 모임 생성
         Meeting meeting = MeetingMapper.toMeetingFormEntity(meetingFormDTO); // Meeting 엔티티 생성
         meeting.setCapacity(1); // 모임 생성 시 기본 참가 인원 1명으로 설정
+        meeting.setAuthType(meetingFormDTO.isAuthType());
+        meeting.setLimited(meetingFormDTO.isLimited());
         meetingRepository.save(meeting);
+
+        log.info("authType: {}, limited: {}", meetingFormDTO.isAuthType(), meetingFormDTO.isLimited());
 
         // 채팅방 생성
         chatRoomService.createChatRoomIfNotExists(meeting.getMeetingId());

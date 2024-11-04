@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 // 모임 생성, 모임 수정
 public class MeetingFormDTO {
     private Long userId;  // 모임장 ID
-    private Long placeId;  // 장소 ID
+//    private Long placeId;  // 장소 ID
     private Long meetingCategoryId;  // 모임 카테고리 ID
 
     private String meetingTitle;  // 모임명

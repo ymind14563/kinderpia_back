@@ -122,13 +122,13 @@ public class MeetingServiceImpl implements MeetingService {
 
         // 네이버 (모임장소)
         meetingFormDTO.setMeetingLocation(meetingFormDTO.getMeetingLocation());
-        // Place 조회
-        Place place = placeRepository.findById(meetingFormDTO.getPlaceId())
-                .orElseThrow(() -> new CustomException(ExceptionStatus.PLACE_NOT_FOUND));
+//        // Place 조회
+//        Place place = placeRepository.findById(meetingFormDTO.getPlaceId())
+//                .orElseThrow(() -> new CustomException(ExceptionStatus.PLACE_NOT_FOUND));
 
         // dto to entity
         Meeting meeting = MeetingMapper.toMeetingFormEntity(meetingFormDTO); // Meeting 엔티티 생성
-        meeting.setPlace(place); // Place 엔티티 설정
+//        meeting.setPlace(place); // Place 엔티티 설정
         // insert
         meetingRepository.save(meeting);
 
@@ -159,10 +159,17 @@ public class MeetingServiceImpl implements MeetingService {
         log.info("모임 수정 성공: 모임ID {}", meetingId);
     }
 
-    // 모임 삭제
+    // 모임 삭제 (논리 삭제)
     public void deleteMeeting(Long meetingId) {
-        meetingRepository.deleteById(meetingId);
+        // meetingId 로 기존 Meeting entity 조회
+        Meeting meeting = meetingRepository.findById(meetingId)
+                        .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+        // meetingStatus 상태를 DELETED 로 설정
+        meeting.setMeetingStatus(MeetingStatus.DELETED);
 
-        log.info("모임 삭제 성공: 모임ID {}", meetingId);
+        // 업데이트된 entity 저장
+        meetingRepository.save(meeting);
+
+        log.info("모임 삭제(논리 삭제) 성공: 모임ID {}", meetingId);
     }
 }

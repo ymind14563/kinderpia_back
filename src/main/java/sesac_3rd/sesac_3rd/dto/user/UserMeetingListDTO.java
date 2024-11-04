@@ -22,9 +22,10 @@ public class UserMeetingListDTO {
     private String meetingCtgName;  // 모임카테고리명
     private String meetingLocation;  // 모임장소
     private int capacity;  // 참가인원
+    private LocalDateTime createdAt;
     // 모임장 정보
     private String nickname;   // 닉네임
     private String profileImg;   // 프로필이미지
-
+    private boolean isLeader;   // 모임장여부
 
 }

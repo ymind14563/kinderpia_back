@@ -23,6 +23,7 @@ public enum ExceptionStatus {
     //Place
     PLACE_NOT_FOUND(404, "장소 정보를 찾을 수 없습니다."),
     PLACEID_NOT_FOUND(404,"장소아이디를 찾을 수 없습니다."),
+    CATEGORY_NOT_FOUND(404,"카테고리 명이 일치하지 않습니다."),
 
     //Review
     REVIEWID_NOT_FOUND(404,"리뷰아이디를 찾을 수 없습니다."),
@@ -33,6 +34,7 @@ public enum ExceptionStatus {
 
     // UserMeeting
     MEETING_ALREADY_JOINED(409, "이미 참가한 모임입니다."),
+    MEETING_NOT_JOINED(403, "참가중인 모임이 아닙니다."),
 
     // Chat
     CHATROOM_NOT_FOUND(404, "채팅방을 찾을 수 없습니다."),
@@ -40,6 +42,7 @@ public enum ExceptionStatus {
     CHATROOM_NOT_ACTIVE(404, "활성화된 채팅방이 아닙니다."),
     INVALID_MESSAGE_TYPE(400,"유효한 메세지 타입이 아닙니다."),
     CHATMSG_NOT_FOUND(404, "채팅 메세지를 찾을 수 없습니다."),
+    CHATMSG_USER_NOT_MATCH(403,"발신자 정보와 토큰이 일치하지 않습니다."),
 
 
     // Report

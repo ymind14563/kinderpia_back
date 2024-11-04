@@ -66,8 +66,8 @@ public class ReviewServiceImpl implements ReviewService{
 
     // 리뷰 작성
     @Override
-    public Review createReview(ReviewFormDTO reviewformDTO, User user) {
-        User checkUser = userRepository.findByUserId(reviewformDTO.getUserId());
+    public Review createReview(ReviewFormDTO reviewformDTO, Long userId) {
+        User checkUser = userRepository.findByUserId(userId);
         if(checkUser == null){
             throw new CustomException(ExceptionStatus.USER_NOT_FOUND);
         }
@@ -75,18 +75,18 @@ public class ReviewServiceImpl implements ReviewService{
         if(checkPlace == null){
             throw new CustomException(ExceptionStatus.PLACE_NOT_FOUND);
         }
-        List<Review> checkReview = reviewRepository.findByUserIdAndPlaceId(reviewformDTO.getUserId(), reviewformDTO.getPlaceId());
+        List<Review> checkReview = reviewRepository.findByUserIdAndPlaceId(userId, reviewformDTO.getPlaceId());
         for (Review review : checkReview) {
             System.out.println("Review ID: " + review.getReviewId());
             System.out.println("Content: " + review.getReviewContent());
             System.out.println("Star: " + review.getStar());
             System.out.println("userId : " + review.getUser().getUserId());
-            System.out.println("placeid : " + review.getPlace().getPlaceId());
+            System.out.println("placeId : " + review.getPlace().getPlaceId());
         }
         if(!checkReview.isEmpty()){
             throw new CustomException(ExceptionStatus.REVIEW_ALREADY_WRITE);
         }
-        Review review = reviewMapper.convertToEntity(reviewformDTO, user);
+        Review review = reviewMapper.convertToEntity(reviewformDTO);
         return reviewRepository.save(review);
     }
 

@@ -19,5 +19,5 @@ public interface UserMeetingRepository extends JpaRepository<UserMeeting, Long> 
 
     boolean existsByUser_UserIdAndMeeting_MeetingIdAndIsAcceptedTrue(Long userId, Long meetingId);
 
-
+    Optional<UserMeeting> findByUser_UserIdAndMeeting_MeetingId(Long userId, Long meetingId);
 }

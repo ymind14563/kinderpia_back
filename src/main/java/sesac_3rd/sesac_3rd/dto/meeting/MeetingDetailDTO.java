@@ -23,9 +23,10 @@ public class MeetingDetailDTO {
     private int totalCapacity; // 총원 (최대 99)
     private String meetingContent; // 모임내용
     private String meetingLocation; // 모임장소(주소)
+    private String detailAddress; // 상세주소
     private boolean isAuthType; // 인증여부 (기본값 FALSE)
-    private String placeName; // 장소명
-    private String location; // 지역구
+//    private String placeName; // 장소명
+//    private String location; // 지역구
     private LocalDateTime meetingTime; // 모임일시
     private MeetingStatus meetingStatus; // 모임상태 (기본값 "ONGOING")
     private LocalDateTime createdAt; // 생성일자

@@ -5,8 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
+import sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 
 @Repository
@@ -19,9 +21,13 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     Page<Place> getAllPlaceRepo(Pageable pageable);
 
     // 검색 - 위치(지역구)
-    Page<Place> findByLocationContaining(String keyword, Pageable pageable);
+    @Query("SELECT p FROM Place p JOIN FETCH p.placeCategory where p.location like %:keyword%")
+    Page<PlaceWithCategoryDTO> findByLocationContaining(@Param("keyword") String keyword, Pageable pageable);
 
     // 검색 - 장소명
-    Page<Place> findByPlaceNameContaining(String keyword, Pageable pageable);
+    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO(p.placeId, pc.placeCtgName, p.placeName, p.location, " +
+            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid) " +
+            "FROM Place p JOIN p.placeCategory pc WHERE p.placeName LIKE %:keyword%")
+    Page<PlaceWithCategoryDTO> findByPlaceNameContaining(@Param("keyword") String keyword, Pageable pageable);
 
 }

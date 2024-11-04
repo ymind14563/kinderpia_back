@@ -12,6 +12,7 @@ import sesac_3rd.sesac_3rd.entity.Review;
 @Builder
 public class ReviewUserDTO {
     private Review review;
+    private long userId;
     private String nickname;
     private String profileImg;
     private boolean isBlacklist;

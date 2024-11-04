@@ -35,6 +35,9 @@ public class UserMeeting {
     @Column(name = "is_withdraw", nullable = false)
     private Boolean isWithdraw = false;  // 탈퇴여부 (기본값 FALSE)
 
+    @Column(name = "capacity", nullable = false)
+    private int capacity; // 참가 인원 (기본값 1)
+
     @Column(name = "blockedAt")
     private LocalDateTime blockedAt;  // 차단일자
 

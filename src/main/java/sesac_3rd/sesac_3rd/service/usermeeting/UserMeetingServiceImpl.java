@@ -14,6 +14,8 @@ import sesac_3rd.sesac_3rd.repository.MeetingRepository;
 import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
 import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Service
 public class UserMeetingServiceImpl implements UserMeetingService {
@@ -27,24 +29,27 @@ public class UserMeetingServiceImpl implements UserMeetingService {
     MeetingService meetingService;
 
     // 모임 참가
-    public void joinMeeting(UserMeetingJoinDTO userMeetingJoinDTO) {
+    public void joinMeeting(Long meetingId, UserMeetingJoinDTO userMeetingJoinDTO) {
         // 임시로 userId 설정
         Long userId = 3L; // JWT 없이 임시로 설정한 userId
         userMeetingJoinDTO.setUserId(userId);
 
+        // meetingId를 DTO 에 설정
+        userMeetingJoinDTO.setMeetingId(meetingId);
+
         // 이미 참가한 사용자 여부 확인
-        if (userMeetingRepository.existsByUser_UserIdAndMeeting_MeetingId(userId, userMeetingJoinDTO.getMeetingId())) {
+        if (userMeetingRepository.existsByUser_UserIdAndMeeting_MeetingId(userId, meetingId)) {
             throw new CustomException(ExceptionStatus.MEETING_ALREADY_JOINED);
         }
 
         // 인증여부 조회
-        MeetingDetailDTO meetingDetailDTO = meetingService.getDetailMeeting(userMeetingJoinDTO.getMeetingId());
+        MeetingDetailDTO meetingDetailDTO = meetingService.getDetailMeeting(meetingId);
 
         // UserMeeting 엔티티 생성
         UserMeeting userMeeting = UserMeetingMapper.toUserMeetingJoinEntity(userMeetingJoinDTO);
 
         // Meeting 엔티티 조회 후 UserMeeting 에 설정
-        Meeting meeting = meetingRepository.findById(userMeetingJoinDTO.getMeetingId())
+        Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
         userMeeting.setMeeting(meeting); // Meeting 객체 설정
 
@@ -53,16 +58,70 @@ public class UserMeetingServiceImpl implements UserMeetingService {
             userMeeting.setIsAccepted(null); // 인증 대기 상태로 설정
         } else {
             userMeeting.setIsAccepted(true); // 자동 수락
+            // 자동 수락된 경우에만 인원 수 추가
+            // 기존 capacity 에 입력된 capacity 값을 더한 후 업데이트
+            int updatedCapacity = meeting.getCapacity() + userMeetingJoinDTO.getCapacity();
+            meeting.setCapacity(updatedCapacity); // 새로운 capacity 설정
+            meetingRepository.save(meeting); // 변경된 Meeting 저장
         }
 
         // UserMeeting 엔티티 저장
         userMeetingRepository.save(userMeeting);
 
-        // 기존 capacity 에 입력된 capacity 값을 더한 후 업데이트
-        int updatedCapacity = meeting.getCapacity() + userMeetingJoinDTO.getCapacity();
-        meeting.setCapacity(updatedCapacity); // 새로운 capacity 설정
-        meetingRepository.save(meeting); // 변경된 Meeting 저장
-
         log.info("모임 참가 성공: 참가한 userId {}", userId);
+    }
+
+    // 모임 탈퇴
+    public void exitMeeting(Long meetingId) {
+        // 임시로 userId 설정
+        Long userId = 3L; // JWT 없이 임시로 설정한 userId
+
+        // 사용자가 모임에 참가중인지 확인
+        boolean isUserJoined = userMeetingRepository.existsByUser_UserIdAndMeeting_MeetingId(userId, meetingId);
+        if (!isUserJoined) {
+            throw new CustomException(ExceptionStatus.MEETING_NOT_JOINED);
+        }
+        // UserMeeting entity 가져오기
+        UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(userId, meetingId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+
+        // 모임 entity 가져오기
+        Meeting meeting = userMeeting.getMeeting();
+
+        // 수용 인원(capacity) 업데이트
+        int updatedCapacity = meeting.getCapacity() - 1;
+        meeting.setCapacity(Math.max(0, updatedCapacity)); // 음수 방지
+        meetingRepository.save(meeting);
+
+        // UserMeeting entity 삭제
+        userMeetingRepository.delete(userMeeting);
+
+        log.info("모임 탈퇴 성공: 탈퇴한 userId {}", userId);
+    }
+
+    // 모임 수락
+    public void isAccepted(Long meetingId, Long userId) {
+        // 특정 모임과 사용자에 대한 UserMeeting entity 찾기
+        UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(userId, meetingId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+
+        // 수락 상태 업데이트 및 수락일자 설정
+        userMeeting.setIsAccepted(true);
+        userMeeting.setAcceptedAt(LocalDateTime.now());
+
+        // 업데이트된 UserMeeting 저장
+        userMeetingRepository.save(userMeeting);
+
+        // Meeting entity 가져오기
+        Meeting meeting = userMeeting.getMeeting();
+
+        // 모임의 capacity 에 참가자 인원을 추가
+        int updatedCapacity = meeting.getCapacity() + userMeeting.getCapacity();
+        meeting.setCapacity(updatedCapacity); // 새로운 capacity 설정
+
+        // 변경된 Meeting 저장
+        meetingRepository.save(meeting);
+
+        log.info("모임 수락 처리 성공: meetingId {}, userId {}", meetingId, userId);
     }
 }

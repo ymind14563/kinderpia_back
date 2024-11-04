@@ -6,10 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.dto.chat.ChatMessageDTO;
 import sesac_3rd.sesac_3rd.dto.chat.ChatRoomDTO;
 import sesac_3rd.sesac_3rd.dto.chat.ChatRoomRequestDTO;
@@ -29,6 +31,7 @@ public class ChatController {
     private final ChatMessageService chatMessageService;
     private final ChatRoomMapper chatRoomMapper;
     private final ChatMessageMapper chatMessageMapper;
+    private final TokenProvider tokenProvider;
 //    private final SimpMessagingTemplate messagingTemplate;
 
     // 전체 채팅 목록 조회 (페이지네이션 적용)
@@ -72,8 +75,23 @@ public class ChatController {
     // 메시지 저장 및 전송
     @MessageMapping("/{chatroomId}/chatmsg")
     @SendTo("/topic/chatroom/{chatroomId}")
-    public ResponseEntity<ResponseHandler<ChatMessageDTO.ChatMessage>> sendMessage(@DestinationVariable Long chatroomId,
+    public ResponseEntity<ResponseHandler<ChatMessageDTO.ChatMessage>> sendMessage(@DestinationVariable("chatroomId") Long chatroomId,
+                                                                                   @Header("Authorization") String token,
                                                                                    ChatMessageDTO.ChatMessage chatMessageDTO) {
+
+
+        // @MessageMapping에서는 @AuthenticationPrincipal을 직접 사용할 수 없음 (WebSocket 통신, HTTP 요청 차이)
+        String userId = tokenProvider.validateAndGetUserId(token.replace("Bearer ", ""));
+
+        if (userId == null) {
+            return ResponseHandler.unauthorizedResponse();
+        }
+
+        // token 의 userId를 DTO의 senderId로 직접 설정 - 값이 다를 가능성 애초에 차단
+        // 그러므로 서비스에서 userId와 senderId 비교할 필요가 없어짐
+
+        // Long.parseLong(userId) 으로 형변환하여 산입
+        chatMessageDTO.setSenderId(Long.parseLong(userId));
 
         ChatMessageDTO.ChatMessage savedMessage = chatMessageService.saveMessage(chatroomId, chatMessageDTO);
 
@@ -90,7 +108,7 @@ public class ChatController {
             @AuthenticationPrincipal Long userId,
             @RequestBody ChatRoomRequestDTO chatRoomRequestDTO,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
+            @RequestParam(value = "size", required = false, defaultValue = "99") int size) {
 
         if (userId == null) {
             return ResponseHandler.unauthorizedResponse();

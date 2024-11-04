@@ -45,7 +45,9 @@ public class ReportService {
         User reported = getReportedUser(chatMessage, review, meeting);
 
         // 중복 신고 여부 확인
-        if (reportRepository.existsByReporterAndChatMessageOrReviewOrMeeting(reporter, chatMessage, review, meeting)) {
+        boolean isReportExist = isReportExist(reporter.getUserId(), reportDto.getChatMessageId(), reportDto.getReviewId(), reportDto.getMeetingId());
+
+        if (isReportExist) {
             throw new CustomException(ExceptionStatus.DUPLICATE_REPORT);
         }
 
@@ -186,7 +188,15 @@ public class ReportService {
             throw new CustomException(ExceptionStatus.NO_REPORT_FOUND);
         }
 
-        return reportRepository.existsByReporterAndChatMessageOrReviewOrMeeting(reporter, chatMessage, review, meeting);
+        if (chatMessage != null) {
+            return reportRepository.existsByReporterAndChatMessage(reporter, chatMessage);
+        } else if (review != null) {
+            return reportRepository.existsByReporterAndReview(reporter, review);
+        } else if (meeting != null) {
+            return reportRepository.existsByReporterAndMeeting(reporter, meeting);
+        }
+
+        return false;
     }
 
 

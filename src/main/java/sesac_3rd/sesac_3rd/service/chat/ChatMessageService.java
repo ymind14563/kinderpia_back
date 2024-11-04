@@ -147,7 +147,7 @@ public class ChatMessageService {
             throw new CustomException(ExceptionStatus.USER_NOT_IN_CHATROOM);
         }
 
-        Sort sort = Sort.by(Sort.Order.asc("createdAt")); // 생성시간으로 오름차순
+        Sort sort = Sort.by(Sort.Order.desc("createdAt")); // 생성시간으로 내림차순
 
         /*
         Sort.Direction direction = Sort.Direction.fromOptionalString(sortDirection).orElse(Sort.Direction.ASC); // asc, desc 등

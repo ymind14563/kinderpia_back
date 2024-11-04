@@ -56,6 +56,9 @@ public class Meeting {
     @Column(name = "district", nullable = true)
     private String district; // 지역구
 
+    @Column(name = "detail_address", nullable = true)
+    private String detailAddress; // 상세주소
+
     @Column(name = "latitude", nullable = true, precision = 10, scale = 8)
     private BigDecimal latitude;  // 위도 (DECIMAL(10, 8))
 

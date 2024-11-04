@@ -41,6 +41,7 @@ public class MeetingMapper {
                 .totalCapacity(meeting.getTotalCapacity()) // 총원 (최대 99)
                 .meetingContent(meeting.getMeetingContent()) // 모임내용
                 .meetingLocation(meeting.getMeetingLocation()) // 모임장소(주소)
+                .detailAddress(meeting.getDetailAddress()) // 상세주소
                 .isAuthType(meeting.isAuthType()) // 인증여부
 //                .placeName(meeting.getPlace().getPlaceName()) // 장소명
 //                .location(meeting.getPlace().getLocation()) // 지역구
@@ -69,6 +70,7 @@ public class MeetingMapper {
                 .capacity(meetingFormDTO.getCapacity()) // 참가인원 (기본값 1)
                 .meetingLocation(meetingFormDTO.getMeetingLocation()) // 모임장소(주소)
                 .district(meetingFormDTO.getDistrict()) // 지역구
+                .detailAddress(meetingFormDTO.getDetailAddress()) // 상세주소
                 .latitude(meetingFormDTO.getLatitude()) // 위도 (DECIMAL(10, 8))
                 .longitude(meetingFormDTO.getLongitude()) // 경도 (DECIMAL(11, 8))
                 .meetingTime(meetingFormDTO.getMeetingTime()) // 모임일시 (시간)

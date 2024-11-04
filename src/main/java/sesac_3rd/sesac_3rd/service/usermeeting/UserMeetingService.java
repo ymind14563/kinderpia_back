@@ -8,4 +8,7 @@ public interface UserMeetingService {
 
     // 모임 탈퇴
     void exitMeeting(Long meetingId);
+
+    // 모임 수락
+    void isAccepted();
 }

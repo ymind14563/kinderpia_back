@@ -76,17 +76,18 @@ public class UserMapper {
     }
 
     // user review entity to userreviewdto
-    public static UserReviewDTO.UserReviewListDTO toUserReviewDTO(Review review){
-        return UserReviewDTO.UserReviewListDTO.builder()
-                .reviewId(review.getReviewId())
-                .star(review.getStar())
-                .reviewContent(review.getReviewContent())
-                .place(UserReviewDTO.PlaceInfoDTO.builder()
-                        .placeName(review.getPlace().getPlaceName())
-                        .placeId(review.getPlace().getPlaceId())
-                        .build())
-                .build();
-    }
+//    public static UserReviewDTO.UserReviewListDTO toUserReviewDTO(Review review){
+//        return UserReviewDTO.UserReviewListDTO.builder()
+//                .reviewId(review.getReviewId())
+//                .star(review.getStar())
+//                .reviewContent(review.getReviewContent())
+//                .createdAt(review.getCreatedAt())
+//                .place(UserReviewDTO.PlaceInfoDTO.builder()
+//                        .placeName(review.getPlace().getPlaceName())
+//                        .placeId(review.getPlace().getPlaceId())
+//                        .build())
+//                .build();
+//    }
 
     // meeting entity to usermeetinglistDTO
     public static UserMeetingListDTO toUserMeetingListDTO(Meeting meeting){

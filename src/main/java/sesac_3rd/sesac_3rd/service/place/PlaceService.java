@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
+import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 
 @Service
@@ -16,7 +17,7 @@ public interface PlaceService {
     Page<Place> findByContaining(String sort, int page, int limit, String category, String keyword);
 
     // 장소 상세 조회
-    PlaceDTO getPlaceById(Long placeId);
+    PlaceReviewDTO getPlaceById(Long placeId);
 
 
 }

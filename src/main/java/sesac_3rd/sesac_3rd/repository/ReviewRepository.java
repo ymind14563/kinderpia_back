@@ -19,6 +19,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 //    @Query(value = "SELECT DISTINCT r.*, u.nickname, u.profile_img, u.is_blacklist FROM Review r JOIN User u ON r.user_id = u.user_id WHERE r.place_id = :placeId AND r.is_deleted = false ORDER BY r.created_at DESC", nativeQuery = true)
     @Query("SELECT new sesac_3rd.sesac_3rd.dto.review.ReviewUserDTO(" +
             "r, " +
+            "u.id, "+
             "u.nickname, " +
             "u.profileImg, " +
             "u.isBlacklist, " +

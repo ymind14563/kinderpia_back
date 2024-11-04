@@ -14,7 +14,7 @@ public interface PlaceService {
     Page<PlaceDTO> getAllPlace(int page, int limit);
 
     // 장소 검색 (제목, 주소)
-    Page<Place> findByContaining(String sort, int page, int limit, String category, String keyword);
+    Page<Place> findByContaining(String sort, int page, int size, String category, String keyword);
 
     // 장소 상세 조회
     PlaceReviewDTO getPlaceById(Long placeId);

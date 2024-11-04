@@ -39,19 +39,22 @@ public class PlaceServiceImpl implements PlaceService{
         return places.map(PlaceMapper::convertToDTO); // 인스턴스 메소드로 변환
     }
     @Override
-    public Page<Place> findByContaining(String sort, int page, int limit, String category, String keyword){
+    public Page<Place> findByContaining(String sort, int page, int size, String category, String keyword){
     // 검색 결과
     List<Sort.Order> resultPlace = new ArrayList<>();
     resultPlace.add(Sort.Order.desc("placeId"));
-    Pageable pageable = PageRequest.of(page, limit, Sort.by(resultPlace));
-    System.out.println("category : "  + category);
+    Pageable pageable = PageRequest.of(page, size, Sort.by(resultPlace));
+    System.out.println("category : "  + category.getClass().getName());
+    System.out.println("category value: " + category);
     switch (category){
         case "title":
             return placeRepository.findByPlaceNameContaining(keyword, pageable);
         case "address":
             return placeRepository.findByLocationContaining(keyword, pageable);
         default:
-            return this.placeRepository.findAll(pageable);
+            return placeRepository.getAllPlaceRepo(pageable);
+//            throw new CustomException(ExceptionStatus.CATEGORY_TYPE_NOT_EXISTS);
+
     }
 }
 

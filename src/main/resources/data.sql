@@ -5,6 +5,13 @@ insert IGNORE into place_category (place_ctg_name) values ('오락 및 여가'),
                                                     ('체험 및 활동'),
                                                     ('스포츠 및 운동'),
                                                     ('기타');
+
+insert IGNORE into meeting_category (meeting_ctg_name) values ('오락 및 여가'),
+                                                    ('자연 및 환경'),
+                                                    ('교육 및 문화'),
+                                                    ('체험 및 활동'),
+                                                    ('스포츠 및 운동'),
+                                                    ('기타');
 -- place
 insert IGNORE into place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) values
 (1, '서울형 키즈카페 강서구 화곡3동점','강서구','서울특별시 강서구 강서로 231 2층 (화곡동, 우장산역 해링턴 타워)',NULL,NULL,NULL,'화요일~일요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2698-2299'),
@@ -16,7 +23,7 @@ insert IGNORE into place (place_ctg_id, place_name, location, detail_address, la
 (1, '서울형 키즈카페 성동구 성수1가1동점(성수 키즈카페)','성동구','서울특별시 성동구 뚝섬로3길 18 성수1가1동주민센터 1층 (성수동1가)',NULL,NULL,NULL,'월요일~토요일', TRUE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-461-3863'),
 (1, '서울형 키즈카페 서대문구 북가좌1동점(다정다감 키즈카페)','서대문구','서울특별시 서대문구 수색로8길 48-4 사회교육관 3층 (북가좌동)',NULL,NULL,NULL,'월~토', TRUE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-304-5501'),
 (1, '서울형 키즈카페 중랑구 망우본동점(중랑실내놀이터 양원)','중랑구','서울특별시 중랑구 용마산로 670 시티원스퀘어 상가 201동 지하1층 (망우동, 신내역 프라디움 더 테라스)',NULL,NULL,NULL,'화~일요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-438-4600'),
-(1, '서울형 키즈카페 송파구 잠실근린공원점(하하호호놀이터 송파구1호점)','송파구','서울특별시 송파구 백제고분로15길 9 , 1?2층 (잠실동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','070-4151-7061'),
+(1, '서울형 키즈카페 송파구 잠실근린공원점(하하호호놀이터 송파구1호점)','송파구','서울특별시 송파구 백제고분로15길 9 , 1,2층 (잠실동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','070-4151-7061'),
 (1, '서울형 키즈카페 시립 뚝섬자벌레점','광진구','서울특별시 광진구 강변북로 2202 2층 꿈틀나루 (자양동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-498-4445'),
 (1, '서울형 키즈카페 서초구 방배2동점(서리풀노리학교 방배2동점)','서초구','서울특별시 서초구 방배천로24길 8 방주교회 1층 (방배동)',NULL,NULL,NULL,'월~토', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-523-9340'),
 (1, '서울형 키즈카페 중구 중림동점(노리몽땅)','중구','서울특별시 중구 서소문로6길 16 본관 1층 (중림동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-363-2628'),

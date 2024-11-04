@@ -17,8 +17,9 @@ public class MeetingDTO {
     private Long meetingId;
     private String nickname; // 모임장 닉네임
     private int totalCapacity; // 총원 (최대 99)
-    private String placeName; // 장소명
-    private String location; // 지역구
+    private String district; // 지역구
+//    private String placeName; // 장소명
+//    private String location; // 지역구
     private String meetingCategory; // 카테고리명
     private String meetingTitle; // 모임명
     private String meetingLocation; // 모임장소(주소)

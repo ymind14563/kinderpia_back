@@ -53,3 +53,11 @@ insert IGNORE into place (place_ctg_id, place_name, location, detail_address, la
 (1, '서울형 키즈카페 양천구 신정7동점(5색깔깔KIDS)','양천구','서울특별시 양천구 목동남로 106-23  (신정동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2135-5946'),
 (1, '서울형 키즈카페 중랑구 면목4동점(중랑 실내놀이터)','중랑구','서울특별시 중랑구 용마산로 209 공공기여시설1층 (면목동, 쌍용 더 플래티넘 용마산)',NULL,NULL,NULL,'화요일 ~ 일요일 10:00~17:30', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2207-1123'),
 (1, '서울형 키즈카페 종로구 혜화동점(종로 혜명 아이들 상상놀이터)','종로구','서울특별시 종로구 성균관로 91 올림픽기념국민생활관 2층 (혜화동)',NULL,NULL,NULL,'화요일 ~ 일요일 (공휴일 제외)', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-742-3320');
+
+-- meeting category
+insert into meeting_category (meeting_ctg_name) values ('오락 및 여가'),
+                                                    ('자연 및 환경'),
+                                                    ('교육 및 문화'),
+                                                    ('체험 및 활동'),
+                                                    ('스포츠 및 운동'),
+                                                    ('기타');

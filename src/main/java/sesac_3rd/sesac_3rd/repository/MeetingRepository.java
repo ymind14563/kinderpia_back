@@ -15,9 +15,9 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     Page<Meeting> findByMeetingStatus(MeetingStatus status, Pageable pageable);
 
     // 키워드로 타이틀, 장소 검색
-    @Query("SELECT m FROM Meeting m JOIN m.place p " +
-            "WHERE m.meetingTitle LIKE %:keyword OR p.location LIKE %:keyword%")
-    Page<Meeting> findByMeetingTitleOrLocation(@Param("keyword") String keyword, Pageable pageable);
+    @Query("SELECT m FROM Meeting m " +
+            "WHERE m.meetingTitle LIKE %:keyword OR m.district LIKE %:keyword%")
+    Page<Meeting> findByMeetingTitleOrDistrict(@Param("keyword") String keyword, Pageable pageable);
 
     // 모임 상세조회 (모임장 정보 포함)
     @Query("SELECT m FROM Meeting m JOIN m.user u WHERE m.meetingId = :meetingId")

@@ -54,12 +54,12 @@ public class MeetingMapper {
     public static Meeting toMeetingFormEntity(MeetingFormDTO meetingFormDTO) {
         // 외래키 ID 값을 기반으로 User, Place, MeetingCategory 객체를 생성
         User user = User.builder().userId(meetingFormDTO.getUserId()).build();
-        Place place = Place.builder().placeId(meetingFormDTO.getPlaceId()).build();
+//        Place place = Place.builder().placeId(meetingFormDTO.getPlaceId()).build();
         MeetingCategory meetingCategory = MeetingCategory.builder().meetingCtgId(meetingFormDTO.getMeetingCategoryId()).build();
         // 생성된 객체를 사용하여 Meeting 엔티티를 빌드
         return Meeting.builder()
                 .user(user)
-                .place(place)
+//                .place(place)
                 .meetingCategory(meetingCategory)
                 .meetingTitle(meetingFormDTO.getMeetingTitle()) // 모임명
                 .meetingContent(meetingFormDTO.getMeetingContent()) // 모임내용

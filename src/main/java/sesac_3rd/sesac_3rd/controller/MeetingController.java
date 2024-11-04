@@ -132,7 +132,7 @@ public class MeetingController {
     }
 
     // 모임 삭제
-    @DeleteMapping("/{meetingId}")
+    @PutMapping("/{meetingId}/delete")
     public ResponseEntity<ResponseHandler<Void>> deleteMeeting(@PathVariable("meetingId") Long meetingId) {
         try {
             meetingService.deleteMeeting(meetingId);

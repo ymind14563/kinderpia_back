@@ -63,6 +63,7 @@ public class ReviewController {
         try{
             // 토큰에 문제가 있는 경우
             if (userId == null) {
+                System.out.println("userId >> null ? "+ userId);
                 return ResponseHandler.unauthorizedResponse();
             }
             System.out.println("userId "+ userId);

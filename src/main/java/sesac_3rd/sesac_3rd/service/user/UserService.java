@@ -24,8 +24,6 @@ public interface UserService {
     // 회원가입 - 전화번호 중복 검사
     void isPhonenumDuplicate(String phoneNum);
 
-    // 로그아웃
-    void logout();
 
     // 회원 정보 단건 조회
     UserDTO getUser(Long userId);
@@ -46,8 +44,8 @@ public interface UserService {
     PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId, int size, int page);
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
-    List<UserMeetingListDTO> getUserMeetingScheduleList(Long userId);
+    List<UserMeetingTimeListDTO> getUserMeetingScheduleList(Long userId);
 
     // 사용자 리뷰 목록 조회(장소 정보까지 같이) - 페이지네이션 할건지?
-    PaginationResponseDTO<UserReviewDTO> getUserReviewList(Long userId,int size, int page);
+    PaginationResponseDTO<UserReviewDTO> getUserReviewList(Long userId, int size, int page);
 }

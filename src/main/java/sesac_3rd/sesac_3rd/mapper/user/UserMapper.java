@@ -99,8 +99,17 @@ public class UserMapper {
                 .meetingCtgName(meeting.getMeetingCategory().getMeetingCtgName())
                 .meetingLocation(meeting.getMeetingLocation())
                 .capacity(meeting.getCapacity())
+                .createdAt(meeting.getCreatedAt())
                 .nickname(meeting.getUser().getNickname())
                 .profileImg(meeting.getUser().getProfileImg())
+                .build();
+    }
+
+    // meeting entity to usermeetinglistDTO for meetingtime
+    public static UserMeetingListDTO toUserMeetingListTimeDTO(Meeting meeting){
+        return UserMeetingListDTO.builder()
+                .meetingTitle(meeting.getMeetingTitle())
+                .meetingTime(meeting.getMeetingTime())
                 .build();
     }
 }

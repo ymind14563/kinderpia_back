@@ -31,6 +31,7 @@ public class PlaceServiceImpl implements PlaceService{
     @Autowired
     private ReviewRepository reviewRepository;
 
+    // 장소 목록 조회
     @Override
     public Page<PlaceDTO> getAllPlace(int page, int limit){
         Pageable pageable = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "placeId"));
@@ -38,9 +39,10 @@ public class PlaceServiceImpl implements PlaceService{
 
         return places.map(PlaceMapper::convertToDTO); // 인스턴스 메소드로 변환
     }
+
+    // 검색 결과
     @Override
     public Page<Place> findByContaining(String sort, int page, int size, String category, String keyword){
-    // 검색 결과
     List<Sort.Order> resultPlace = new ArrayList<>();
     resultPlace.add(Sort.Order.desc("placeId"));
     Pageable pageable = PageRequest.of(page, size, Sort.by(resultPlace));
@@ -53,7 +55,6 @@ public class PlaceServiceImpl implements PlaceService{
             return placeRepository.findByLocationContaining(keyword, pageable);
         default:
             return placeRepository.getAllPlaceRepo(pageable);
-//            throw new CustomException(ExceptionStatus.CATEGORY_TYPE_NOT_EXISTS);
 
     }
 }

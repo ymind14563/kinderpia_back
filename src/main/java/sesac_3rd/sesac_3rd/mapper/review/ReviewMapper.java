@@ -20,7 +20,7 @@ public class ReviewMapper {
     private UserRepository userRepository;
 
     // dto to entity - 생성, 수정
-    public Review convertToEntity(ReviewFormDTO dto, User user) {
+    public Review convertToEntity(ReviewFormDTO dto) {
         Place place = placeRepository.findByPlaceId(dto.getPlaceId());
         if (place == null) {
             throw new CustomException(ExceptionStatus.PLACEID_NOT_FOUND);

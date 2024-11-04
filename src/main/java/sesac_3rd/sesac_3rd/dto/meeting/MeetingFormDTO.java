@@ -25,6 +25,7 @@ public class MeetingFormDTO {
     private int capacity = 1;  // 현재 참가 인원
     private String meetingLocation;  // 모임 장소
     private String district; // 지역구
+    private String detailAddress; // 상세주소
     private BigDecimal latitude;  // 위도
     private BigDecimal longitude;  // 경도
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

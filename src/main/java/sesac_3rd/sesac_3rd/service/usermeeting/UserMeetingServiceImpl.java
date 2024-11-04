@@ -96,4 +96,9 @@ public class UserMeetingServiceImpl implements UserMeetingService {
 
         log.info("모임 탈퇴 성공: 탈퇴한 userId {}", userId);
     }
+
+    // 모임 수락 여부
+    public void isAccepted() {
+
+    }
 }

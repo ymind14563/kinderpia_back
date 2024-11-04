@@ -44,7 +44,8 @@ public class WebSecurityConfig {
                                 "/api/review/**",
                                 "/api/chatroom/**",
                                 "/api/chatmsg/**",
-                                "/api/report/**"
+                                "/api/report/**",
+                                "/ws/**"
                         )
                         .permitAll()
                         .anyRequest().authenticated());

@@ -23,6 +23,7 @@ public enum ExceptionStatus {
     //Place
     PLACE_NOT_FOUND(404, "장소 정보를 찾을 수 없습니다."),
     PLACEID_NOT_FOUND(404,"장소아이디를 찾을 수 없습니다."),
+    CATEGORY_NOT_FOUND(404,"카테고리 명이 일치하지 않습니다."),
 
     //Review
     REVIEWID_NOT_FOUND(404,"리뷰아이디를 찾을 수 없습니다."),

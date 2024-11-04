@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.review.*;
 import sesac_3rd.sesac_3rd.entity.Likes;
@@ -55,9 +56,17 @@ public class ReviewController {
 
     // 리뷰 작성
     @PostMapping
-    private ResponseEntity<ResponseHandler<Review>> createReview(@RequestBody ReviewFormDTO dto, User user){
+    private ResponseEntity<ResponseHandler<Review>> createReview(
+            @AuthenticationPrincipal Long userId,
+            @RequestBody ReviewFormDTO dto
+    ){
         try{
-            Review review = reviewService.createReview(dto, user);
+            // 토큰에 문제가 있는 경우
+            if (userId == null) {
+                return ResponseHandler.unauthorizedResponse();
+            }
+            System.out.println("userId "+ userId);
+            Review review = reviewService.createReview(dto, userId);
             ResponseHandler<Review> response = new ResponseHandler<>(
                     review,
                     HttpStatus.OK.value(), //200

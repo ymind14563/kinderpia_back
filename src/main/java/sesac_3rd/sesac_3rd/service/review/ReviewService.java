@@ -15,7 +15,7 @@ import java.util.List;
 public interface ReviewService {
 
     // 리뷰 작성
-    public Review createReview(ReviewFormDTO reviewformDTO, User user);
+    public Review createReview(ReviewFormDTO reviewformDTO, Long userId);
 
     // 장소별 리뷰 목록 조회
     ReviewListDTO getAllReviewByPlaceId(Long placeId);

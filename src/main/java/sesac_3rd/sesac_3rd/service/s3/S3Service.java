@@ -24,5 +24,5 @@ public class S3Service{
         return null;
     }
 
-    private String upl
+//    private String upl
 }

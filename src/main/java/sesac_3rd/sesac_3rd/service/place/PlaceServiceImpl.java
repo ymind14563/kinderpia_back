@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
+import sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
@@ -42,21 +43,23 @@ public class PlaceServiceImpl implements PlaceService{
 
     // 검색 결과
     @Override
-    public Page<Place> findByContaining(String sort, int page, int size, String category, String keyword){
+    public Page<PlaceWithCategoryDTO> findByContaining(String sort, int page, int size, String category, String keyword){
     List<Sort.Order> resultPlace = new ArrayList<>();
     resultPlace.add(Sort.Order.desc("placeId"));
     Pageable pageable = PageRequest.of(page, size, Sort.by(resultPlace));
     System.out.println("category : "  + category.getClass().getName());
     System.out.println("category value: " + category);
-    switch (category){
-        case "title":
-            return placeRepository.findByPlaceNameContaining(keyword, pageable);
-        case "address":
-            return placeRepository.findByLocationContaining(keyword, pageable);
-        default:
-            return placeRepository.getAllPlaceRepo(pageable);
 
+    if (category.equals("title")) {
+        return placeRepository.findByPlaceNameContaining(keyword, pageable);
     }
+    else if (category.equals("address")) {
+        return placeRepository.findByLocationContaining(keyword, pageable);
+    }
+    else{
+        throw new CustomException(ExceptionStatus.CATEGORY_NOT_FOUND);
+    }
+
 }
 
     @Override

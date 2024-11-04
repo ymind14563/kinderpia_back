@@ -125,22 +125,14 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    // 로그아웃
-    @Override
-    public void logout() {
-        // 토큰 파기
-    }
 
     // 회원 탈퇴
+    // 모임 업데이트는 아직 안함
     @Override
     public void deleteUser(final Long userId) {
         // 사용자가 입력한 비번이 해당 사용자의 비번이어야 함
         User originUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));  // 404
 
-        // 비번 불일치
-//        if (!passwordEncoder.matches(userPw, originUser.getUserPw())){
-//            throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
-//        }
 
         // 탈퇴한 사람이 작성한 리뷰나 모임, 채팅은 삭제하지 않음
         // 모임글은 '닫힘 모임' 처리 -> 탈퇴한 사람이 작성한 모임 중 '모집중' 모임이 모두 '모임종료'로 업데이트
@@ -202,10 +194,8 @@ public class UserServiceImpl implements UserService {
         // 수정 날짜 업데이트
         existingUser.setUpdatedAt(LocalDateTime.now());
         // 수정된 formdto를 entity로 변경
-//        User updateUser = UserMapper.toUserEntityForUpdate(dto);
 
         User updatedUser = userRepository.save(existingUser);
-//        UserDTO userDTO = UserMapper.toUserDTO(updatedUser);
         return UserMapper.toUserDTO(updatedUser);
     }
 
@@ -227,7 +217,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId, int size, int page) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return null;
+
+        Page<UserMeetingListDTO> meetingPage = userRepository.meetingFindByUserId(userId, validMeetingStatus(), pageRequest);
+
+        return new PaginationResponseDTO<>(meetingPage.getContent(), meetingPage);
     }
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
@@ -235,10 +228,8 @@ public class UserServiceImpl implements UserService {
     public PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId, int size, int page) {
 
         PageRequest pageRequest = PageRequest.of(page - 1, size);
-        List<MeetingStatus> validStatus = Arrays.stream(MeetingStatus.values())
-                .filter(status -> status != MeetingStatus.DELETED)
-                .collect(Collectors.toList());
-        Page<Meeting> meetingPage = userRepository.meetingFindByLeaderUserId(userId, validStatus, pageRequest);
+
+        Page<Meeting> meetingPage = userRepository.meetingFindByLeaderUserId(userId, validMeetingStatus(), pageRequest);
 
         // meeting entity를 UserMeetingListDTO로 변환
         List<UserMeetingListDTO> userMeetingList = meetingPage.getContent().stream()
@@ -250,8 +241,11 @@ public class UserServiceImpl implements UserService {
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
     @Override
-    public List<UserMeetingListDTO> getUserMeetingScheduleList(Long userId) {
-        return List.of();
+    public List<UserMeetingTimeListDTO> getUserMeetingScheduleList(Long userId) {
+
+        List<UserMeetingTimeListDTO> getScheduleList = userRepository.meetingTimeFindByUserId(userId, validMeetingStatus());
+
+        return getScheduleList;
     }
 
     // 사용자 리뷰 목록 조회(장소 정보까지 같이), 삭제된 리뷰도 보이게 할건지??
@@ -325,5 +319,14 @@ public class UserServiceImpl implements UserService {
             }
         }
 
+    }
+
+    // MeetingStatus가 'DELETED'인 것만 제외하는 메서드
+    private List<MeetingStatus> validMeetingStatus(){
+        List<MeetingStatus> validStatus = Arrays.stream(MeetingStatus.values())
+                .filter(status -> status != MeetingStatus.DELETED)
+                .collect(Collectors.toList());
+
+        return validStatus;
     }
 }

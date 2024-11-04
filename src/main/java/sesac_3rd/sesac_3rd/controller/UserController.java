@@ -191,10 +191,10 @@ public class UserController {
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
     @GetMapping("/meetingTime/list/{userId}")
-    public ResponseEntity<ResponseHandler<List<UserMeetingListDTO>>> getUserMeetingScheduleList(@PathVariable Long userId) {
-        List<UserMeetingListDTO> getUserMettingSchlist = userService.getUserMeetingScheduleList(userId);
+    public ResponseEntity<ResponseHandler<List<UserMeetingTimeListDTO>>> getUserMeetingScheduleList(@PathVariable Long userId) {
+        List<UserMeetingTimeListDTO> getUserMeetingSchlist = userService.getUserMeetingScheduleList(userId);
 
-        return ResponseHandler.response(getUserMettingSchlist, HttpStatus.OK, "사용자 모임 일정 목록 조회");
+        return ResponseHandler.response(getUserMeetingSchlist, HttpStatus.OK, "사용자 모임 일정 목록 조회");
     }
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
@@ -215,7 +215,7 @@ public class UserController {
     ) {
         PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList = userService.getUserLeaderMeetingList(userId, size, page);
 
-        return ResponseHandler.response(getUserLeaderMeetingList, HttpStatus.OK, "사용자 모임 목록 조회");
+        return ResponseHandler.response(getUserLeaderMeetingList, HttpStatus.OK, "사용자 모임장 목록 조회");
     }
 
 }

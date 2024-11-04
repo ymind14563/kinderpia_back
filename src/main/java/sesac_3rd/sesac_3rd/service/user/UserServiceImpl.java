@@ -47,15 +47,15 @@ public class UserServiceImpl implements UserService {
         // 로그인 아이디가 없을때
         // 커스텀에러는 '아이디 또는 비밀번호를 찾을 수 없습니다' 하나로 통일 시켜도 될듯
         // 로직 다시 확인
-        if (originUser == null){
+        if (originUser == null) {
             throw new CustomException(ExceptionStatus.USER_NOT_FOUND);   // 404
         }
         // 비번 불일치
-        if (!passwordEncoder.matches(userPw, originUser.getUserPw())){
+        if (!passwordEncoder.matches(userPw, originUser.getUserPw())) {
             throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
         }
         // 로그인 하려는 사용자가 탈퇴 여부가 true일때
-        if (originUser.isDeleted()){
+        if (originUser.isDeleted()) {
             throw new CustomException(ExceptionStatus.WITHDRAWN_USER); // 403
         }
         // 비번 일치
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
         log.info("check nickname duplicated");
         validateNickname(nickname);
         boolean isDuplicated = userRepository.existsByNickname(nickname);
-        if (isDuplicated){
+        if (isDuplicated) {
             throw new CustomException(ExceptionStatus.DUPLICATE_NICKNAME);
         }
     }
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
         log.info("check loginid duplicated");
         validateLoginId(loginId);
         boolean isDuplicated = userRepository.existsByLoginId(loginId);
-        if (isDuplicated){
+        if (isDuplicated) {
             throw new CustomException(ExceptionStatus.DUPLICATE_LOGIN_ID);
         }
     }
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
         log.info("check email duplicated");
         validateEmail(email);
         boolean isDuplicated = userRepository.existsByEmail(email);
-        if (isDuplicated){
+        if (isDuplicated) {
             throw new CustomException(ExceptionStatus.DUPLICATE_EMAIL);
         }
     }
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
         log.info("check phonenum duplicated");
         validatePhoneNumber(phoneNum);
         boolean isDuplicated = userRepository.existsByPhoneNum(phoneNum);
-        if (isDuplicated){
+        if (isDuplicated) {
             throw new CustomException(ExceptionStatus.DUPLICATE_PHONE);
         }
     }
@@ -218,7 +218,7 @@ public class UserServiceImpl implements UserService {
         validatePassword(userPw);
 
         // 비번 불일치
-        if (!passwordEncoder.matches(userPw, findUser.getUserPw())){
+        if (!passwordEncoder.matches(userPw, findUser.getUserPw())) {
             throw new CustomException(ExceptionStatus.INVALID_PASSWORD);  // 409
         }
     }
@@ -238,7 +238,7 @@ public class UserServiceImpl implements UserService {
         List<MeetingStatus> validStatus = Arrays.stream(MeetingStatus.values())
                 .filter(status -> status != MeetingStatus.DELETED)
                 .collect(Collectors.toList());
-        Page<Meeting> meetingPage = userRepository.findByUserId(userId, validStatus, pageRequest);
+        Page<Meeting> meetingPage = userRepository.meetingFindByLeaderUserId(userId, validStatus, pageRequest);
 
         // meeting entity를 UserMeetingListDTO로 변환
         List<UserMeetingListDTO> userMeetingList = meetingPage.getContent().stream()
@@ -256,18 +256,15 @@ public class UserServiceImpl implements UserService {
 
     // 사용자 리뷰 목록 조회(장소 정보까지 같이), 삭제된 리뷰도 보이게 할건지??
     @Override
-    public List<UserReviewDTO.UserReviewListDTO> getUserReviewList(Long userId) {
+    public PaginationResponseDTO<UserReviewDTO> getUserReviewList(Long userId, int size, int page) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));    // 404
 
-        List<Review> getUserReviewList = userRepository.findReviewListByUserIdWithPlace(user.getUserId());
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        Page<UserReviewDTO> getUserReviewList = userRepository.findReviewListByUserIdWithPlace(user.getUserId(), pageRequest);
 
-        // N+1 문제를 방지하기 위해 fetch join 사용
-//        Page<Review> reviews = reviewRepository.findReviewsByUserIdWithPlace(userId, pageable);
-//        return reviews.map(ReviewMapper::toResponseDTO);
 
-        return getUserReviewList.stream()
-                .map(UserMapper::toUserReviewDTO)
-                .collect(Collectors.toList());
+        return new PaginationResponseDTO<>(getUserReviewList.getContent(), getUserReviewList);
+
     }
 
     // 닉네임 유효성 검사

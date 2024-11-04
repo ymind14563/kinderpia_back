@@ -49,5 +49,5 @@ public interface UserService {
     List<UserMeetingListDTO> getUserMeetingScheduleList(Long userId);
 
     // 사용자 리뷰 목록 조회(장소 정보까지 같이) - 페이지네이션 할건지?
-    List<UserReviewDTO.UserReviewListDTO> getUserReviewList(Long userId);
+    PaginationResponseDTO<UserReviewDTO> getUserReviewList(Long userId,int size, int page);
 }

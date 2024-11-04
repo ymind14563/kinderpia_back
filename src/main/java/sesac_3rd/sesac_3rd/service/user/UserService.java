@@ -48,4 +48,7 @@ public interface UserService {
 
     // 사용자 리뷰 목록 조회(장소 정보까지 같이) - 페이지네이션 할건지?
     PaginationResponseDTO<UserReviewDTO> getUserReviewList(Long userId, int size, int page);
+
+    // 모임상세 접근시 사용자 상태 조회(신고여부, 신청여부, 수락여부)
+    UserMeetingStatusDTO getUserMeetingStatus(Long userId, Long meetingId);
 }

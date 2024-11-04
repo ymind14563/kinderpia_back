@@ -261,6 +261,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    // 모임상세 접근시 사용자 상태 조회(신고여부, 신청여부, 수락여부)
+    @Override
+    public UserMeetingStatusDTO getUserMeetingStatus(Long userId, Long meetingId) {
+        return null;
+    }
+
     // 닉네임 유효성 검사
     private void validateNickname(String nickname) {
         if (nickname == null || !Pattern.matches("^[가-힣a-zA-Z0-9]{2,15}$", nickname)) {

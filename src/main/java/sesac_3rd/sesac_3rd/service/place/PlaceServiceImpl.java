@@ -8,11 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
+import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.mapper.place.PlaceMapper;
 import sesac_3rd.sesac_3rd.repository.PlaceRepository;
+import sesac_3rd.sesac_3rd.repository.ReviewRepository;
+
 import static sesac_3rd.sesac_3rd.mapper.place.PlaceMapper.convertToDTO;
 
 import java.util.ArrayList;
@@ -24,6 +27,9 @@ public class PlaceServiceImpl implements PlaceService{
 
     @Autowired
     private PlaceRepository placeRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Override
     public Page<PlaceDTO> getAllPlace(int page, int limit){
@@ -50,10 +56,14 @@ public class PlaceServiceImpl implements PlaceService{
 }
 
     @Override
-    public PlaceDTO getPlaceById(Long placeId){
+    public PlaceReviewDTO getPlaceById(Long placeId){
         Place place = placeRepository.findById(placeId).orElseThrow(()->new CustomException(ExceptionStatus.PLACE_NOT_FOUND));
 
-        return convertToDTO(place);
+        // 장소별 평균 평점 조회
+        Integer avgStar = reviewRepository.getAverageStar(placeId);
+        System.out.println("avgStar : " + avgStar);
+
+        return new PlaceReviewDTO(place,avgStar);
     }
 }
 

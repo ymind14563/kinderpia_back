@@ -5,6 +5,13 @@ insert IGNORE into place_category (place_ctg_name) values ('오락 및 여가'),
                                                     ('체험 및 활동'),
                                                     ('스포츠 및 운동'),
                                                     ('기타');
+
+insert IGNORE into meeting_category (meeting_ctg_name) values ('오락 및 여가'),
+                                                    ('자연 및 환경'),
+                                                    ('교육 및 문화'),
+                                                    ('체험 및 활동'),
+                                                    ('스포츠 및 운동'),
+                                                    ('기타');
 -- place
 insert IGNORE into place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) values
 (1, '서울형 키즈카페 강서구 화곡3동점','강서구','서울특별시 강서구 강서로 231 2층 (화곡동, 우장산역 해링턴 타워)',NULL,NULL,NULL,'화요일~일요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2698-2299'),

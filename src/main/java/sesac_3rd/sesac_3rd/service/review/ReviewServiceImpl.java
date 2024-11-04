@@ -81,7 +81,7 @@ public class ReviewServiceImpl implements ReviewService{
             System.out.println("Content: " + review.getReviewContent());
             System.out.println("Star: " + review.getStar());
             System.out.println("userId : " + review.getUser().getUserId());
-            System.out.println("placeid : " + review.getPlace().getPlaceId());
+            System.out.println("placeId : " + review.getPlace().getPlaceId());
         }
         if(!checkReview.isEmpty()){
             throw new CustomException(ExceptionStatus.REVIEW_ALREADY_WRITE);

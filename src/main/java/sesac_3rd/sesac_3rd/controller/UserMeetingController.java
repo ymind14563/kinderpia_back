@@ -35,7 +35,7 @@ public class UserMeetingController {
     }
 
     // 모임 탈퇴
-    @PostMapping("/exit/{meetingId}")
+    @DeleteMapping("/exit/{meetingId}")
     public ResponseEntity<ResponseHandler<Void>> exitMeeting(@PathVariable("meetingId") Long meetingId) {
         try {
             userMeetingService.exitMeeting(meetingId);

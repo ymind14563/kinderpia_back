@@ -31,6 +31,7 @@ public enum ExceptionStatus {
 
     // Meeting
     MEETING_NOT_FOUND(404, "모임을 찾을 수 없습니다."),
+    MEETING_CAPACITY_FULL(409, "모임의 총 인원이 다 찼습니다."),
 
     // UserMeeting
     MEETING_ALREADY_JOINED(409, "이미 참가한 모임입니다."),

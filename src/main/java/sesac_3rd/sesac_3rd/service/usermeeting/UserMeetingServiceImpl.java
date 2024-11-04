@@ -14,6 +14,8 @@ import sesac_3rd.sesac_3rd.repository.MeetingRepository;
 import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
 import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Service
 public class UserMeetingServiceImpl implements UserMeetingService {
@@ -56,15 +58,15 @@ public class UserMeetingServiceImpl implements UserMeetingService {
             userMeeting.setIsAccepted(null); // 인증 대기 상태로 설정
         } else {
             userMeeting.setIsAccepted(true); // 자동 수락
+            // 자동 수락된 경우에만 인원 수 추가
+            // 기존 capacity 에 입력된 capacity 값을 더한 후 업데이트
+            int updatedCapacity = meeting.getCapacity() + userMeetingJoinDTO.getCapacity();
+            meeting.setCapacity(updatedCapacity); // 새로운 capacity 설정
+            meetingRepository.save(meeting); // 변경된 Meeting 저장
         }
 
         // UserMeeting 엔티티 저장
         userMeetingRepository.save(userMeeting);
-
-        // 기존 capacity 에 입력된 capacity 값을 더한 후 업데이트
-        int updatedCapacity = meeting.getCapacity() + userMeetingJoinDTO.getCapacity();
-        meeting.setCapacity(updatedCapacity); // 새로운 capacity 설정
-        meetingRepository.save(meeting); // 변경된 Meeting 저장
 
         log.info("모임 참가 성공: 참가한 userId {}", userId);
     }
@@ -97,8 +99,29 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         log.info("모임 탈퇴 성공: 탈퇴한 userId {}", userId);
     }
 
-    // 모임 수락 여부
-    public void isAccepted() {
+    // 모임 수락
+    public void isAccepted(Long meetingId, Long userId) {
+        // 특정 모임과 사용자에 대한 UserMeeting entity 찾기
+        UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(userId, meetingId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
+        // 수락 상태 업데이트 및 수락일자 설정
+        userMeeting.setIsAccepted(true);
+        userMeeting.setAcceptedAt(LocalDateTime.now());
+
+        // 업데이트된 UserMeeting 저장
+        userMeetingRepository.save(userMeeting);
+
+        // Meeting entity 가져오기
+        Meeting meeting = userMeeting.getMeeting();
+
+        // 모임의 capacity 에 참가자 인원을 추가
+        int updatedCapacity = meeting.getCapacity() + userMeeting.getCapacity();
+        meeting.setCapacity(updatedCapacity); // 새로운 capacity 설정
+
+        // 변경된 Meeting 저장
+        meetingRepository.save(meeting);
+
+        log.info("모임 수락 처리 성공: meetingId {}, userId {}", meetingId, userId);
     }
 }

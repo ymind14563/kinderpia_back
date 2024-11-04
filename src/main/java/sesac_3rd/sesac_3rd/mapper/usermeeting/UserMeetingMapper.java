@@ -9,13 +9,12 @@ public class UserMeetingMapper {
     // [ 모임 참가 ] dto to entity
     public static UserMeeting toUserMeetingJoinEntity(UserMeetingJoinDTO userMeetingJoinDTO) {
         User user = User.builder().userId(userMeetingJoinDTO.getUserId()).build();
-        Meeting meetingId = Meeting.builder().meetingId(userMeetingJoinDTO.getMeetingId()).build();
-        Meeting capacity = Meeting.builder().capacity(userMeetingJoinDTO.getCapacity()).build();
+        Meeting meeting = Meeting.builder().meetingId(userMeetingJoinDTO.getMeetingId()).build();
 
         return UserMeeting.builder()
                 .user(user)
-                .meeting(meetingId)
-                .meeting(capacity)
+                .meeting(meeting)
+                .capacity(userMeetingJoinDTO.getCapacity())
                 .isAccepted(userMeetingJoinDTO.isAccepted())
                 .isBlocked(userMeetingJoinDTO.isBlocked())
                 .isWithdraw(userMeetingJoinDTO.isWithdraw())

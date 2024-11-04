@@ -35,6 +35,7 @@ public class ChatRoomDTO {
         private Long chatroomId;
         private Long meetingId;
         private String meetingTitle;
+        private Long meetingHeader;
         private String meetingCategoryName;
         private String lastMessage;
         private LocalDateTime lastMessageCreatedAt;

@@ -27,15 +27,15 @@ public class PageInfo {
         this.sortFields = new ArrayList<>();
         this.sortDirections = new ArrayList<>();
 
-        // sort가 존재하지 않거나 정렬되어있지 않거나 필드나 방향이 없거나 (예외처리)
-        if (sort == null || !sort.isSorted() || sortFields.isEmpty() || sortDirections.isEmpty()) {
-            sort = Sort.by(Sort.Order.asc("id")); // 기본 정렬 설정 (id, asc)
-
-        } else if (sort != null && sort.isSorted()) {
-            for (Sort.Order order : sort) { // 모든 정렬 기준 (정렬 기준이 다수일 때 처리를 위함)
-                this.sortFields.add(order.getProperty());               // 필드
+        if (sort != null && sort.isSorted()) {
+            for (Sort.Order order : sort) {
+                this.sortFields.add(order.getProperty());               // 필드명
                 this.sortDirections.add(order.getDirection().name());   // 방향
             }
+        } else {
+            // 기본 정렬 설정
+            this.sortFields.add("id");
+            this.sortDirections.add("ASC");
         }
     }
 }

@@ -28,7 +28,7 @@ public class MeetingFormDTO {
     private String detailAddress; // 상세주소
     private BigDecimal latitude;  // 위도
     private BigDecimal longitude;  // 경도
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime meetingTime;  // 모임 일시
     private MeetingStatus meetingStatus = MeetingStatus.ONGOING;  // 모임 상태 (기본값 "ONGOING")
 }

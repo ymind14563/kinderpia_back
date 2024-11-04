@@ -1,12 +1,12 @@
 -- place category
-insert into place_category (place_ctg_name) values ('오락 및 여가'),
+insert IGNORE into place_category (place_ctg_name) values ('오락 및 여가'),
                                                     ('자연 및 환경'),
                                                     ('교육 및 문화'),
                                                     ('체험 및 활동'),
                                                     ('스포츠 및 운동'),
                                                     ('기타');
 -- place
-insert into place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) values
+insert IGNORE into place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) values
 (1, '서울형 키즈카페 강서구 화곡3동점','강서구','서울특별시 강서구 강서로 231 2층 (화곡동, 우장산역 해링턴 타워)',NULL,NULL,NULL,'화요일~일요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2698-2299'),
 (1, '서울형 키즈카페 서초구 서초1동점(서리풀노리학교 서초1동점)','서초구','서울특별시 서초구 사임당로 115 헤센파크힐 L층',NULL,NULL,NULL,'월~토', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-525-9340'),
 (1, '서울형 키즈카페 성북구 종암동점','성북구','서울특별시 성북구 종암로19길 60 성북함께어울림센터, 2층 (종암동)',NULL,NULL,NULL,'수~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2241-0796'),

@@ -8,14 +8,18 @@ import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
+import sesac_3rd.sesac_3rd.dto.usermeeting.UserMeetingJoinDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.entity.Place;
+import sesac_3rd.sesac_3rd.entity.UserMeeting;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.meeting.MeetingMapper;
+import sesac_3rd.sesac_3rd.mapper.usermeeting.UserMeetingMapper;
 import sesac_3rd.sesac_3rd.repository.MeetingRepository;
 import sesac_3rd.sesac_3rd.repository.PlaceRepository;
+import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
 import sesac_3rd.sesac_3rd.service.chat.ChatRoomService;
 
 import java.util.ArrayList;
@@ -32,6 +36,9 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Autowired
     private ChatRoomService chatRoomService;
+
+    @Autowired
+    private UserMeetingRepository userMeetingRepository;
 
     // 모임 목록 (default - 최신순 정렬)
     @Override
@@ -82,7 +89,7 @@ public class MeetingServiceImpl implements MeetingService {
     // 키워드로 타이틀과 장소 검색
     @Override
     public PaginationResponseDTO<MeetingDTO> searchMeetingsByKeyword(String keyword, Pageable pageable) {
-        Page<Meeting> meetings = meetingRepository.findByMeetingTitleOrLocation(
+        Page<Meeting> meetings = meetingRepository.findByMeetingTitleOrDistrict(
                 keyword, pageable);
 
         if (meetings.isEmpty()) {
@@ -115,27 +122,45 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     // 모임 생성
-    public void createMeeting(MeetingFormDTO meetingFormDTO) {
+    public Meeting createMeeting(MeetingFormDTO meetingFormDTO) {
         // 임시로 userId 설정
-        Long userId = 1L; // JWT 없이 임시로 설정한 userId
+        Long userId = 2L; // JWT 없이 임시로 설정한 userId
         meetingFormDTO.setUserId(userId);
 
         // 네이버 (모임장소)
         meetingFormDTO.setMeetingLocation(meetingFormDTO.getMeetingLocation());
-        // Place 조회
-        Place place = placeRepository.findById(meetingFormDTO.getPlaceId())
-                .orElseThrow(() -> new CustomException(ExceptionStatus.PLACE_NOT_FOUND));
 
-        // dto to entity
+        // 모임 생성
         Meeting meeting = MeetingMapper.toMeetingFormEntity(meetingFormDTO); // Meeting 엔티티 생성
-        meeting.setPlace(place); // Place 엔티티 설정
-        // insert
+        meeting.setCapacity(1); // 모임 생성 시 기본 참가 인원 1명으로 설정
         meetingRepository.save(meeting);
 
         // 채팅방 생성
         chatRoomService.createChatRoomIfNotExists(meeting.getMeetingId());
 
-        log.info("모임 생성 성공: 모임장ID {}", userId);
+        // 모임 생성 후 자동 참가 처리
+        UserMeetingJoinDTO userMeetingJoinDTO = new UserMeetingJoinDTO();
+        userMeetingJoinDTO.setUserId(userId);
+        userMeetingJoinDTO.setMeetingId(meeting.getMeetingId());
+        userMeetingJoinDTO.setCapacity(1); // 참가자는 기본 1명으로 설정
+
+        // UserMeetingJoinDTO 를 UserMeeting entity 로 변환
+        UserMeeting userMeeting = UserMeetingMapper.toUserMeetingJoinEntity(userMeetingJoinDTO);
+        userMeeting.setMeeting(meeting); // UserMeeting 에 Meeting entity 설정
+
+        // 인증 여부에 따라 수락 상태 설정
+        if (!meeting.isAuthType()) {
+            userMeeting.setIsAccepted(null); // 인증 대기 상태
+        } else {
+            userMeeting.setIsAccepted(true); // 자동  수락
+        }
+
+        // UserMeeting entity 저장
+        userMeetingRepository.save(userMeeting);
+
+        log.info("모임 생성 및 참가 성공: 모임장ID {}", userId);
+
+        return meeting; // meetingId 프론트로 반환하려고 meeting 리턴
     }
 
     // 모임 수정
@@ -159,10 +184,17 @@ public class MeetingServiceImpl implements MeetingService {
         log.info("모임 수정 성공: 모임ID {}", meetingId);
     }
 
-    // 모임 삭제
+    // 모임 삭제 (논리 삭제)
     public void deleteMeeting(Long meetingId) {
-        meetingRepository.deleteById(meetingId);
+        // meetingId 로 기존 Meeting entity 조회
+        Meeting meeting = meetingRepository.findById(meetingId)
+                        .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+        // meetingStatus 상태를 DELETED 로 설정
+        meeting.setMeetingStatus(MeetingStatus.DELETED);
 
-        log.info("모임 삭제 성공: 모임ID {}", meetingId);
+        // 업데이트된 entity 저장
+        meetingRepository.save(meeting);
+
+        log.info("모임 삭제(논리 삭제) 성공: 모임ID {}", meetingId);
     }
 }

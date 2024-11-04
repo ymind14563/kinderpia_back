@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
+import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.place.PlaceService;
@@ -55,11 +56,11 @@ public class PlaceController {
 
     // 장소 상세 조회
     @GetMapping("/{id}")
-    private ResponseEntity<ResponseHandler<PlaceDTO>> getPlaceById(@PathVariable("id") Long placeId){
+    private ResponseEntity<ResponseHandler<PlaceReviewDTO>> getPlaceById(@PathVariable("id") Long placeId){
         try {
-            PlaceDTO placeDTO= placeService.getPlaceById(placeId);
-            ResponseHandler<PlaceDTO> response = new ResponseHandler<>(
-                    placeDTO,
+            PlaceReviewDTO placereviewDTO= placeService.getPlaceById(placeId);
+            ResponseHandler<PlaceReviewDTO> response = new ResponseHandler<>(
+                    placereviewDTO,
                     HttpStatus.OK.value(),
                     "장소 상세 조회 완료"
             );

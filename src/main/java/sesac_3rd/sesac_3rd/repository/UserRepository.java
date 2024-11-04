@@ -6,11 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
-import sesac_3rd.sesac_3rd.dto.user.UserMeetingListDTO;
+import sesac_3rd.sesac_3rd.dto.user.UserReviewDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
-import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
-import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 
 import java.util.List;
 
@@ -35,8 +33,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUserId(Long userId);
 
     // 사용자 리뷰 목록 조회(장소 포함)
-    @Query("SELECT r FROM Review r JOIN FETCH r.place WHERE r.user.userId = :userId")
-    List<Review> findReviewListByUserIdWithPlace(@Param("userId") Long userId);
+    @Query("SELECT new sesac_3rd.sesac_3rd.dto.user.UserReviewDTO(" +
+            "r.reviewId, " +
+            "r.reviewContent, " +
+            "r.star, " +
+            "r.createdAt, " +
+            "(SELECT COUNT(l) FROM Likes l WHERE l.review.id = r.reviewId), " +
+            "p.placeId, " +
+            "p.placeName) " +
+            "FROM Review r " +
+            "JOIN r.place p " +
+            "WHERE r.user.userId = :userId AND r.isDeleted = false " +
+            "ORDER BY r.createdAt DESC")
+    Page<UserReviewDTO> findReviewListByUserIdWithPlace(@Param("userId") Long userId, Pageable pageable);
 
     // 사용자 리뷰 목록 조회 - 페이징이 필요한 경우 (fetch join과 함께 사용)
 //    @Query(value = "SELECT r FROM Review r JOIN FETCH r.place WHERE r.user.userId = :userId",
@@ -59,9 +68,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
     @Query("SELECT m, u.nickname, u.profileImg, c.meetingCtgName FROM Meeting m JOIN m.user u JOIN m.meetingCategory c WHERE u.userId = :userId AND m.meetingStatus IN :validStatus")
-    Page<Meeting> findByUserId(@Param("userId") Long userId, @Param("validStatus") List<MeetingStatus> validStatus, Pageable pageable);
+    Page<Meeting> meetingFindByLeaderUserId(@Param("userId") Long userId, @Param("validStatus") List<MeetingStatus> validStatus, Pageable pageable);
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
 //    PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId, int size, int page);
+    @Query("SELECT DISTINCT m FROM Meeting m " +
+            "LEFT JOIN UserMeeting um ON m = um.meeting " +
+            "WHERE (m.user.userId = :userId " +
+            "    OR (um.user.userId = :userId " +
+            "        AND um.isWithdraw = false " +
+            "        AND um.isAccepted = true " +
+            "        AND um.isBlocked = false)) " +
+            "AND m.meetingStatus IN :validStatus")
+    Page<Meeting> meetingFindByUserId(@Param("userId") Long userId, @Param("validStatus") List<MeetingStatus> validStatus, Pageable pageable);
 
 }

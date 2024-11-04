@@ -179,10 +179,12 @@ public class UserController {
     }
 
     // 사용자 리뷰 목록 조회(장소 정보까지 같이)
-    // 페이지네이션 필요할지도??
     @GetMapping("/review/list/{userId}")
-    public ResponseEntity<ResponseHandler<List<UserReviewDTO.UserReviewListDTO>>> getUserReviewList(@PathVariable Long userId) {
-        List<UserReviewDTO.UserReviewListDTO> getReviewList = userService.getUserReviewList(userId);
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserReviewDTO>>> getUserReviewList(@PathVariable Long userId,
+                                                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                                                    @RequestParam(defaultValue = "10") int size
+                                                                                                    ) {
+        PaginationResponseDTO<UserReviewDTO> getReviewList = userService.getUserReviewList(userId, size, page);
 
         return ResponseHandler.response(getReviewList, HttpStatus.OK, "사용자 리뷰 목록 조회");
     }

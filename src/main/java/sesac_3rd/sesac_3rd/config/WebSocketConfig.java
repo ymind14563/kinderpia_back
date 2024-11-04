@@ -52,6 +52,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         서버가 "/ws" 엔드포인트를 통해 WebSocket 을 활성화해주면 (= registry.addEndpoint("/ws")) STOMP 프로토콜을 사용하여 클라이언트와 실시간 통신 가능
         */
         registry.addEndpoint("/ws")
+                .setAllowedOrigins("http://localhost:3000")
              /*
                  "/ws" 경로로 클라이언트가 연결 요청을 보낼 수 있도록 설정
 

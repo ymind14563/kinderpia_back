@@ -6,16 +6,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
+import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
-import sesac_3rd.sesac_3rd.service.usermeeting.UserMeetingService;
-
 
 @RestController
 @RequestMapping("/api/meeting")
@@ -95,13 +93,14 @@ public class MeetingController {
 
     // 모임 생성
     @PostMapping
-    public ResponseEntity<ResponseHandler<Void>> createMeeting(
+    public ResponseEntity<ResponseHandler<Long>> createMeeting(
             @RequestBody MeetingFormDTO meetingFormDTO) {
         try {
-            meetingService.createMeeting(meetingFormDTO);
+            // 모임 생성 후 생성된 모임 entity 반환
+            Meeting meeting = meetingService.createMeeting(meetingFormDTO);
 
-            ResponseHandler<Void> response = new ResponseHandler<>(
-                    null,
+            ResponseHandler<Long> response = new ResponseHandler<>(
+                    meeting.getMeetingId(), // 생성된 meetingId 포함
                     HttpStatus.CREATED.value(), // 201
                     "모임 생성 완료"
             );

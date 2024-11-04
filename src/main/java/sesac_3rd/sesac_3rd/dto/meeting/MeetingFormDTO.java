@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.dto.meeting;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 
@@ -23,8 +24,10 @@ public class MeetingFormDTO {
     private boolean isAuthType = false;  // 인증 여부 (기본값 FALSE)
     private int capacity = 1;  // 현재 참가 인원
     private String meetingLocation;  // 모임 장소
+    private String district; // 지역구
     private BigDecimal latitude;  // 위도
     private BigDecimal longitude;  // 경도
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime meetingTime;  // 모임 일시
     private MeetingStatus meetingStatus = MeetingStatus.ONGOING;  // 모임 상태 (기본값 "ONGOING")
 }

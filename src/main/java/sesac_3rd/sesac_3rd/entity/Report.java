@@ -31,11 +31,11 @@ public class Report {
     private Meeting meeting;  // 모임아이디 (FK)
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "repoter_id", nullable = false)
+    @JoinColumn(name = "reporter_id", nullable = false)
     private User reporter;  // 신고자아이디 (FK)
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "repoted_id", nullable = false)
+    @JoinColumn(name = "reported_id", nullable = false)
     private User reported;  // 피신고자아이디 (FK)
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -124,7 +124,7 @@ public class MeetingServiceImpl implements MeetingService {
     // 모임 생성
     public Meeting createMeeting(MeetingFormDTO meetingFormDTO) {
         // 임시로 userId 설정
-        Long userId = 2L; // JWT 없이 임시로 설정한 userId
+        Long userId = 1L; // JWT 없이 임시로 설정한 userId
         meetingFormDTO.setUserId(userId);
 
         // 네이버 (모임장소)

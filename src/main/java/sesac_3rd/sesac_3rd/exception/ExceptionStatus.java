@@ -55,7 +55,13 @@ public enum ExceptionStatus {
 
 
     // Authorization
-    UNAUTHORIZED_REQUEST(401, "유효하지 않은 토큰입니다.");
+    UNAUTHORIZED_REQUEST(401, "유효하지 않은 토큰입니다."),
+
+    // S3
+    EMPTY_FILE(400, "업로드된 파일이 비어 있습니다. 유효한 파일을 업로드해 주세요."),
+    IO_EXCEPTION_ON_IMAGE_UPLOAD(500, "이미지 업로드 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."),
+    PUT_OBJECT_EXCEPTION(500, "PUT OBJECT ERROR"),
+    IO_EXCEPTION_ON_IMAGE_DELETE(500, "이미지 삭제 중 오류가 발생했습니다.");
 
 
     private final int status;

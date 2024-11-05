@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
@@ -22,4 +23,8 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     // 모임 상세조회 (모임장 정보 포함)
     @Query("SELECT m FROM Meeting m JOIN m.user u WHERE m.meetingId = :meetingId")
     Optional<Meeting> findByMeetingIdWithUser(@Param("meetingId") Long meetingId);
+
+    // 특정 사용자의 진행중 모임 목록 조회
+    @Query("SELECT m FROM Meeting m WHERE m.user.userId = :userId AND m.meetingStatus = 'ONGOING'")
+    List<Meeting> findOngoingMeetingsByUserId(@Param("userId") Long userId);
 }

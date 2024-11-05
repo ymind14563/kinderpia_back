@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -135,13 +136,12 @@ public class UserController {
     }
 
     // 회원 정보 수정
-    @PutMapping("/{userId}")
+    @PutMapping(value = "/{userId}")
     public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId
-            , @RequestBody UserFormDTO dto
-//                                                                , @RequestPart("user") UserFormDTO dto
-//  이미지는 선택                                                   , @RequestPart(value = "image", required = false) MultipartFile image
+                                                                , @RequestPart("user") UserFormDTO dto
+                                                                , @RequestPart(value = "image", required = false) MultipartFile image  // 이미지는 선택
     ) {
-        UserDTO updatedUser = userService.updateUser(userId, dto);
+        UserDTO updatedUser = userService.updateUser(userId, dto, image);
         ResponseHandler<UserDTO> response = new ResponseHandler<>(
                 updatedUser,
                 HttpStatus.OK.value(),  // 200
@@ -227,4 +227,11 @@ public class UserController {
 
         return ResponseHandler.response(statusDTO, HttpStatus.OK, "사용자 모임 상태 조회");
     }
+
+    // 사용자가 모임장인 모임들의 승인 대기자 목록(각각 모임에 대한)
+    @GetMapping("/meeting/{meetingId}/pending-approvals")
+    public ResponseEntity<ResponseHandler> getUserMeetingApprovalList(@PathVariable Long meetingId){
+        return null;
+    }
+
 }

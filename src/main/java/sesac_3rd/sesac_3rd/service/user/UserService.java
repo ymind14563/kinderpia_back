@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.service.user;
 
+import org.springframework.web.multipart.MultipartFile;
 import sesac_3rd.sesac_3rd.dto.user.*;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 
@@ -29,7 +30,7 @@ public interface UserService {
     UserDTO getUser(Long userId);
 
     // 회원 정보 수정
-    UserDTO updateUser(Long userId, UserFormDTO dto);
+    UserDTO updateUser(Long userId, UserFormDTO dto, MultipartFile image);
 
     // 회원 탈퇴
     void deleteUser(Long userId);
@@ -51,4 +52,6 @@ public interface UserService {
 
     // 모임상세 접근시 사용자 상태 조회(신고여부, 신청여부, 수락여부)
     UserMeetingStatusDTO getUserMeetingStatus(Long userId, Long meetingId);
+
+    // 승인 대기자 목록(각각 모임에 대한)
 }

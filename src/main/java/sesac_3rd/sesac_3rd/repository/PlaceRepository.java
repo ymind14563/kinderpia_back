@@ -17,19 +17,14 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     Place findByPlaceId(Long placeId);
 
     // 전체 조회
-//    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO( " +
-//            "p.placeId, p.placeName, p.location, " +
-//            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName, COALESCE(ROUND(AVG(r.star)), 0)) " +
-//            "FROM Place p " +
-//            "JOIN p.placeCategory pc " +
-//            "LEFT JOIN Review r ON p.placeId = r.place.placeId " +
-//            "GROUP BY p.placeId, p.placeName, p.location, p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName ")
-    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO(p.placeId, pc.placeCtgName, p.placeName, p.location, " +
-            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid) " +
-            "FROM Place p JOIN p.placeCategory pc")
-    PlaceWithCategoryDTO getAllPlace();
-//    Page<PlaceReviewDTO> getAllPlace(Pageable pageable);
-
+    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO(" +
+            "p.placeId, p.placeName, p.location, " +
+            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName, CAST(COALESCE(ROUND(AVG(r.star)), 0) AS int) AS averageStar) " +
+            "FROM Place p " +
+            "JOIN p.placeCategory pc " +
+            "LEFT JOIN Review r ON p.placeId = r.place.placeId " +
+            "GROUP BY p.placeId, p.placeName, p.location, p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName ")
+    Page<PlaceReviewDTO> getAllPlace(Pageable pageable);
 
     // 검색 - 위치(지역구)
     @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO(p.placeId, pc.placeCtgName, p.placeName, p.location, " +

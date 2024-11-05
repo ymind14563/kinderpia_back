@@ -39,21 +39,11 @@ public class PlaceServiceImpl implements PlaceService{
     private PlaceMapper placeMapper;
 
     // 장소 목록 조회
-//    @Override
-//    public Page<PlaceReviewDTO> getAllPlace(int page, int size){
-////        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "placeId"));
-//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC));
-//        Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
-//        return result;
-//
-//    }
-
     @Override
-    public PlaceReviewDTO TestgetAllPlace(){
-        PlaceWithCategoryDTO result = placeRepository.getAllPlace();
-        System.out.println("result >> " + result);
-        PlaceReviewDTO placeReviewDTO = null;
-        return placeReviewDTO;
+    public Page<PlaceReviewDTO> getAllPlace(int page, int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "placeId"));
+        Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
+        return result;
 
     }
 

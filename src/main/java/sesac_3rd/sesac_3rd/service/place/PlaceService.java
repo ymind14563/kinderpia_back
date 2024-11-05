@@ -10,9 +10,7 @@ import sesac_3rd.sesac_3rd.entity.Place;
 public interface PlaceService {
 
     // 장소 목록 조회
-//    PlaceReviewDTO getAllPlace(int page, int limit);
-//    Page<PlaceReviewDTO> getAllPlace(int page, int limit);
-    PlaceReviewDTO TestgetAllPlace();
+    Page<PlaceReviewDTO> getAllPlace(int page, int limit);
 
     // 장소 검색 (제목, 주소)
     Page<PlaceWithCategoryDTO> findByContaining(String sort, int page, int size, String category, String keyword);

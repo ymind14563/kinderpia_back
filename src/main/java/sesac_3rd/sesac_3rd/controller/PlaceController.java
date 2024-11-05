@@ -24,42 +24,23 @@ public class PlaceController {
     private PlaceService placeService;
 
 //    // 장소 목록 조회
-//    @GetMapping
-//    private ResponseEntity<ResponseHandler<Page<PlaceReviewDTO>>> getAllPlace(
-//            @RequestParam(defaultValue = "0") int page, //시작 페이지
-//            @RequestParam(defaultValue = "10") int size //크기
-//    ) {
-//        try{
-//            Page<PlaceReviewDTO> page1 = placeService.getAllPlace(page, size);
-//            ResponseHandler<Page<PlaceReviewDTO>> response = new ResponseHandler<>(
-//                    page1,
-//                    HttpStatus.OK.value(), //200
-//                    "장소 목록 조회 완료"
-//            );
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-// 장소 목록 조회
-@GetMapping
-private ResponseEntity<ResponseHandler<PlaceReviewDTO>> TestgetAllPlace(
-        @RequestParam(defaultValue = "0") int page, //시작 페이지
-        @RequestParam(defaultValue = "10") int size //크기
-) {
-    try{
-        System.out.println("장소 목록 조회 실행됨");
-        PlaceReviewDTO page1 = placeService.TestgetAllPlace();
-        ResponseHandler<PlaceReviewDTO> response = new ResponseHandler<>(
-                page1,
-                HttpStatus.OK.value(), //200
-                "장소 목록 조회 완료"
-        );
-        return ResponseEntity.ok(response);
-    } catch (Exception e) {
-        throw new RuntimeException(e);
+    @GetMapping
+    private ResponseEntity<ResponseHandler<Page<PlaceReviewDTO>>> getAllPlace(
+            @RequestParam(defaultValue = "0") int page, //시작 페이지
+            @RequestParam(defaultValue = "10") int size //크기
+    ) {
+        try{
+            Page<PlaceReviewDTO> page1 = placeService.getAllPlace(page, size);
+            ResponseHandler<Page<PlaceReviewDTO>> response = new ResponseHandler<>(
+                    page1,
+                    HttpStatus.OK.value(), //200
+                    "장소 목록 조회 완료"
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-}
 
     // 장소 검색
     @PostMapping

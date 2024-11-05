@@ -151,8 +151,8 @@ public class MeetingController {
         }
     }
 
-    // 모임 삭제
-    @PutMapping("/{meetingId}/delete")
+    // 모임 종료 (작성자가 닫음)
+    @PutMapping("/{meetingId}/end")
     public ResponseEntity<ResponseHandler<Boolean>> deleteMeeting(
             @AuthenticationPrincipal Long userId,
             @PathVariable("meetingId") Long meetingId) {

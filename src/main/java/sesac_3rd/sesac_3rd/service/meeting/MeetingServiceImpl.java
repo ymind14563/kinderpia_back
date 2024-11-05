@@ -200,7 +200,7 @@ public class MeetingServiceImpl implements MeetingService {
         log.info("모임 수정 성공: 수정된 모임ID {}", meetingId);
     }
 
-    // 모임 삭제 (논리 삭제 DELETED)
+    // 모임 종료 (작성자가 닫음 : END)
     @Override
     public Boolean deleteMeeting(Long userId, Long meetingId) {
         // meetingId 로 기존 Meeting entity 조회
@@ -213,12 +213,12 @@ public class MeetingServiceImpl implements MeetingService {
         }
 
         // meetingStatus 상태를 DELETED 로 설정
-        meeting.setMeetingStatus(MeetingStatus.DELETED);
+        meeting.setMeetingStatus(MeetingStatus.END);
 
         // 업데이트된 entity 저장
         meetingRepository.save(meeting);
 
-        log.info("모임 삭제(논리 삭제) 성공: 삭제된 모임ID {}", meetingId);
+        log.info("모임 종료(END) 성공: 종료된 모임ID {}", meetingId);
 
         return true;
     }

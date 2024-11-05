@@ -63,12 +63,10 @@ public class ReviewController {
     // 리뷰 작성
     @PostMapping
     private ResponseEntity<ResponseHandler<Review>> createReview(
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal Long userId,
             @RequestBody ReviewFormDTO dto
     ){
         try{
-            System.out.println("token >> " + token);
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId >> null ? "+ userId);
@@ -90,10 +88,9 @@ public class ReviewController {
     @PutMapping("/update/{id}")
     private ResponseEntity<ResponseHandler<ReviewFormDTO>> updateReview(
             @PathVariable("id") Long reviewId,
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal Long userId,
             @RequestBody ReviewFormDTO rfdto){
         try{
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId >> null ? "+ userId);
@@ -116,10 +113,9 @@ public class ReviewController {
     @DeleteMapping("/delete/{id}")
     private ResponseEntity<ResponseHandler<Boolean>> deleteReview(
             @PathVariable("id") Long reviewId,
-            @RequestHeader("Authorization") String token
+            @AuthenticationPrincipal Long userId
     ){
         try{
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId >> null ? "+ userId);
@@ -144,9 +140,8 @@ public class ReviewController {
     @PostMapping("/likes/{id}")
     private ResponseEntity<ResponseHandler<Likes>> postLike(
             @PathVariable("id") Long reviewId,
-            @RequestHeader("Authorization") String token){
+            @AuthenticationPrincipal Long userId){
         try {
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("로그인이 필요합니다.");

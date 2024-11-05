@@ -15,15 +15,19 @@ import sesac_3rd.sesac_3rd.dto.user.*;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
+import sesac_3rd.sesac_3rd.entity.UserMeeting;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.user.UserMapper;
+import sesac_3rd.sesac_3rd.repository.ReportRepository;
+import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
 import sesac_3rd.sesac_3rd.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -33,6 +37,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserMeetingRepository userMeetingRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -264,7 +274,14 @@ public class UserServiceImpl implements UserService {
     // 모임상세 접근시 사용자 상태 조회(신고여부, 신청여부, 수락여부)
     @Override
     public UserMeetingStatusDTO getUserMeetingStatus(Long userId, Long meetingId) {
-        return null;
+        // 신청여부
+        boolean isJoined = userMeetingRepository.existsByUser_UserIdAndMeeting_MeetingId(userId, meetingId);
+        // 수락여부
+        boolean isAccepted = userMeetingRepository.existsByUser_UserIdAndMeeting_MeetingIdAndIsAcceptedTrue(userId, meetingId);
+        // 신고여부
+        boolean isReported = reportRepository.existsByMeeting_MeetingIdAndReporter_UserId(meetingId, userId);
+
+        return new UserMeetingStatusDTO(userId, meetingId, isReported, isAccepted, isJoined);
     }
 
     // 닉네임 유효성 검사

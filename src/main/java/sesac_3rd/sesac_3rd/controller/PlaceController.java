@@ -44,8 +44,8 @@ public class PlaceController {
 
     // 장소 검색
     @PostMapping
-    private Page<PlaceWithCategoryDTO> findByContaining(
-            @RequestParam(defaultValue = "date") String sort, //정렬 순서
+    private Page<PlaceReviewDTO> findByContaining(
+            @RequestParam(defaultValue = "default") String sort, //정렬 순서
             @RequestParam(defaultValue = "0") int page, //시작 페이지
             @RequestParam(defaultValue = "10") int size, //크기
             @RequestParam(defaultValue = "all") String category, //검색 카테고리

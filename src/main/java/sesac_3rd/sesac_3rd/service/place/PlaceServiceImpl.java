@@ -49,14 +49,17 @@ public class PlaceServiceImpl implements PlaceService{
 
     // 검색 결과
     @Override
-    public Page<PlaceWithCategoryDTO> findByContaining(String sort, int page, int size, String category, String keyword){
-    List<Sort.Order> resultPlace = new ArrayList<>();
-    resultPlace.add(Sort.Order.desc("placeId"));
-    Pageable pageable = PageRequest.of(page, size, Sort.by(resultPlace));
+    public Page<PlaceReviewDTO> findByContaining(String sort, int page, int size, String category, String keyword){
+
+    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("placeId")));
     System.out.println("category : "  + category.getClass().getName());
     System.out.println("category value: " + category);
-
+        System.out.println("sort : " + sort);
+    if(sort.equals("star")){
+        pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("averageStar")));
+    }
     if (category.equals("title")) {
+
         return placeRepository.findByPlaceNameContaining(keyword, pageable);
     }
     else if (category.equals("address")) {

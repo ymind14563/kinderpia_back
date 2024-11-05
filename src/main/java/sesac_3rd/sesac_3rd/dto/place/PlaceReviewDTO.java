@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PlaceReviewDTO {
-//    private Place place;
     private Long placeId;
     private String placeName;
     private String location;

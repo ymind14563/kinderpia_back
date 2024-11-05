@@ -107,7 +107,7 @@ public class MeetingController {
                 System.out.println("userId 토큰없음 >> " + userId);
                 return ResponseHandler.unauthorizedResponse();
             }
-            System.out.println("userId >> " + userId);
+            System.out.println("userId 토큰있음 >> " + userId);
 
             Meeting meeting = meetingService.createMeeting(userId, meetingFormDTO);
 
@@ -126,17 +126,16 @@ public class MeetingController {
     // 모임 수정
     @PutMapping("/{meetingId}")
     public ResponseEntity<ResponseHandler<Void>> updateMeeting(
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("meetingId") Long meetingId,
             @RequestBody MeetingFormDTO dto) {
         try {
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId 토큰없음 >> " + userId);
                 return ResponseHandler.unauthorizedResponse();
             }
-            System.out.println("userId >> " + userId);
+            System.out.println("userId 토큰있음 >> " + userId);
 
             meetingService.updateMeeting(userId, meetingId, dto);
 
@@ -155,16 +154,15 @@ public class MeetingController {
     // 모임 삭제
     @PutMapping("/{meetingId}/delete")
     public ResponseEntity<ResponseHandler<Boolean>> deleteMeeting(
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("meetingId") Long meetingId) {
         try {
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId 토큰없음 >> " + userId);
                 return ResponseHandler.unauthorizedResponse();
             }
-            System.out.println("userId >> " + userId);
+            System.out.println("userId 토큰있음 >> " + userId);
 
             Boolean result = meetingService.deleteMeeting(userId, meetingId);
 

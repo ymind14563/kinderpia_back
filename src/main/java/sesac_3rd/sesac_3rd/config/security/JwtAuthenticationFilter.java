@@ -66,6 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader("Cookie");
 
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("jwt=")){
+            System.out.println("bearer>>>>>>>>" + bearerToken.substring(4));
             return bearerToken.substring(4);
             // req.header jwt 토큰이 다음과 같이 들어있으므로 문자열 슬라이싱 진행하여 반환
             // Authentication: "Bearer asdfasdf.asdfasdf.asdfasdf"

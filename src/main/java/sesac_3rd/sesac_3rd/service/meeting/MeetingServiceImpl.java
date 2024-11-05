@@ -147,6 +147,7 @@ public class MeetingServiceImpl implements MeetingService {
         userMeetingJoinDTO.setUserId(userId);
         userMeetingJoinDTO.setMeetingId(meeting.getMeetingId());
         userMeetingJoinDTO.setCapacity(1); // 참가자는 기본 1명으로 설정
+        userMeetingJoinDTO.setAccepted(true); // 모임장은 수락여부 default 로 true
 
         // UserMeetingJoinDTO 를 UserMeeting entity 로 변환
         UserMeeting userMeeting = UserMeetingMapper.toUserMeetingJoinEntity(userMeetingJoinDTO);

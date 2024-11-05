@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 import sesac_3rd.sesac_3rd.dto.user.*;
@@ -20,9 +21,11 @@ import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.user.UserMapper;
+import sesac_3rd.sesac_3rd.repository.MeetingRepository;
 import sesac_3rd.sesac_3rd.repository.ReportRepository;
 import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
 import sesac_3rd.sesac_3rd.repository.UserRepository;
+import sesac_3rd.sesac_3rd.service.s3.S3Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -43,6 +46,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ReportRepository reportRepository;
+
+    @Autowired
+    private MeetingRepository meetingRepository;
+
+    @Autowired
+    S3Service s3Service;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -145,7 +154,14 @@ public class UserServiceImpl implements UserService {
 
 
         // 탈퇴한 사람이 작성한 리뷰나 모임, 채팅은 삭제하지 않음
-        // 모임글은 '닫힘 모임' 처리 -> 탈퇴한 사람이 작성한 모임 중 '모집중' 모임이 모두 '모임종료'로 업데이트
+        // 모임글은 '닫힘 모임' 처리 -> 탈퇴한 사람이 작성한 모임 중 '모집중' 모임이 모두 '모임종료'(END)로 업데이트
+        List<Meeting> userMeetings = meetingRepository.findOngoingMeetingsByUserId(userId);
+        if (!userMeetings.isEmpty()){
+            for (Meeting meeting : userMeetings){
+                meeting.setMeetingStatus(MeetingStatus.END);
+                meetingRepository.save(meeting);
+            }
+        }
 
         // 해당 사용자의 탈퇴 여부를 true로 변경
         originUser.setDeleted(true);
@@ -163,11 +179,10 @@ public class UserServiceImpl implements UserService {
 
     // 회원 정보 수정
     // 닉네임, 비번, 전번, 프로필 이미지 수정 가능
-    // 수정일자 현재 시간으로 삽입
     // 바꿀 수 있는 4개 컬럼 중 일부만 바뀌어도 수정 되도록(해당 컬럼에 값 있는지 없는지 확인 필요)
     // 중복 검사 제외(수정 페이지에서도 회원가입 때처럼 중복검사는 input창에서 focusout될때 실행되도록)
     @Override
-    public UserDTO updateUser(Long userId, UserFormDTO dto) {
+    public UserDTO updateUser(Long userId, UserFormDTO dto, MultipartFile image) {
         log.info("update user : {}", userId);
         // 1. 사용자 조회
         User existingUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
@@ -196,10 +211,18 @@ public class UserServiceImpl implements UserService {
         }
 
         // 프로필 이미지 수정
-        if (StringUtils.hasText(dto.getProfileImg())) {
-            // 이미지 관련 S3 추가, String말고 MultipartFile 로 바꿔야 할수도
+        if (image != null && !image.isEmpty()) {
             log.info("profileimg update...");
-            existingUser.setProfileImg(dto.getProfileImg());
+
+            // 기존 이미지가 있으면 S3에서 삭제
+            if (StringUtils.hasText(existingUser.getProfileImg())){
+                log.info("delete image .///././././.");
+                s3Service.deleteImgFromS3(existingUser.getProfileImg());
+            }
+            // 새 이미지 업로드 후 url 저장
+            String imgUrl = s3Service.upload(image);
+            log.info("image upload ()(*)(*)(*)(*)(*)(*" + imgUrl);
+            existingUser.setProfileImg(imgUrl);
         }
         // 수정 날짜 업데이트
         existingUser.setUpdatedAt(LocalDateTime.now());
@@ -283,6 +306,8 @@ public class UserServiceImpl implements UserService {
 
         return new UserMeetingStatusDTO(userId, meetingId, isReported, isAccepted, isJoined);
     }
+
+    // 승인 대기자 목록(각각 모임에 대한)
 
     // 닉네임 유효성 검사
     private void validateNickname(String nickname) {

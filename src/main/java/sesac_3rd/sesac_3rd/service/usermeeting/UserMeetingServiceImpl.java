@@ -110,7 +110,7 @@ public class UserMeetingServiceImpl implements UserMeetingService {
 
         // 모임장 검증: 현재 사용자가 모임의 작성자인지 확인
         if (!meeting.getUser().getUserId().equals(userId)) {
-            throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+            throw new CustomException(ExceptionStatus.USER_NOT_READER);
         }
 
         // 수락 상태 업데이트 및 수락일자 설정
@@ -141,7 +141,7 @@ public class UserMeetingServiceImpl implements UserMeetingService {
 
         // 모임장 검증: 현재 사용자가 모임의 작성자인지 확인
         if (!meeting.getUser().getUserId().equals(userId)) {
-            throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+            throw new CustomException(ExceptionStatus.USER_NOT_READER);
         }
 
         // UserMeeting entity 삭제 (거절 처리)

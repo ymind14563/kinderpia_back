@@ -32,7 +32,7 @@ public class UserMeetingController {
                 System.out.println("userId 토큰없음 >> " + userId);
                 return ResponseHandler.unauthorizedResponse();
             }
-            System.out.println("userId >> " + userId);
+            System.out.println("userId 토큰있음 >> " + userId);
 
             userMeetingService.joinMeeting(userId, meetingId, userMeetingJoinDTO);
 
@@ -59,7 +59,7 @@ public class UserMeetingController {
                 System.out.println("userId 토큰없음 >> " + userId);
                 return ResponseHandler.unauthorizedResponse();
             }
-            System.out.println("userId >> " + userId);
+            System.out.println("userId 토큰있음 >> " + userId);
 
             Boolean result = userMeetingService.exitMeeting(userId, meetingId);
 
@@ -88,7 +88,7 @@ public class UserMeetingController {
                 System.out.println("userId 토큰없음 >> " + userId);
                 return ResponseHandler.unauthorizedResponse();
             }
-            System.out.println("userId >> " + userId);
+            System.out.println("userId 토큰있음 >> " + userId);
 
             userMeetingService.isAccepted(userId, meetingId, joinUserId);
 
@@ -117,7 +117,7 @@ public class UserMeetingController {
                 System.out.println("userId 토큰없음 >> " + userId);
                 return ResponseHandler.unauthorizedResponse();
             }
-            System.out.println("userId >> " + userId);
+            System.out.println("userId 토큰있음 >> " + userId);
 
             Boolean result = userMeetingService.isRejection(userId, meetingId, joinUserId);
 

@@ -29,13 +29,10 @@ public class UserMeetingServiceImpl implements UserMeetingService {
     MeetingService meetingService;
 
     // 모임 가입
-    public void joinMeeting(Long meetingId, UserMeetingJoinDTO userMeetingJoinDTO) {
-        // 임시로 userId 설정
-        Long userId = 3L; // JWT 없이 임시로 설정한 userId
-        userMeetingJoinDTO.setUserId(userId);
-
-        // meetingId를 DTO 에 설정
-        userMeetingJoinDTO.setMeetingId(meetingId);
+    @Override
+    public void joinMeeting(Long userId, Long meetingId, UserMeetingJoinDTO userMeetingJoinDTO) {
+        userMeetingJoinDTO.setUserId(userId); // userId 를 DTO 에 설정
+        userMeetingJoinDTO.setMeetingId(meetingId); // meetingId를 DTO 에 설정
 
         // 이미 참가한 사용자 여부 확인
         if (userMeetingRepository.existsByUser_UserIdAndMeeting_MeetingId(userId, meetingId)) {
@@ -76,10 +73,7 @@ public class UserMeetingServiceImpl implements UserMeetingService {
     }
 
     // 모임 탈퇴
-    public void exitMeeting(Long meetingId) {
-        // 임시로 userId 설정
-        Long userId = 2L; // JWT 없이 임시로 설정한 userId
-
+    public Boolean exitMeeting(Long userId, Long meetingId) {
         // 사용자가 모임에 참가중인지 확인
         boolean isUserJoined = userMeetingRepository.existsByUser_UserIdAndMeeting_MeetingId(userId, meetingId);
         if (!isUserJoined) {
@@ -101,13 +95,23 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         userMeetingRepository.delete(userMeeting);
 
         log.info("모임 탈퇴 성공: 탈퇴한 userId {}", userId);
+
+        return true;
     }
 
     // 모임 수락
-    public void isAccepted(Long meetingId, Long userId) {
+    public void isAccepted(Long userId, Long meetingId, Long joinUserId) {
         // 특정 모임과 사용자에 대한 UserMeeting entity 찾기
         UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(userId, meetingId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+
+        // Meeting entity 가져오기
+        Meeting meeting = userMeeting.getMeeting();
+
+        // 모임장 검증: 현재 사용자가 모임의 작성자인지 확인
+        if (!meeting.getUser().getUserId().equals(userId)) {
+            throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+        }
 
         // 수락 상태 업데이트 및 수락일자 설정
         userMeeting.setIsAccepted(true);
@@ -116,9 +120,6 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         // 업데이트된 UserMeeting 저장
         userMeetingRepository.save(userMeeting);
 
-        // Meeting entity 가져오기
-        Meeting meeting = userMeeting.getMeeting();
-
         // 모임의 capacity 에 참가자 인원을 추가
         int updatedCapacity = meeting.getCapacity() + userMeeting.getCapacity();
         meeting.setCapacity(updatedCapacity); // 새로운 capacity 설정
@@ -126,18 +127,28 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         // 변경된 Meeting 저장
         meetingRepository.save(meeting);
 
-        log.info("모임 수락 처리 성공: meetingId {}, userId {}", meetingId, userId);
+        log.info("모임 수락 처리 성공: meetingId {}, joinUserId {}", meetingId, joinUserId);
     }
 
     // 모임 거절
-    public void isRejection(Long meetingId, Long userId) {
+    public Boolean isRejection(Long userId, Long meetingId, Long joinUserId) {
         // 특정 모임과 사용자에 대한 UserMeeting entity 찾기
         UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(userId, meetingId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
+        // Meeting entity 가져오기
+        Meeting meeting = userMeeting.getMeeting();
+
+        // 모임장 검증: 현재 사용자가 모임의 작성자인지 확인
+        if (!meeting.getUser().getUserId().equals(userId)) {
+            throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+        }
+
         // UserMeeting entity 삭제 (거절 처리)
         userMeetingRepository.delete(userMeeting);
 
-        log.info("모임 거절 및 삭제 처리 성공: meetingId {}, userId {}", meetingId, userId);
+        log.info("모임 거절 및 삭제 처리 성공: meetingId {}, joinUserId {}", meetingId, joinUserId);
+
+        return true;
     }
 }

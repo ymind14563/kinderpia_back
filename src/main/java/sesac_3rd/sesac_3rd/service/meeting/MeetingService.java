@@ -21,11 +21,11 @@ public interface MeetingService {
     MeetingDetailDTO getDetailMeeting(Long meetingId);
 
     // 모임 생성
-    Meeting createMeeting(MeetingFormDTO meetingFormDTO);
+    Meeting createMeeting(Long userId, MeetingFormDTO meetingFormDTO);
 
     // 모임 수정
-    void updateMeeting(Long meetingId, MeetingFormDTO meetingFormDTO);
+    void updateMeeting(Long userId, Long meetingId, MeetingFormDTO meetingFormDTO);
 
     // 모임 삭제
-    void deleteMeeting(Long meetingId);
+    Boolean deleteMeeting(Long userId, Long meetingId);
 }

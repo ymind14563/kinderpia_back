@@ -35,13 +35,26 @@ public class PlaceServiceImpl implements PlaceService{
     @Autowired
     private ReviewRepository reviewRepository;
 
-    // 장소 목록 조회
-    @Override
-    public Page<PlaceDTO> getAllPlace(int page, int limit){
-        Pageable pageable = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "placeId"));
-        Page<Place> places = placeRepository.getAllPlaceRepo(pageable); // Place 엔티티 페이지 조회
+    @Autowired
+    private PlaceMapper placeMapper;
 
-        return places.map(PlaceMapper::convertToDTO); // 인스턴스 메소드로 변환
+    // 장소 목록 조회
+//    @Override
+//    public Page<PlaceReviewDTO> getAllPlace(int page, int size){
+////        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "placeId"));
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC));
+//        Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
+//        return result;
+//
+//    }
+
+    @Override
+    public PlaceReviewDTO TestgetAllPlace(){
+        PlaceWithCategoryDTO result = placeRepository.getAllPlace();
+        System.out.println("result >> " + result);
+        PlaceReviewDTO placeReviewDTO = null;
+        return placeReviewDTO;
+
     }
 
     // 검색 결과
@@ -62,7 +75,6 @@ public class PlaceServiceImpl implements PlaceService{
     else{
         throw new CustomException(ExceptionStatus.CATEGORY_NOT_FOUND);
     }
-
 }
 
     @Override
@@ -72,7 +84,9 @@ public class PlaceServiceImpl implements PlaceService{
         // 장소별 평균 평점 조회
         Integer avgStar = reviewRepository.getAverageStar(placeId);
         System.out.println("avgStar : " + avgStar);
+        PlaceReviewDTO placeReviewDTO = placeMapper.convertToPlaceReviewDTO(place);
+        placeReviewDTO.setAverageStar(avgStar);
 
-        return new PlaceReviewDTO(place,placeCtgName,avgStar);
+        return placeReviewDTO;
     }
 }

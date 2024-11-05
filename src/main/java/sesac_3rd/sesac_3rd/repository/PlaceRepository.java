@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 
@@ -16,8 +17,19 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     Place findByPlaceId(Long placeId);
 
     // 전체 조회
-    @Query("SELECT p FROM Place p JOIN FETCH p.placeCategory") // Fetch join을 사용하여 카테고리도 함께 가져옴
-    Page<Place> getAllPlaceRepo(Pageable pageable);
+//    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO( " +
+//            "p.placeId, p.placeName, p.location, " +
+//            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName, COALESCE(ROUND(AVG(r.star)), 0)) " +
+//            "FROM Place p " +
+//            "JOIN p.placeCategory pc " +
+//            "LEFT JOIN Review r ON p.placeId = r.place.placeId " +
+//            "GROUP BY p.placeId, p.placeName, p.location, p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName ")
+    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO(p.placeId, pc.placeCtgName, p.placeName, p.location, " +
+            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid) " +
+            "FROM Place p JOIN p.placeCategory pc")
+    PlaceWithCategoryDTO getAllPlace();
+//    Page<PlaceReviewDTO> getAllPlace(Pageable pageable);
+
 
     // 검색 - 위치(지역구)
     @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO(p.placeId, pc.placeCtgName, p.placeName, p.location, " +

@@ -43,7 +43,8 @@ public class UserController {
         Cookie jwtCookie = new Cookie("jwt", loginResponse.getToken());
         jwtCookie.setHttpOnly(false);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(3600);
+//        jwtCookie.setMaxAge(3600);
+        jwtCookie.setMaxAge(60*60*24);
         // jwtCookie.setSecure(true);
 
         // HttpServletResponse에 쿠키 추가

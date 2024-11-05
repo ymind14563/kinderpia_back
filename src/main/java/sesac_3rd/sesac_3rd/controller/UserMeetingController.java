@@ -71,4 +71,24 @@ public class UserMeetingController {
             throw new RuntimeException(e);
         }
     }
+
+    // 모임 거절
+    @DeleteMapping("/{meetingId}/reject/{userId}")
+    public ResponseEntity<ResponseHandler<Void>> rejectMeeting(
+            @PathVariable("meetingId") Long meetingId, @PathVariable("userId") Long userId
+    ) {
+        try {
+            userMeetingService.isRejection(meetingId, userId);
+
+            ResponseHandler<Void> response = new ResponseHandler<>(
+                    null,
+                    HttpStatus.OK.value(), // 200
+                    "모임 참가자 거절 완료"
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

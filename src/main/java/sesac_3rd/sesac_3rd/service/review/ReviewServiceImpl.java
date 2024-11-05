@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.service.review;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sesac_3rd.sesac_3rd.dto.review.*;
 import sesac_3rd.sesac_3rd.entity.Likes;
 import sesac_3rd.sesac_3rd.entity.Place;
@@ -68,13 +69,10 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public Review createReview(ReviewFormDTO reviewformDTO, Long userId) {
         User checkUser = userRepository.findByUserId(userId);
-        if(checkUser == null){
-            throw new CustomException(ExceptionStatus.USER_NOT_FOUND);
-        }
-        Place checkPlace = placeRepository.findByPlaceId(reviewformDTO.getPlaceId());
-        if(checkPlace == null){
-            throw new CustomException(ExceptionStatus.PLACE_NOT_FOUND);
-        }
+//                .orElseThrow(()-> new CustomException(ExceptionStatus.USER_NOT_FOUND));
+
+        System.out.println("UserId : " + checkUser.getUserId());
+
         List<Review> checkReview = reviewRepository.findByUserIdAndPlaceId(userId, reviewformDTO.getPlaceId());
         for (Review review : checkReview) {
             System.out.println("Review ID: " + review.getReviewId());
@@ -86,16 +84,21 @@ public class ReviewServiceImpl implements ReviewService{
         if(!checkReview.isEmpty()){
             throw new CustomException(ExceptionStatus.REVIEW_ALREADY_WRITE);
         }
-        Review review = reviewMapper.convertToEntity(reviewformDTO);
+        Review review = reviewMapper.convertToEntity(reviewformDTO, checkUser);
         return reviewRepository.save(review);
     }
 
     // 리뷰 수정
     @Override
-    public ReviewFormDTO updateReview(Long reviewId, ReviewFormDTO reviewformDTO){
+    public ReviewFormDTO updateReview(Long reviewId, Long userId, ReviewFormDTO reviewformDTO){
         try {
             Review review = reviewRepository.findById(reviewId)
                     .orElseThrow(()->new CustomException(ExceptionStatus.REVIEWID_NOT_FOUND));
+            System.out.println("userId >  "
+                    + userId + " / review.getUser().getUserId() > " + review.getUser().getUserId());
+            if(!userId.equals(review.getUser().getUserId())){
+                throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+            }
             review.setStar(reviewformDTO.getStar());
             review.setReviewContent(reviewformDTO.getReviewContent());
             reviewRepository.save(review);
@@ -109,10 +112,13 @@ public class ReviewServiceImpl implements ReviewService{
 
     // 리뷰 삭제
     @Override
-    public boolean deleteReview(Long reviewId){
+    public boolean deleteReview(Long reviewId, Long userId){
         try{
             Review review = reviewRepository.findById(reviewId)
                     .orElseThrow(()->new CustomException(ExceptionStatus.REVIEWID_NOT_FOUND));
+            if(!userId.equals(review.getUser().getUserId())){
+                throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+            }
             review.setDeleted(true);
             reviewRepository.save(review);
             return true;
@@ -123,15 +129,16 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     // 리뷰 좋아요
-    public Likes postLike(Long reviewId, LikesDTO likesDTO, User user, Review review){
+    public Likes postLike(Long reviewId, Long userId){
         try{
-            List<Likes> checkLikes = likesRepository.findByReview_ReviewIdAndUser_UserId(reviewId, likesDTO.getUserId());
+            List<Likes> checkLikes = likesRepository.findByReview_ReviewIdAndUser_UserId(reviewId, userId);
+
             if(!checkLikes.isEmpty()){
                 Likes existLike = checkLikes.get(0);
                 likesRepository.delete(existLike);
                 return existLike;
             }else {
-                Likes likes = likesMapper.convertToEntity(likesDTO, user, review);
+                Likes likes = likesMapper.convertToEntity(reviewId, userId);
                 return likesRepository.save(likes);
             }
         } catch (Exception e) {

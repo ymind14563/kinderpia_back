@@ -22,12 +22,12 @@ public class LikesMapper {
     private ReviewRepository reviewRepository;
 
     // dto to entity - 좋아요 눌렀을 시
-    public Likes convertToEntity(LikesDTO dto, User user, Review review){
-        User getUserId = userRepository.findByUserId(dto.getUserId());
+    public Likes convertToEntity(Long reviewId, Long userId){
+        User getUserId = userRepository.findByUserId(userId);
         if(getUserId == null){
             throw new CustomException(ExceptionStatus.USER_NOT_FOUND);
         }
-        Review getreviewId = reviewRepository.findByReviewId(dto.getReviewId());
+        Review getreviewId = reviewRepository.findByReviewId(reviewId);
         if(getreviewId == null) {
             throw new CustomException(ExceptionStatus.REVIEWID_NOT_FOUND);
         }

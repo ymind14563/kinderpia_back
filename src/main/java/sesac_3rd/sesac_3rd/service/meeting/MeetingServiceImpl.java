@@ -22,6 +22,7 @@ import sesac_3rd.sesac_3rd.repository.PlaceRepository;
 import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
 import sesac_3rd.sesac_3rd.service.chat.ChatRoomService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,9 +123,8 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     // 모임 생성
-    public Meeting createMeeting(MeetingFormDTO meetingFormDTO) {
-        // 임시로 userId 설정
-        Long userId = 1L; // JWT 없이 임시로 설정한 userId
+    @Override
+    public Meeting createMeeting(Long userId, MeetingFormDTO meetingFormDTO) {
         meetingFormDTO.setUserId(userId);
 
         // 네이버 (모임장소)
@@ -168,37 +168,56 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     // 모임 수정
-    public void updateMeeting(Long meetingId, MeetingFormDTO meetingFormDTO) {
+    @Override
+    public void updateMeeting(Long userId, Long meetingId, MeetingFormDTO meetingFormDTO) {
         // meetingId 로 기존 Meeting entity 조회
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
-        // dto to entity
-        Meeting updateMeeting = MeetingMapper.toMeetingUpdateEntity(meetingFormDTO);
+        // 작성자 검증
+        if (!meeting.getUser().getUserId().equals(userId)) {
+            throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+        }
 
-        // 기존 entity 필드에 업데이트할 필드만 덮어쓰기
-        meeting.setMeetingTitle(updateMeeting.getMeetingTitle());
-        meeting.setTotalCapacity(updateMeeting.getTotalCapacity());
-        meeting.setMeetingContent(updateMeeting.getMeetingContent());
-        meeting.setUpdatedAt(updateMeeting.getUpdatedAt());
+        System.out.println("userId >> " + userId + ", meetingId >> " + meetingId);
+
+        // null 비교 후 전단된 값만 업데이트
+        if (meetingFormDTO.getMeetingTitle() != null) {
+            meeting.setMeetingTitle(meetingFormDTO.getMeetingTitle());
+        }
+        if (meetingFormDTO.getTotalCapacity() != -1) { // totalCapacity 가 -1이 아닌 경우에만 업데이트 (프론트에서 -1을 보내면 수정하지 않음)
+            meeting.setTotalCapacity(meetingFormDTO.getTotalCapacity());
+        }
+        if (meetingFormDTO.getMeetingContent() != null) {
+            meeting.setMeetingContent(meetingFormDTO.getMeetingContent());
+        }
+        meeting.setUpdatedAt(LocalDateTime.now()); // 수정일시
 
         // 변경된 entity 저장
         meetingRepository.save(meeting);
 
-        log.info("모임 수정 성공: 모임ID {}", meetingId);
+        log.info("모임 수정 성공: 수정된 모임ID {}", meetingId);
     }
 
-    // 모임 삭제 (논리 삭제)
-    public void deleteMeeting(Long meetingId) {
+    // 모임 삭제 (논리 삭제 DELETED)
+    @Override
+    public Boolean deleteMeeting(Long userId, Long meetingId) {
         // meetingId 로 기존 Meeting entity 조회
         Meeting meeting = meetingRepository.findById(meetingId)
-                        .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+                .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+
+        if (!userId.equals(meeting.getUser().getUserId())) {
+            throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+        }
+
         // meetingStatus 상태를 DELETED 로 설정
         meeting.setMeetingStatus(MeetingStatus.DELETED);
 
         // 업데이트된 entity 저장
         meetingRepository.save(meeting);
 
-        log.info("모임 삭제(논리 삭제) 성공: 모임ID {}", meetingId);
+        log.info("모임 삭제(논리 삭제) 성공: 삭제된 모임ID {}", meetingId);
+
+        return true;
     }
 }

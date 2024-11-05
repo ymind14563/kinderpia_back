@@ -6,7 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
@@ -18,6 +20,9 @@ import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
 @RestController
 @RequestMapping("/api/meeting")
 public class MeetingController {
+    @Autowired
+    private TokenProvider tokenProvider;
+
     @Autowired
     private MeetingService meetingService;
 
@@ -94,14 +99,21 @@ public class MeetingController {
     // 모임 생성
     @PostMapping
     public ResponseEntity<ResponseHandler<Long>> createMeeting(
+            @AuthenticationPrincipal Long userId,
             @RequestBody MeetingFormDTO meetingFormDTO) {
         try {
-            // 모임 생성 후 생성된 모임 entity 반환
-            Meeting meeting = meetingService.createMeeting(meetingFormDTO);
+            // 토큰에 문제가 있는 경우
+            if (userId == null) {
+                System.out.println("userId 토큰없음 >> " + userId);
+                return ResponseHandler.unauthorizedResponse();
+            }
+            System.out.println("userId >> " + userId);
+
+            Meeting meeting = meetingService.createMeeting(userId, meetingFormDTO);
 
             ResponseHandler<Long> response = new ResponseHandler<>(
                     meeting.getMeetingId(), // 생성된 meetingId 포함
-                    HttpStatus.CREATED.value(), // 201
+                    HttpStatus.CREATED.value(), // 200
                     "모임 생성 완료"
             );
 
@@ -114,13 +126,23 @@ public class MeetingController {
     // 모임 수정
     @PutMapping("/{meetingId}")
     public ResponseEntity<ResponseHandler<Void>> updateMeeting(
-            @PathVariable("meetingId") Long meetingId, @RequestBody MeetingFormDTO meetingFormDTO) {
+            @RequestHeader("Authorization") String token,
+            @PathVariable("meetingId") Long meetingId,
+            @RequestBody MeetingFormDTO dto) {
         try {
-            meetingService.updateMeeting(meetingId, meetingFormDTO);
+            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
+            // 토큰에 문제가 있는 경우
+            if (userId == null) {
+                System.out.println("userId 토큰없음 >> " + userId);
+                return ResponseHandler.unauthorizedResponse();
+            }
+            System.out.println("userId >> " + userId);
+
+            meetingService.updateMeeting(userId, meetingId, dto);
 
             ResponseHandler<Void> response = new ResponseHandler<>(
                     null,
-                    HttpStatus.CREATED.value(), // 201
+                    HttpStatus.NO_CONTENT.value(), // 204
                     "모임 수정 완료"
             );
 
@@ -132,13 +154,23 @@ public class MeetingController {
 
     // 모임 삭제
     @PutMapping("/{meetingId}/delete")
-    public ResponseEntity<ResponseHandler<Void>> deleteMeeting(@PathVariable("meetingId") Long meetingId) {
+    public ResponseEntity<ResponseHandler<Boolean>> deleteMeeting(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("meetingId") Long meetingId) {
         try {
-            meetingService.deleteMeeting(meetingId);
+            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
+            // 토큰에 문제가 있는 경우
+            if (userId == null) {
+                System.out.println("userId 토큰없음 >> " + userId);
+                return ResponseHandler.unauthorizedResponse();
+            }
+            System.out.println("userId >> " + userId);
 
-            ResponseHandler<Void> response = new ResponseHandler<>(
-                    null,
-                    HttpStatus.CREATED.value(), // 201
+            Boolean result = meetingService.deleteMeeting(userId, meetingId);
+
+            ResponseHandler<Boolean> response = new ResponseHandler<>(
+                    result, // true
+                    HttpStatus.OK.value(), // 200
                     "모임 삭제 완료"
             );
 

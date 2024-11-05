@@ -34,6 +34,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Integer getAverageStar(@Param("placeId") Long placeId);
 
     // 리뷰 작성
-    @Query("SELECT r FROM Review r WHERE r.user.id = :userId AND r.place.id = :placeId")
+    @Query("SELECT r FROM Review r WHERE r.user.id = :userId AND r.place.id = :placeId AND isDeleted = false")
     List<Review> findByUserIdAndPlaceId(@Param("userId") Long userId, @Param("placeId") Long placeId);
 }

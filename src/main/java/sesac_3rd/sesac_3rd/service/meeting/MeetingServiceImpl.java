@@ -175,9 +175,9 @@ public class MeetingServiceImpl implements MeetingService {
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
-        // 작성자 검증
+        // 모임장 검증
         if (!meeting.getUser().getUserId().equals(userId)) {
-            throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+            throw new CustomException(ExceptionStatus.USER_NOT_READER);
         }
 
         System.out.println("userId >> " + userId + ", meetingId >> " + meetingId);
@@ -207,8 +207,9 @@ public class MeetingServiceImpl implements MeetingService {
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
+        // 모임장 검증
         if (!userId.equals(meeting.getUser().getUserId())) {
-            throw new CustomException(ExceptionStatus.USER_NOT_WRITER);
+            throw new CustomException(ExceptionStatus.USER_NOT_READER);
         }
 
         // meetingStatus 상태를 DELETED 로 설정

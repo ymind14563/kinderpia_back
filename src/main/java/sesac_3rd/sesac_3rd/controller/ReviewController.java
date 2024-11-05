@@ -3,14 +3,17 @@ package sesac_3rd.sesac_3rd.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.dto.review.*;
 import sesac_3rd.sesac_3rd.entity.Likes;
 import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.review.ReviewService;
+import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 
 import java.util.List;
 
@@ -20,6 +23,9 @@ public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
     // 리뷰 목록 조회
     @GetMapping("/{placeId}")
@@ -57,16 +63,18 @@ public class ReviewController {
     // 리뷰 작성
     @PostMapping
     private ResponseEntity<ResponseHandler<Review>> createReview(
-            @AuthenticationPrincipal Long userId,
+            @RequestHeader("Authorization") String token,
             @RequestBody ReviewFormDTO dto
     ){
         try{
+            System.out.println("token >> " + token);
+            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId >> null ? "+ userId);
                 return ResponseHandler.unauthorizedResponse();
             }
-            System.out.println("userId "+ userId);
+            System.out.println("userId >>> "+ userId);
             Review review = reviewService.createReview(dto, userId);
             ResponseHandler<Review> response = new ResponseHandler<>(
                     review,
@@ -80,9 +88,20 @@ public class ReviewController {
     }
     // 리뷰 수정
     @PutMapping("/update/{id}")
-    private ResponseEntity<ResponseHandler<ReviewFormDTO>> updateReview(@PathVariable("id") Long reviewId, @RequestBody ReviewFormDTO rfdto){
+    private ResponseEntity<ResponseHandler<ReviewFormDTO>> updateReview(
+            @PathVariable("id") Long reviewId,
+            @RequestHeader("Authorization") String token,
+            @RequestBody ReviewFormDTO rfdto){
         try{
-            ReviewFormDTO reviewFormDTO = reviewService.updateReview(reviewId, rfdto);
+            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
+            // 토큰에 문제가 있는 경우
+            if (userId == null) {
+                System.out.println("userId >> null ? "+ userId);
+                return ResponseHandler.unauthorizedResponse();
+            }
+            System.out.println("userId >>> "+ userId);
+
+            ReviewFormDTO reviewFormDTO = reviewService.updateReview(reviewId, userId, rfdto);
             ResponseHandler<ReviewFormDTO> response = new ResponseHandler<>(
                     reviewFormDTO,
                     HttpStatus.OK.value(), //200
@@ -95,10 +114,20 @@ public class ReviewController {
     }
     // 리뷰 삭제
     @DeleteMapping("/delete/{id}")
-    private ResponseEntity<ResponseHandler<Boolean>> deleteReview(@PathVariable("id") Long reviewId, @RequestBody ReviewFormDTO dto){
+    private ResponseEntity<ResponseHandler<Boolean>> deleteReview(
+            @PathVariable("id") Long reviewId,
+            @RequestHeader("Authorization") String token
+    ){
         try{
+            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
+            // 토큰에 문제가 있는 경우
+            if (userId == null) {
+                System.out.println("userId >> null ? "+ userId);
+                return ResponseHandler.unauthorizedResponse();
+            }
 
-            Boolean result = reviewService.deleteReview(reviewId);
+            System.out.println("userId >>> "+ userId);
+            Boolean result = reviewService.deleteReview(reviewId,userId);
             ResponseHandler<Boolean> response = new ResponseHandler<>(
                     result, //true
                     HttpStatus.OK.value(), // 200
@@ -113,9 +142,18 @@ public class ReviewController {
 
     // 리뷰 좋아요
     @PostMapping("/likes/{id}")
-    private ResponseEntity<ResponseHandler<Likes>> postLike(@PathVariable("id") Long reviewId, @RequestBody LikesDTO likesDTO, User user, Review review){
+    private ResponseEntity<ResponseHandler<Likes>> postLike(
+            @PathVariable("id") Long reviewId,
+            @RequestHeader("Authorization") String token){
         try {
-            Likes result = reviewService.postLike(reviewId, likesDTO, user, review);
+            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
+            // 토큰에 문제가 있는 경우
+            if (userId == null) {
+                System.out.println("로그인이 필요합니다.");
+                return ResponseHandler.unauthorizedResponse();
+            }
+            System.out.println("userId >>> "+ userId);
+            Likes result = reviewService.postLike(reviewId, userId);
             ResponseHandler<Likes> response = new ResponseHandler<>(
                     result,
                     HttpStatus.OK.value(), //200

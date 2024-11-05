@@ -24,11 +24,11 @@ public interface ReviewService {
     ReviewDTO getReviewById(Long reviewId);
 
     // 리뷰 수정
-    public ReviewFormDTO updateReview(Long reviewId, ReviewFormDTO reviewformDTO);
+    public ReviewFormDTO updateReview(Long reviewId, Long userId, ReviewFormDTO reviewformDTO);
 
     // 리뷰 삭제
-    public boolean deleteReview(Long reviewId);
+    public boolean deleteReview(Long reviewId, Long userId);
 
     // 리뷰 좋아요
-    public Likes postLike(Long reviewId, LikesDTO likesDTO, User user, Review review);
+    public Likes postLike(Long reviewId, Long userId);
 }

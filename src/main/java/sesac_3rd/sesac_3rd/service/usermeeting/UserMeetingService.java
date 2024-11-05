@@ -11,4 +11,7 @@ public interface UserMeetingService {
 
     // 모임 수락
     void isAccepted(Long meetingId, Long userId);
+
+    // 모임 거절
+    void isRejection(Long meetingId, Long userId);
 }

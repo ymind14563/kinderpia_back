@@ -28,10 +28,10 @@ public class UserMeetingServiceImpl implements UserMeetingService {
     @Autowired
     MeetingService meetingService;
 
-    // 모임 참가
+    // 모임 가입
     public void joinMeeting(Long meetingId, UserMeetingJoinDTO userMeetingJoinDTO) {
         // 임시로 userId 설정
-        Long userId = 2L; // JWT 없이 임시로 설정한 userId
+        Long userId = 3L; // JWT 없이 임시로 설정한 userId
         userMeetingJoinDTO.setUserId(userId);
 
         // meetingId를 DTO 에 설정
@@ -130,5 +130,14 @@ public class UserMeetingServiceImpl implements UserMeetingService {
     }
 
     // 모임 거절
+    public void isRejection(Long meetingId, Long userId) {
+        // 특정 모임과 사용자에 대한 UserMeeting entity 찾기
+        UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(userId, meetingId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
+        // UserMeeting entity 삭제 (거절 처리)
+        userMeetingRepository.delete(userMeeting);
+
+        log.info("모임 거절 및 삭제 처리 성공: meetingId {}, userId {}", meetingId, userId);
+    }
 }

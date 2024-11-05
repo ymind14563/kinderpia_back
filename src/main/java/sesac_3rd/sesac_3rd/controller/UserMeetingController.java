@@ -51,4 +51,24 @@ public class UserMeetingController {
             throw new RuntimeException(e);
         }
     }
+
+    // 모임 수락
+    @PutMapping("/{meetingId}/accept/{userId}")
+    public ResponseEntity<ResponseHandler<Void>> acceptMeeting(
+            @PathVariable("meetingId") Long meetingId, @PathVariable("userId") Long userId
+    ) {
+        try {
+            userMeetingService.isAccepted(meetingId, userId);
+
+            ResponseHandler<Void> response = new ResponseHandler<>(
+                    null,
+                    HttpStatus.OK.value(), // 201
+                    "모임 참가자 수락 완료"
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

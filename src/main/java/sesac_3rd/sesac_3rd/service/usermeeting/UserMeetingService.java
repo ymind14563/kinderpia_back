@@ -10,5 +10,5 @@ public interface UserMeetingService {
     void exitMeeting(Long meetingId);
 
     // 모임 수락
-    void isAccepted();
+    void isAccepted(Long meetingId, Long userId);
 }

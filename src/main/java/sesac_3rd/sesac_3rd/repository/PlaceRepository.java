@@ -21,7 +21,9 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     Page<Place> getAllPlaceRepo(Pageable pageable);
 
     // 검색 - 위치(지역구)
-    @Query("SELECT p FROM Place p JOIN FETCH p.placeCategory where p.location like %:keyword%")
+    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO(p.placeId, pc.placeCtgName, p.placeName, p.location, " +
+            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid) " +
+            "FROM Place p JOIN p.placeCategory pc WHERE p.location LIKE %:keyword%")
     Page<PlaceWithCategoryDTO> findByLocationContaining(@Param("keyword") String keyword, Pageable pageable);
 
     // 검색 - 장소명

@@ -59,9 +59,9 @@ public class PlaceController {
     @GetMapping("/{id}")
     private ResponseEntity<ResponseHandler<PlaceReviewDTO>> getPlaceById(@PathVariable("id") Long placeId){
         try {
-            PlaceReviewDTO placereviewDTO= placeService.getPlaceById(placeId);
+            PlaceReviewDTO placeDTO= placeService.getPlaceById(placeId);
             ResponseHandler<PlaceReviewDTO> response = new ResponseHandler<>(
-                    placereviewDTO,
+                    placeDTO,
                     HttpStatus.OK.value(),
                     "장소 상세 조회 완료"
             );

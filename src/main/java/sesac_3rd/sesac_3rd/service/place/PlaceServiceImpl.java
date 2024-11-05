@@ -11,14 +11,15 @@ import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
+import sesac_3rd.sesac_3rd.entity.PlaceCategory;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.mapper.place.PlaceMapper;
+import sesac_3rd.sesac_3rd.repository.PlaceCategoryRepository;
 import sesac_3rd.sesac_3rd.repository.PlaceRepository;
 import sesac_3rd.sesac_3rd.repository.ReviewRepository;
 
 import static sesac_3rd.sesac_3rd.mapper.place.PlaceMapper.convertToDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class PlaceServiceImpl implements PlaceService{
     @Autowired
     private PlaceRepository placeRepository;
 
+    @Autowired
+    private PlaceCategoryRepository placeCategoryRepository;
     @Autowired
     private ReviewRepository reviewRepository;
 
@@ -65,14 +68,11 @@ public class PlaceServiceImpl implements PlaceService{
     @Override
     public PlaceReviewDTO getPlaceById(Long placeId){
         Place place = placeRepository.findById(placeId).orElseThrow(()->new CustomException(ExceptionStatus.PLACE_NOT_FOUND));
-
+        String placeCtgName = place.getPlaceCategory().getPlaceCtgName();
         // 장소별 평균 평점 조회
         Integer avgStar = reviewRepository.getAverageStar(placeId);
         System.out.println("avgStar : " + avgStar);
 
-        return new PlaceReviewDTO(place,avgStar);
+        return new PlaceReviewDTO(place,placeCtgName,avgStar);
     }
 }
-
-
-//}

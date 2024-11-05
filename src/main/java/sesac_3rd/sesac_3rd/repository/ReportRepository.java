@@ -30,4 +30,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     Page<Report> findAllByMeetingNotNull(Pageable pageable);
 
+    // 모임상세 접근시 사용자 상태 조회(신고여부)
+    boolean existsByMeeting_MeetingIdAndReporter_UserId(Long meetingId, Long userId);
 }

@@ -218,9 +218,7 @@ public class UserController {
         return ResponseHandler.response(getUserLeaderMeetingList, HttpStatus.OK, "사용자 모임장 목록 조회");
     }
 
-    // 모임 상세 접속했을 때 해당 사용자가 이 모임을 신고 했는지 여부와 참가 상태 리턴해주는 api
     // 모임 상태는 모임에 참여 여부, 가입 신청 전/수락 전/수락 후(참여) -> 신청 여부, 수락 여부, 신고 여부
-    // meetingId, userId 전달 받음
     // 모임상세 접근시 사용자 상태 조회(신고여부, 신청여부, 수락여부)
     @PostMapping("/meeting/status")
     public ResponseEntity<ResponseHandler<UserMeetingStatusDTO>> getUserMeetingStatus(@RequestBody UserMeetingStatusDTO dto){

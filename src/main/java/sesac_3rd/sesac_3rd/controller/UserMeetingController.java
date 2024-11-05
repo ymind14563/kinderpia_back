@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.dto.usermeeting.UserMeetingJoinDTO;
@@ -22,12 +23,10 @@ public class UserMeetingController {
     // 모임 가입
     @PostMapping("/join/{meetingId}")
     public ResponseEntity<ResponseHandler<Void>> joinMeeting(
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("meetingId") Long meetingId,
             @RequestBody UserMeetingJoinDTO userMeetingJoinDTO) {
         try {
-            System.out.println("token >> " + token);
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId 토큰없음 >> " + userId);
@@ -52,10 +51,9 @@ public class UserMeetingController {
     // 모임 탈퇴
     @DeleteMapping("/exit/{meetingId}")
     public ResponseEntity<ResponseHandler<Boolean>> exitMeeting(
-            @RequestHeader("Authorization") String token,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("meetingId") Long meetingId) {
         try {
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId 토큰없음 >> " + userId);
@@ -80,13 +78,11 @@ public class UserMeetingController {
     // 모임 수락
     @PutMapping("/{meetingId}/accept/{userId}")
     public ResponseEntity<ResponseHandler<Void>> acceptMeeting(
-            @RequestHeader("Authorization") String token, // 작성자의 userId
+            @AuthenticationPrincipal Long userId, // 작성자의 userId
             @PathVariable("meetingId") Long meetingId,
             @PathVariable("userId") Long joinUserId // 가입하는 사람의 userId
     ) {
         try {
-            System.out.println("token >> " + token);
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId 토큰없음 >> " + userId);
@@ -111,13 +107,11 @@ public class UserMeetingController {
     // 모임 거절
     @DeleteMapping("/{meetingId}/reject/{userId}")
     public ResponseEntity<ResponseHandler<Boolean>> rejectMeeting(
-            @RequestHeader("Authorization") String token, // 작성자의 userId
+            @AuthenticationPrincipal Long userId, // 작성자의 userId
             @PathVariable("meetingId") Long meetingId,
             @PathVariable("userId") Long joinUserId // 가입하는 사람의 userId
     ) {
         try {
-            System.out.println("token >> " + token);
-            Long userId = Long.valueOf(tokenProvider.validateAndGetUserId(token.replace("Bearer ", "")));
             // 토큰에 문제가 있는 경우
             if (userId == null) {
                 System.out.println("userId 토큰없음 >> " + userId);

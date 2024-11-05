@@ -63,10 +63,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     // req.headers 에서 Bearer Token 을 꺼내오는 메서드
     private String parseBearerToken(HttpServletRequest request){
-        String bearerToken = request.getHeader("Authorization");
+        String bearerToken = request.getHeader("Cookie");
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
-            return bearerToken.substring(7);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("jwt=")){
+            return bearerToken.substring(4);
             // req.header jwt 토큰이 다음과 같이 들어있으므로 문자열 슬라이싱 진행하여 반환
             // Authentication: "Bearer asdfasdf.asdfasdf.asdfasdf"
         }

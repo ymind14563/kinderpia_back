@@ -27,8 +27,11 @@ public interface MeetingService {
     // 모임 수정
     Boolean updateMeeting(Long userId, Long meetingId, MeetingFormDTO meetingFormDTO);
 
-    // 모임 종료 (모임장이 모임 닫음)
-    Boolean endMeeting(Long userId, Long meetingId);
+    // 모임삭제 (모임장이 삭제, 관리자가 삭제 : DELETED)
+    Boolean deletedMeeting(Long userId, Long meetingId);
+
+    // 모집완료 (인원마감, 모임장이 임의로 마감 : COMPLETED)
+    Boolean completedMeeting(Long userId, Long meetingId);
 
     // meetingStatus 상태 확인
     MeetingStatusDTO meetingStatus(Long meetingId);

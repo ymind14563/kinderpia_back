@@ -210,9 +210,9 @@ public class MeetingServiceImpl implements MeetingService {
         return true;
     }
 
-    // 모임 종료 (모임장이 모임 닫음 : END)
+    // 모임삭제 (모임장이 삭제, 관리자가 삭제)
     @Override
-    public Boolean endMeeting(Long userId, Long meetingId) {
+    public Boolean deletedMeeting(Long userId, Long meetingId) {
         // meetingId 로 기존 Meeting entity 조회
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
@@ -222,8 +222,8 @@ public class MeetingServiceImpl implements MeetingService {
             throw new CustomException(ExceptionStatus.USER_NOT_READER);
         }
 
-        // meetingStatus 상태를 END 로 설정
-        meeting.setMeetingStatus(MeetingStatus.END);
+        // meetingStatus 상태를 DELETED 로 설정
+        meeting.setMeetingStatus(MeetingStatus.DELETED);
 
         // 업데이트된 entity 저장
         meetingRepository.save(meeting);
@@ -233,9 +233,35 @@ public class MeetingServiceImpl implements MeetingService {
         chatRoom.setIsActive(false);
         chatRoomRepository.save(chatRoom);
 
-        log.info("모임 종료(END) 성공: 종료된 모임ID {}", meetingId);
+        log.info("모임 삭제(DELETED) 성공: 삭제된 모임ID {}", meetingId);
 
         return true;
+    }
+
+    // 모집완료 (인원마감, 모임장이 임의로 마감 : COMPLETED)
+    @Override
+    public Boolean completedMeeting(Long userId, Long meetingId) {
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+
+        if (!userId.equals(meeting.getUser().getUserId())) {
+            throw new CustomException(ExceptionStatus.USER_NOT_READER);
+        }
+
+        // 현재 참가 인원이 최대 인원을 초과하는 경우, 상태를 COMPLETED 로 설정
+        if (meeting.getCapacity() >= meeting.getTotalCapacity()) {
+            meeting.setMeetingStatus(MeetingStatus.COMPLETED); // meetingStatus 상태를 COMPLETED 로 설정
+            meetingRepository.save(meeting);
+        }
+
+        // meetingStatus 상태를 COMPLETED 로 설정
+        meeting.setMeetingStatus(MeetingStatus.COMPLETED);
+
+        meetingRepository.save(meeting);
+
+        log.info("모집 완료(COMPLETED) 성공: 모집완료된 모임ID {}", meetingId);
+
+        return false;
     }
 
     // meetingStatus 상태

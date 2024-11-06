@@ -157,9 +157,9 @@ public class MeetingController {
         }
     }
 
-    // 모임 종료 (작성자가 닫음)
-    @PutMapping("/{meetingId}/end")
-    public ResponseEntity<ResponseHandler<Boolean>> endMeeting(
+    // 모임삭제 (모임장이 삭제, 관리자가 삭제 : DELETED)
+    @PutMapping("/{meetingId}/deleted")
+    public ResponseEntity<ResponseHandler<Boolean>> deletedMeeting(
             @AuthenticationPrincipal Long userId,
             @PathVariable("meetingId") Long meetingId) {
         try {
@@ -170,18 +170,47 @@ public class MeetingController {
             }
             System.out.println("userId 토큰있음 >> " + userId);
 
-            Boolean result = meetingService.endMeeting(userId, meetingId);
-            log.info("endMeeting 결과: {}", result);
+            Boolean result = meetingService.deletedMeeting(userId, meetingId);
+            log.info("deletedMeeting 결과: {}", result);
 
             ResponseHandler<Boolean> response = new ResponseHandler<>(
                     result, // true
                     HttpStatus.OK.value(), // 200
-                    "모임 종료 (END)"
+                    "모임삭제 (DELETED)"
             );
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            log.error("endMeeting 호출 중 예외 발생", e);
+            log.error("deletedMeeting 호출 중 예외 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // 모집완료 (인원마감, 모임장이 임의로 마감 : COMPLETED)
+    @PutMapping("/{meetingId}/completed")
+    public ResponseEntity<ResponseHandler<Boolean>> completedMeeting(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable("meetingId") Long meetingId) {
+        try {
+            // 토큰에 문제가 있는 경우
+            if (userId == null) {
+                System.out.println("userId 토큰없음 >> " + userId);
+                return ResponseHandler.unauthorizedResponse();
+            }
+            System.out.println("userId 토큰있음 >> " + userId);
+
+            Boolean result = meetingService.completedMeeting(userId, meetingId);
+            log.info("completedMeeting 결과: {}", result);
+
+            ResponseHandler<Boolean> response = new ResponseHandler<>(
+                    result, // true
+                    HttpStatus.OK.value(), // 200
+                    "모집완료 (COMPLETED)"
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("completedMeeting 호출 중 예외 발생", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -207,4 +236,3 @@ public class MeetingController {
         }
     }
 }
-

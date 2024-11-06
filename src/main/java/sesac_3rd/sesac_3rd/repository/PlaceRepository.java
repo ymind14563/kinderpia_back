@@ -20,10 +20,15 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     Page<Place> getAllPlaceRepo(Pageable pageable);
 
     // 검색 - 위치(지역구)
-    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO(p.placeId, pc.placeCtgName, p.placeName, p.location, " +
-            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid) " +
-            "FROM Place p JOIN p.placeCategory pc WHERE p.location LIKE %:keyword%")
-    Page<PlaceWithCategoryDTO> findByLocationContaining(@Param("keyword") String keyword, Pageable pageable);
+    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO(" +
+            "p.placeId, p.placeName, p.location, " +
+            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName, CAST(COALESCE(ROUND(AVG(r.star)), 0) AS int) AS averageStar) " +
+            "FROM Place p " +
+            "JOIN p.placeCategory pc " +
+            "LEFT JOIN Review r ON p.placeId = r.place.placeId " +
+            "WHERE p.location LIKE %:keyword% " +
+            "GROUP BY p.placeId, p.placeName, p.location, p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName ")
+    Page<PlaceReviewDTO> findByLocationContaining(@Param("keyword") String keyword, Pageable pageable);
 
     // 검색 - 장소명
     @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO(p.placeId, pc.placeCtgName, p.placeName, p.location, " +

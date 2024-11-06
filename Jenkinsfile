@@ -4,6 +4,7 @@ pipeline {
         disableConcurrentBuilds() // 동시에 여러 빌드가 실행되지 않도록 설정
     ])
 
+    stages {
         stage('Prepare') {
             steps {
                 script {

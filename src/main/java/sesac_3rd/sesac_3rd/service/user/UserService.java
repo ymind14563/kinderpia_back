@@ -30,7 +30,10 @@ public interface UserService {
     UserDTO getUser(Long userId);
 
     // 회원 정보 수정
-    UserDTO updateUser(Long userId, UserFormDTO dto, MultipartFile image);
+    UserDTO updateUser(Long userId, UserFormDTO dto);
+
+    // 회원 정보 수정(프로필 이미지)
+    UserDTO updateUserProfileImg(Long userId, MultipartFile image);
 
     // 회원 탈퇴
     void deleteUser(Long userId);

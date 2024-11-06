@@ -103,6 +103,7 @@ public class S3Service {
             // 실제로 S3에서 이미지 삭제
             amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
         } catch (Exception e){
+            log.info("delete error <><><><><>>><>< " + e.getMessage());
             throw new CustomException(ExceptionStatus.IO_EXCEPTION_ON_IMAGE_DELETE);   // 500
         }
     }

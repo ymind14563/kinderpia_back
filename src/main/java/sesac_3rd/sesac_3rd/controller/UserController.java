@@ -45,7 +45,7 @@ public class UserController {
         jwtCookie.setHttpOnly(false);
         jwtCookie.setPath("/");
 //        jwtCookie.setMaxAge(3600);
-        jwtCookie.setMaxAge(60*60*24);
+        jwtCookie.setMaxAge(60 * 60 * 24);
         // jwtCookie.setSecure(true);
 
         // HttpServletResponse에 쿠키 추가
@@ -118,12 +118,15 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // 로그아웃
-//    void logout();
-
     // 회원 정보 단건 조회
     @GetMapping("/{userId}")
+//    @GetMapping("/")
     public ResponseEntity<ResponseHandler<UserDTO>> getUser(@PathVariable Long userId) {
+//    public ResponseEntity<ResponseHandler<UserDTO>> getUser(@AuthenticationPrincipal Long userId) {
+        // 토큰에 문제가 있는 경우
+//        if (userId == null) {
+//            return ResponseHandler.unauthorizedResponse();
+//        }
         UserDTO user = userService.getUser(userId);
 
         ResponseHandler<UserDTO> response = new ResponseHandler<>(
@@ -136,12 +139,19 @@ public class UserController {
     }
 
     // 회원 정보 수정
-    @PutMapping(value = "/{userId}")
-    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId
-                                                                , @RequestPart("user") UserFormDTO dto
-                                                                , @RequestPart(value = "image", required = false) MultipartFile image  // 이미지는 선택
+    @PutMapping("/{userId}")
+//    @PutMapping("/")
+    public ResponseEntity<ResponseHandler<UserDTO>> updateUser(
+//            @AuthenticationPrincipal Long userId,
+            @PathVariable Long userId
+            , @RequestBody UserFormDTO dto
+
     ) {
-        UserDTO updatedUser = userService.updateUser(userId, dto, image);
+        // 토큰에 문제가 있는 경우
+//        if (userId == null) {
+//            return ResponseHandler.unauthorizedResponse();
+//        }
+        UserDTO updatedUser = userService.updateUser(userId, dto);
         ResponseHandler<UserDTO> response = new ResponseHandler<>(
                 updatedUser,
                 HttpStatus.OK.value(),  // 200
@@ -151,9 +161,39 @@ public class UserController {
 
     }
 
+    // 회원 정보 수정
+    @PutMapping("/{userId}/profileImg")
+//    @PutMapping("/profileImg")
+    public ResponseEntity<ResponseHandler<UserDTO>> updateUserProfileImg(
+//            @AuthenticationPrincipal Long userId,
+            @PathVariable Long userId
+            , @RequestPart(value = "image") MultipartFile image  // 이미지는 선택
+
+    ) {
+        // 토큰에 문제가 있는 경우
+//        if (userId == null) {
+//            return ResponseHandler.unauthorizedResponse();
+//        }
+        UserDTO updatedUser = userService.updateUserProfileImg(userId, image);
+        ResponseHandler<UserDTO> response = new ResponseHandler<>(
+                updatedUser,
+                HttpStatus.OK.value(),  // 200
+                "사용자 프로필 수정 완료"
+        );
+        return ResponseEntity.ok(response);
+
+    }
+
+
     // 회원 탈퇴
     @PatchMapping("/logical/{userId}")
+//    @PatchMapping("/logical")
     public ResponseEntity<ResponseHandler<Boolean>> deleteUser(@PathVariable Long userId) {
+//    public ResponseEntity<ResponseHandler<Boolean>> deleteUser(@AuthenticationPrincipal Long userId) {
+        // 토큰에 문제가 있는 경우
+//        if (userId == null) {
+//            return ResponseHandler.unauthorizedResponse();
+//        }
         userService.deleteUser(userId);
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
@@ -181,10 +221,17 @@ public class UserController {
 
     // 사용자 리뷰 목록 조회(장소 정보까지 같이)
     @GetMapping("/review/list/{userId}")
-    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserReviewDTO>>> getUserReviewList(@PathVariable Long userId,
-                                                                                                    @RequestParam(defaultValue = "0") int page,
-                                                                                                    @RequestParam(defaultValue = "10") int size
-                                                                                                    ) {
+//    @GetMapping("/review/list")
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserReviewDTO>>> getUserReviewList(
+//            @AuthenticationPrincipal Long userId,
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        // 토큰에 문제가 있는 경우
+//        if (userId == null) {
+//            return ResponseHandler.unauthorizedResponse();
+//        }
         PaginationResponseDTO<UserReviewDTO> getReviewList = userService.getUserReviewList(userId, size, page);
 
         return ResponseHandler.response(getReviewList, HttpStatus.OK, "사용자 리뷰 목록 조회");
@@ -192,7 +239,13 @@ public class UserController {
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
     @GetMapping("/meetingTime/list/{userId}")
+//    @GetMapping("/meetingTime/list")
     public ResponseEntity<ResponseHandler<List<UserMeetingTimeListDTO>>> getUserMeetingScheduleList(@PathVariable Long userId) {
+//        public ResponseEntity<ResponseHandler<List<UserMeetingTimeListDTO>>> getUserMeetingScheduleList(@AuthenticationPrincipal Long userId) {
+        // 토큰에 문제가 있는 경우
+//        if (userId == null) {
+//            return ResponseHandler.unauthorizedResponse();
+//        }
         List<UserMeetingTimeListDTO> getUserMeetingSchlist = userService.getUserMeetingScheduleList(userId);
 
         return ResponseHandler.response(getUserMeetingSchlist, HttpStatus.OK, "사용자 모임 일정 목록 조회");
@@ -200,9 +253,16 @@ public class UserController {
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
     @GetMapping("/meeting/list/{userId}")
-    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserMeetingListDTO>>> getUserMeetingList(@PathVariable Long userId,
-                                                                                                         @RequestParam(defaultValue = "0") int page,
-                                                                                                         @RequestParam(defaultValue = "10") int size) {
+//    @GetMapping("/meeting/list")
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserMeetingListDTO>>> getUserMeetingList(
+            @PathVariable Long userId,
+//            @AuthenticationPrincipal Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        // 토큰에 문제가 있는 경우
+//        if (userId == null) {
+//            return ResponseHandler.unauthorizedResponse();
+//        }
         PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList = userService.getUserMeetingList(userId, size, page);
 
         return ResponseHandler.response(getUserMeetingList, HttpStatus.OK, "사용자 모임 목록 조회");
@@ -210,10 +270,18 @@ public class UserController {
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
     @GetMapping("/meeting/leader/list/{userId}")
-    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserMeetingListDTO>>> getUserLeaderMeetingList(@PathVariable Long userId,
-                                                                                                               @RequestParam(defaultValue = "0") int page,
-                                                                                                               @RequestParam(defaultValue = "10") int size
+//    @GetMapping("/meeting/leader/list")
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserMeetingListDTO>>> getUserLeaderMeetingList(
+            @PathVariable Long userId,
+//            @AuthenticationPrincipal Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+
     ) {
+        // 토큰에 문제가 있는 경우
+//        if (userId == null) {
+//            return ResponseHandler.unauthorizedResponse();
+//        }
         PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList = userService.getUserLeaderMeetingList(userId, size, page);
 
         return ResponseHandler.response(getUserLeaderMeetingList, HttpStatus.OK, "사용자 모임장 목록 조회");
@@ -222,7 +290,7 @@ public class UserController {
     // 모임 상태는 모임에 참여 여부, 가입 신청 전/수락 전/수락 후(참여) -> 신청 여부, 수락 여부, 신고 여부
     // 모임상세 접근시 사용자 상태 조회(신고여부, 신청여부, 수락여부)
     @PostMapping("/meeting/status")
-    public ResponseEntity<ResponseHandler<UserMeetingStatusDTO>> getUserMeetingStatus(@RequestBody UserMeetingStatusDTO dto){
+    public ResponseEntity<ResponseHandler<UserMeetingStatusDTO>> getUserMeetingStatus(@RequestBody UserMeetingStatusDTO dto) {
         UserMeetingStatusDTO statusDTO = userService.getUserMeetingStatus(dto.getUserId(), dto.getMeetingId());
 
         return ResponseHandler.response(statusDTO, HttpStatus.OK, "사용자 모임 상태 조회");
@@ -230,7 +298,7 @@ public class UserController {
 
     // 사용자가 모임장인 모임들의 승인 대기자 목록(각각 모임에 대한)
     @GetMapping("/meeting/{meetingId}/pending-approvals")
-    public ResponseEntity<ResponseHandler<List<UserResponseDTO>>> getUserMeetingApprovalList(@PathVariable Long meetingId){
+    public ResponseEntity<ResponseHandler<List<UserResponseDTO>>> getUserMeetingApprovalList(@PathVariable Long meetingId) {
         List<UserResponseDTO> getApprovalList = userService.getUserMeetingApprovalList(meetingId);
 
         return ResponseHandler.response(getApprovalList, HttpStatus.OK, "승인 대기자 목록 조회");

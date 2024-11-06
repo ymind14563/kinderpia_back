@@ -1,6 +1,29 @@
 pipeline {
     agent any
-    stages {
+    properties([
+        disableConcurrentBuilds() // 동시에 여러 빌드가 실행되지 않도록 설정
+    ])
+
+        stage('Prepare') {
+            steps {
+                script {
+                    // 현재 실행 중인 빌드를 제외하고, 오래된 대기 중인 빌드를 모두 취소
+                    def queue = Jenkins.instance.queue.items.findAll {
+                        it.task.name == env.JOB_NAME
+                    }
+
+                    if (queue.size() > 1) {
+                        queue[0..-2].each { item ->
+                            println "Cancelling build #${item.id}"
+                            item.doCancelQueue()
+                        }
+                        println "최신 빌드를 제외한 대기 중인 모든 빌드를 취소했습니다."
+                    } else {
+                        println "대기 중인 빌드가 1개 이하이므로 취소 작업을 수행하지 않습니다."
+                    }
+                }
+            }
+        }
         stage('Checkout') {
             steps {
                 script {
@@ -89,6 +112,13 @@ pipeline {
                             else
                                 echo "8080 포트를 사용하는 컨테이너가 없습니다."
                             fi
+
+                            # 상태가 exited 또는 created인 모든 컨테이너 삭제
+                            echo "불필요한 상태의 모든 컨테이너 삭제 중..."
+                            docker rm \$(docker ps -a -q --filter "status=exited" --filter "status=created")
+                            echo "불필요한 컨테이너 삭제 완료를 위한 15초 대기 시작"
+                            sleep 15
+                            echo "상태가 exited 또는 created인 컨테이너 삭제 완료."
 
                             echo "4단계: 태그가 없는 이미지 제거 중 (dangling 이미지)"
                             if docker images | grep "<none>" | awk '{print \$3}' | xargs -r docker rmi -f; then

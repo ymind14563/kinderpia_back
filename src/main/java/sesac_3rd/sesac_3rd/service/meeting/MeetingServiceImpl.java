@@ -175,7 +175,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     // 모임 수정
     @Override
-    public void updateMeeting(Long userId, Long meetingId, MeetingFormDTO meetingFormDTO) {
+    public Boolean updateMeeting(Long userId, Long meetingId, MeetingFormDTO meetingFormDTO) {
         // meetingId 로 기존 Meeting entity 조회
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
@@ -206,6 +206,8 @@ public class MeetingServiceImpl implements MeetingService {
         meetingRepository.save(meeting);
 
         log.info("모임 수정 성공: 수정된 모임ID {}", meetingId);
+
+        return true;
     }
 
     // 모임 종료 (모임장이 모임 닫음 : END)

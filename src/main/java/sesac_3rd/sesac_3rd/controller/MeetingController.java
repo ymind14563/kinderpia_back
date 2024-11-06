@@ -93,7 +93,8 @@ public class MeetingController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("getMeetingDetail 호출 중 예외 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -111,6 +112,7 @@ public class MeetingController {
             System.out.println("userId 토큰있음 >> " + userId);
 
             Meeting meeting = meetingService.createMeeting(userId, meetingFormDTO);
+            log.info("createMeeting 결과: meetingId {}", meeting.getMeetingId());
 
             ResponseHandler<Long> response = new ResponseHandler<>(
                     meeting.getMeetingId(), // 생성된 meetingId 포함
@@ -120,13 +122,14 @@ public class MeetingController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("createMeeting 호출 중 예외 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     // 모임 수정
     @PutMapping("/{meetingId}")
-    public ResponseEntity<ResponseHandler<Void>> updateMeeting(
+    public ResponseEntity<ResponseHandler<Boolean>> updateMeeting(
             @AuthenticationPrincipal Long userId,
             @PathVariable("meetingId") Long meetingId,
             @RequestBody MeetingFormDTO dto) {
@@ -138,17 +141,19 @@ public class MeetingController {
             }
             System.out.println("userId 토큰있음 >> " + userId);
 
-            meetingService.updateMeeting(userId, meetingId, dto);
+            Boolean result = meetingService.updateMeeting(userId, meetingId, dto);
+            log.info("updateMeeting 결과: {}", result);
 
-            ResponseHandler<Void> response = new ResponseHandler<>(
-                    null,
-                    HttpStatus.NO_CONTENT.value(), // 204
+            ResponseHandler<Boolean> response = new ResponseHandler<>(
+                    result,
+                    HttpStatus.OK.value(), // 200
                     "모임 수정 완료"
             );
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("updateMeeting 호출 중 예외 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -187,7 +192,7 @@ public class MeetingController {
             @PathVariable("meetingId") Long meetingId) {
         try {
             MeetingStatusDTO meetingStatusDTO = meetingService.meetingStatus(meetingId);
-            log.info("meetingStatus 상태: {}", meetingStatusDTO);
+            log.info("meetingStatus 상태: {}", meetingStatusDTO.getMeetingStatus());
 
             ResponseHandler<MeetingStatusDTO> response = new ResponseHandler<>(
                     meetingStatusDTO, // true

@@ -25,7 +25,7 @@ public interface MeetingService {
     Meeting createMeeting(Long userId, MeetingFormDTO meetingFormDTO);
 
     // 모임 수정
-    void updateMeeting(Long userId, Long meetingId, MeetingFormDTO meetingFormDTO);
+    Boolean updateMeeting(Long userId, Long meetingId, MeetingFormDTO meetingFormDTO);
 
     // 모임 종료 (모임장이 모임 닫음)
     Boolean endMeeting(Long userId, Long meetingId);

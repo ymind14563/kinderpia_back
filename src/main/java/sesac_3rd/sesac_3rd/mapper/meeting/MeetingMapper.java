@@ -93,7 +93,7 @@ public class MeetingMapper {
                 .build();
     }
 
-    // [ 모임 상태 ]
+    // [ 모임 상태 ] entity to dto
     public static MeetingStatusDTO toMeetingStatusDTO(Meeting meeting) {
         return MeetingStatusDTO.builder()
                 .meetingId(meeting.getMeetingId())

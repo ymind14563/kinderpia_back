@@ -54,6 +54,9 @@ public enum ExceptionStatus {
     INVALID_REPORT_TARGET(400, "신고에 대상이 없습니다."),
     NO_REPORT_FOUND(404,"신고 내역이 존재하지 않습니다."),
 
+    // Manager
+    MANAGER_NOT_FOUND(404, "관리자를 찾을 수 없습니다."),
+
 
     // Authorization
     UNAUTHORIZED_REQUEST(401, "유효하지 않은 토큰입니다."),

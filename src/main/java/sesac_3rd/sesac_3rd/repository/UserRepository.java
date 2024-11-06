@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
+import sesac_3rd.sesac_3rd.dto.manager.DailyUserStatisticsDTO;
+import sesac_3rd.sesac_3rd.dto.manager.MonthlyUserStatisticsDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserMeetingListDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserMeetingTimeListDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserReviewDTO;
@@ -100,4 +102,27 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 탈퇴하지 않은 사용자 수 조회
     long countByIsDeletedFalse();
+
+    // 월별 사용자 가입 수
+    @Query("SELECT new sesac_3rd.sesac_3rd.dto.manager.MonthlyUserStatisticsDTO( " +
+            "MONTH(u.createdAt), COUNT(u)) " +
+            "FROM User u " +
+            "WHERE u.isDeleted = false " +
+            "AND YEAR(u.createdAt) = :year " +
+            "AND MONTH(u.createdAt) <= MONTH(CURRENT_TIMESTAMP) " +
+            "GROUP BY MONTH(u.createdAt) " +
+            "ORDER BY MONTH(u.createdAt)")
+    List<MonthlyUserStatisticsDTO> findMonthlyStatByYear(@Param("year") int year);
+
+    // 일별 사용자 가입 수
+    @Query("SELECT new sesac_3rd.sesac_3rd.dto.manager.DailyUserStatisticsDTO(" +
+            "DAY(u.createdAt), COUNT(u)) " +
+            "FROM User u " +
+            "WHERE u.isDeleted = false " +
+            "AND YEAR(u.createdAt) = :year " +
+            "AND MONTH(u.createdAt) = :month " +
+            "AND DAY(u.createdAt) <= DAY(CURRENT_TIMESTAMP) " +
+            "GROUP BY DAY(u.createdAt) " +
+            "ORDER BY DAY(u.createdAt)")
+    List<DailyUserStatisticsDTO> findDailyStatByYearAndMonth(@Param("year") int year, @Param("month") int month);
 }

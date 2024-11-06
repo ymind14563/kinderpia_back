@@ -76,12 +76,12 @@ public class ChatController {
     @MessageMapping("/{chatroomId}/chatmsg")
     @SendTo("/topic/chatroom/{chatroomId}")
     public ResponseEntity<ResponseHandler<ChatMessageDTO.ChatMessage>> sendMessage(@DestinationVariable("chatroomId") Long chatroomId,
-                                                                                   @Header("Authorization") String token,
+                                                                                   @CookieValue("jwt") String token,
                                                                                    ChatMessageDTO.ChatMessage chatMessageDTO) {
 
 
         // @MessageMapping에서는 @AuthenticationPrincipal을 직접 사용할 수 없음 (WebSocket 통신, HTTP 요청 차이)
-        String userId = tokenProvider.validateAndGetUserId(token.replace("Bearer ", ""));
+        String userId = tokenProvider.validateAndGetUserId(token);
 
         if (userId == null) {
             return ResponseHandler.unauthorizedResponse();

@@ -5,9 +5,34 @@ pipeline {
     ])
 
     stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    echo "저장소 체크아웃 중"
+                    echo "GITHUB_CREDENTIAL_ID: ${env.KINDERPIA_GITHUB_CREDENTIAL_ID}"
+                    echo "DOCKER_CREDENTIAL_ID: ${env.DOCKER_CREDENTIAL_ID}"
+                    echo "EC2_CREDENTIAL_ID: ${env.EC2_CREDENTIAL_ID}"
+                    echo "EC2_IP: ${env.EC2_IP}"
+                }
+                git branch: 'dev',
+                    credentialsId: "${env.GITHUB_CREDENTIAL_ID}",
+                    url: 'https://github.com/SeSAC-3rd-Kinderpia/kinderpia_back.git'
+
+                // Git 체크아웃 후 현재 브랜치를 가져와 env.BRANCH_NAME 설정
+                def branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+                env.BRANCH_NAME = branchName
+            }
+        }
         stage('Prepare') {
             steps {
                 script {
+                    // 특정 브랜치가 아닌 경우 빌드 종료
+                    if (env.BRANCH_NAME != 'dev') {
+                        echo "This build is triggered by a push to ${env.BRANCH_NAME} branch, skipping build as it is not 'dev' branch."
+                        currentBuild.result = 'SUCCESS'
+                        return
+                    }
+
                     // 현재 실행 중인 빌드를 제외하고, 오래된 대기 중인 빌드를 모두 취소
                     def queue = Jenkins.instance.queue.items.findAll {
                         it.task.name == env.JOB_NAME
@@ -23,20 +48,6 @@ pipeline {
                         println "대기 중인 빌드가 1개 이하이므로 취소 작업을 수행하지 않습니다."
                     }
                 }
-            }
-        }
-        stage('Checkout') {
-            steps {
-                script {
-                    echo "저장소 체크아웃 중"
-                    echo "GITHUB_CREDENTIAL_ID: ${env.KINDERPIA_GITHUB_CREDENTIAL_ID}"
-                    echo "DOCKER_CREDENTIAL_ID: ${env.DOCKER_CREDENTIAL_ID}"
-                    echo "EC2_CREDENTIAL_ID: ${env.EC2_CREDENTIAL_ID}"
-                    echo "EC2_IP: ${env.EC2_IP}"
-                }
-                git branch: 'dev',
-                    credentialsId: "${env.GITHUB_CREDENTIAL_ID}",
-                    url: 'https://github.com/SeSAC-3rd-Kinderpia/kinderpia_back.git'
             }
         }
         stage('Build Docker Image') {

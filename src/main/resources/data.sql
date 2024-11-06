@@ -5,55 +5,54 @@ insert IGNORE into place_category (place_ctg_name) values ('오락 및 여가'),
                                                     ('체험 및 활동'),
                                                     ('스포츠 및 운동'),
                                                     ('기타');
-
-insert IGNORE into meeting_category (meeting_ctg_name) values ('오락 및 여가'),
-                                                    ('자연 및 환경'),
-                                                    ('교육 및 문화'),
-                                                    ('체험 및 활동'),
-                                                    ('스포츠 및 운동'),
-                                                    ('기타');
 -- place
-insert IGNORE into place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) values
-(1, '서울형 키즈카페 강서구 화곡3동점','강서구','서울특별시 강서구 강서로 231 2층 (화곡동, 우장산역 해링턴 타워)',NULL,NULL,NULL,'화요일~일요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2698-2299'),
-(1, '서울형 키즈카페 서초구 서초1동점(서리풀노리학교 서초1동점)','서초구','서울특별시 서초구 사임당로 115 헤센파크힐 L층',NULL,NULL,NULL,'월~토', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-525-9340'),
-(1, '서울형 키즈카페 성북구 종암동점','성북구','서울특별시 성북구 종암로19길 60 성북함께어울림센터, 2층 (종암동)',NULL,NULL,NULL,'수~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2241-0796'),
-(1, '서울형 키즈카페 성북구 정릉2동점','성북구','서울특별시 성북구 북악산로1길 64 508커뮤니티센터, 1층 (정릉동)',NULL,NULL,NULL,'수~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2241-0793'),
-(1, '서울형 키즈카페 노원구 중평공원점','노원구','서울특별시 노원구 동일로203길 73 중평공원 내 (하계동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-973-1955'),
-(1, '서울형 키즈카페 동작구 상도4동 1호점(동작키즈카페)','동작구','서울특별시 동작구 성대로 180 상도어울마당 2층 (상도동)',NULL,NULL,NULL,'월~토요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','070-7163-1477'),
-(1, '서울형 키즈카페 성동구 성수1가1동점(성수 키즈카페)','성동구','서울특별시 성동구 뚝섬로3길 18 성수1가1동주민센터 1층 (성수동1가)',NULL,NULL,NULL,'월요일~토요일', TRUE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-461-3863'),
-(1, '서울형 키즈카페 서대문구 북가좌1동점(다정다감 키즈카페)','서대문구','서울특별시 서대문구 수색로8길 48-4 사회교육관 3층 (북가좌동)',NULL,NULL,NULL,'월~토', TRUE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-304-5501'),
-(1, '서울형 키즈카페 중랑구 망우본동점(중랑실내놀이터 양원)','중랑구','서울특별시 중랑구 용마산로 670 시티원스퀘어 상가 201동 지하1층 (망우동, 신내역 프라디움 더 테라스)',NULL,NULL,NULL,'화~일요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-438-4600'),
-(1, '서울형 키즈카페 송파구 잠실근린공원점(하하호호놀이터 송파구1호점)','송파구','서울특별시 송파구 백제고분로15길 9 , 1,2층 (잠실동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','070-4151-7061'),
-(1, '서울형 키즈카페 시립 뚝섬자벌레점','광진구','서울특별시 광진구 강변북로 2202 2층 꿈틀나루 (자양동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-498-4445'),
-(1, '서울형 키즈카페 서초구 방배2동점(서리풀노리학교 방배2동점)','서초구','서울특별시 서초구 방배천로24길 8 방주교회 1층 (방배동)',NULL,NULL,NULL,'월~토', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-523-9340'),
-(1, '서울형 키즈카페 중구 중림동점(노리몽땅)','중구','서울특별시 중구 서소문로6길 16 본관 1층 (중림동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-363-2628'),
-(1, '서울형 키즈카페 성북구 벌집어린이공원점','성북구','서울특별시 성북구 월곡로7길 56-7 서울형 키즈카페 성북구 벌집어린이공원점 (종암동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2241-0790'),
-(1, '서울형 키즈카페 관악구 난곡동점','관악구','서울특별시 관악구 난곡로24가길 53 2층 (신림동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-867-2846'),
-(1, '서울형 키즈카페 강동구 성내1동점(아이·맘 강동)','강동구','서울특별시 강동구 성내로6길 16 2층 (성내동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-3425-9398'),
-(1, '서울형 키즈카페 도봉구 창1동점(숲속유람선 뚜뚜)','도봉구','서울특별시 도봉구 해등로4길 38 초안산생태공원 내 위치 (창동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-994-7456'),
-(1, '서울형 키즈카페 도봉구 방학1동점(오르봉내리봉)','도봉구','서울특별시 도봉구 마들로 656 도봉구청사, 지하1층 (방학동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','070-4190-8922'),
-(1, '서울형 키즈카페 강동구 상일2동점(아이·맘 강동)','강동구','서울특별시 강동구 상일로12길 95 푸르내상가 102-303 (상일동, 푸르내)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-3425-7076'),
-(1, '서울형 키즈카페 양천구 오목공원점','양천구','서울특별시 양천구 목동서로 159-4 서울형 키즈카페 양천구 오목공원점 (목동)',NULL,NULL,NULL,'화~일요일', TRUE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','010-9508-0596'),
-(1, '서울형 키즈카페 서초구 양재1동점(서리풀노리학교 양재1동점)','서초구','서울특별시 서초구 양재천로 125-10 양재공영주차빌딩 2층 (양재동)',NULL,NULL,NULL,'월~토', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-575-9340'),
-(1, '서울형 키즈카페 시립 목동점','양천구','서울특별시 양천구 안양천로 1131 지식산업센터 2층 (목동)',NULL,NULL,NULL,'월~토', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2647-7507'),
-(1, '서울형 키즈카페 도봉구 도봉2동점(봉봉트레킹)','도봉구','서울특별시 도봉구 마들로 668  (도봉동)',NULL,NULL,NULL,'월~토 ', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-3492-7773'),
-(1, '서울형 키즈카페 서초구 문화예술공원점(서리풀노리학교 문화예술공원점)','서초구','서울특별시 서초구 바우뫼로12길 40  (양재동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-577-9340'),
-(1, '서울형 키즈카페 용산구 한강로동점(용산 도담도담 실내놀이터)','용산구','서울특별시 용산구 서빙고로 17 센트럴파크타워, 2층 (한강로3가)',NULL,NULL,NULL,'화요일~일요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-6367-3121'),
-(1, '서울형 키즈카페 영등포구 대림2동점','영등포구','서울특별시 영등포구 시흥대로 625 상가 2층 (대림동, 영등포자이르네)',NULL,NULL,NULL,'화 ~ 일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','070-7777-8982'),
-(1, '서울특별시 제1호 시립 서울형 키즈카페','동작구','서울특별시 동작구 노량진로 10 서울가족플라자 지하2층 (대방동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-824-0614'),
-(1, '서울형 키즈카페 강서구 발산1동점','강서구','서울특별시 강서구 수명로2길 50  (내발산동) 2층 서울형 키즈카페',NULL,NULL,NULL,'화~토', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2064-2732'),
-(1, '서울형 키즈카페 마포구 상암동점','마포구','서울특별시 마포구 상암산로1길 71 마포구육아종합지원센터 2~3층 서울형 키즈카페 마포구 상암점 (상암동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','070-4948-1276'),
-(1, '서울형 키즈카페 동작구 대방동점(동작키즈카페)','동작구','서울특별시 동작구 여의대방로36길 11 4층 (대방동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-823-4587'),
-(1, '서울형 키즈카페 강북구 번3동점(강북구 "PLAY ON")','강북구','서울특별시 강북구 오현로 208 번동주공아파트 309동, 1층 (주민복지관 1, 어린이실내놀이터)',NULL,NULL,NULL,'월요일 ~ 토요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-988-0271'),
-(1, '서울형 키즈카페 광진구 중곡3동점(꾸미팡팡 놀이터)','광진구','서울특별시 광진구 능동로 400 보건복지행정타운 별관 3층(중곡동)',NULL,NULL,NULL,'월요일~토요일 09:30~17:30 ', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-467-1827'),
-(1, '서울형 키즈카페 강동구 암사1동점(아이·맘 강동)','강동구','서울특별시 강동구 올림픽로98길 15 ,3층 (암사동)',NULL,NULL,NULL,'월~토', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-3425-9489'),
-(1, '서울형 키즈카페 강동구 고덕2동점(아이·맘 강동)','강동구','서울특별시 강동구 고덕로 353 일반상가 2층 (고덕동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-3425-9435'),
-(1, '서울형 키즈카페 성동구 금호2?3가동점(금호 키즈카페)','성동구','서울특별시 성동구 무수막18길 1 금호2,3가동주민센터 4층 (금호동2가)',NULL,NULL,NULL,'월요일 ~ 토요일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-6952-6799'),
-(1, '서울형 키즈카페 동작구 상도3동점(동작키즈카페)','동작구','서울특별시 동작구 상도로15가길 16 가온어린이집 3층 서울형키즈카페 (상도동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','070-7163-1474'),
-(1, '서울형 키즈카페 양천구 신정7동점(5색깔깔KIDS)','양천구','서울특별시 양천구 목동남로 106-23  (신정동)',NULL,NULL,NULL,'화~일', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2135-5946'),
-(1, '서울형 키즈카페 중랑구 면목4동점(중랑 실내놀이터)','중랑구','서울특별시 중랑구 용마산로 209 공공기여시설1층 (면목동, 쌍용 더 플래티넘 용마산)',NULL,NULL,NULL,'화요일 ~ 일요일 10:00~17:30', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-2207-1123'),
-(1, '서울형 키즈카페 종로구 혜화동점(종로 혜명 아이들 상상놀이터)','종로구','서울특별시 종로구 성균관로 91 올림픽기념국민생활관 2층 (혜화동)',NULL,NULL,NULL,'화요일 ~ 일요일 (공휴일 제외)', FALSE ,'https://icare.seoul.go.kr/icare/user/kidsCafe/BD_selectKidsCafeList.do','02-742-3320');
+-- 오락 및 여가 (카테고리 ID: 1)
+INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) VALUES
+(1, '롯데월드 어드벤처', '송파구', '서울특별시 송파구 올림픽로 240', 37.511287, 127.098160, NULL, '매일 09:30-22:00', TRUE, 'https://adventure.lotteworld.com', '02-1661-2000'),
+(1, '코엑스 아쿠아리움', '강남구', '서울특별시 강남구 영동대로 513', 37.513153, 127.058732, NULL, '매일 10:00-20:00', TRUE, 'https://www.coexaqua.com', '02-6002-6200'),
+(1, '서울어린이대공원', '광진구', '서울특별시 광진구 능동로 216', 37.548377, 127.079632, NULL, '매일 05:00-22:00', FALSE, 'http://www.childrenpark.or.kr', '02-450-9311'),
+(1, '키즈앤키즈 타임스퀘어점', '영등포구', '서울특별시 영등포구 영중로 15 타임스퀘어 5층', 37.517147, 126.903335, NULL, '매일 10:30-20:00', TRUE, 'http://www.kidsandkids.com', '02-2638-2460'),
+(1, '플레이타임 스퀘어원점', '영등포구', '서울특별시 영등포구 영중로 27 스퀘어원 3층', 37.517147, 126.903335, NULL, '매일 10:00-21:00', TRUE, 'http://www.playtime.co.kr', '02-2632-2454');
 
+-- 자연 및 환경 (카테고리 ID: 2)
+INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) VALUES
+(2, '서울숲', '성동구', '서울특별시 성동구 뚝섬로 273', 37.544182, 127.037830, NULL, '매일 24시간', FALSE, 'http://seoulforest.or.kr', '02-460-2905'),
+(2, '서울대공원', '과천시', '경기도 과천시 대공원광장로 102', 37.427619, 127.017274, NULL, '매일 09:00-18:00', TRUE, 'http://grandpark.seoul.go.kr', '02-500-7338'),
+(2, '한강공원 여의도지구', '영등포구', '서울특별시 영등포구 여의동로 330', 37.528751, 126.934067, NULL, '매일 24시간', FALSE, 'http://hangang.seoul.go.kr', '02-3780-0561'),
+(2, '북서울꿈의숲', '강북구', '서울특별시 강북구 월계로 173', 37.620363, 127.039582, NULL, '매일 05:00-22:00', FALSE, 'http://dreamforest.seoul.go.kr', '02-2289-4001'),
+(2, '서울식물원', '강서구', '서울특별시 강서구 마곡동로 161', 37.569396, 126.836205, NULL, '화-일 09:30-18:00', TRUE, 'http://botanicpark.seoul.go.kr', '02-2104-9711');
+
+-- 교육 및 문화 (카테고리 ID: 3)
+INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) VALUES
+(3, '국립중앙박물관 어린이박물관', '용산구', '서울특별시 용산구 서빙고로 137', 37.523989, 126.980357, NULL, '화-일 10:00-18:00', FALSE, 'https://www.museum.go.kr/child', '02-2077-9000'),
+(3, '서울상상나라', '광진구', '서울특별시 광진구 능동로 216', 37.548897, 127.081198, NULL, '화-일 10:00-18:00', TRUE, 'http://www.seoulchildrensmuseum.org', '02-6450-9500'),
+(3, '국립과천과학관', '과천시', '경기도 과천시 상하벌로 110', 37.450800, 126.970204, NULL, '화-일 09:30-17:30', TRUE, 'http://www.sciencecenter.go.kr', '02-3677-1500'),
+(3, '서울역사박물관', '종로구', '서울특별시 종로구 새문안로 55', 37.570431, 126.969803, NULL, '화-일 09:00-20:00', FALSE, 'http://www.museum.seoul.kr', '02-724-0274'),
+(3, '국립한글박물관', '용산구', '서울특별시 용산구 서빙고로 139', 37.523766, 126.981062, NULL, '화-일 10:00-18:00', FALSE, 'https://www.hangeul.go.kr', '02-2124-6200');
+
+-- 체험 및 활동 (카테고리 ID: 4)
+INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) VALUES
+(4, '키자니아', '송파구', '서울특별시 송파구 올림픽로 240 롯데월드몰 3층', 37.513358, 127.102750, NULL, '매일 10:00-19:00', TRUE, 'https://www.kidzania.co.kr', '02-1544-5110'),
+(4, '서울로봇인공지능과학관', '마포구', '서울특별시 마포구 월드컵북로 382', 37.583565, 126.899545, NULL, '화-일 10:00-18:00', TRUE, 'http://www.robot.or.kr', '02-2121-0700'),
+(4, '롯데월드 민속박물관', '송파구', '서울특별시 송파구 올림픽로 240', 37.511287, 127.098160, NULL, '매일 09:30-21:00', TRUE, 'https://folkmuseum.lotteworld.com', '02-411-4764'),
+(4, '서울시립과학관', '노원구', '서울특별시 노원구 한글비석로 168', 37.654380, 127.073425, NULL, '화-일 09:30-17:30', FALSE, 'http://science.seoul.go.kr', '02-970-4500'),
+(4, '서울영어마을 풍납캠프', '송파구', '서울특별시 송파구 풍납동 45', 37.535716, 127.114384, NULL, '월-금 09:00-18:00', TRUE, 'http://www.sev.go.kr', '02-404-0157');
+
+-- 스포츠 및 운동 (카테고리 ID: 5)
+INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) VALUES
+(5, '올림픽공원 스케이트장', '송파구', '서울특별시 송파구 올림픽로 424', 37.520509, 127.121929, NULL, '매일 10:00-20:00', TRUE, 'http://www.kspo.or.kr', '02-410-1114'),
+(5, '스포츠몬스터 잠실점', '송파구', '서울특별시 송파구 올림픽로 240 롯데월드몰 5층', 37.513358, 127.102750, NULL, '매일 10:00-22:00', TRUE, 'https://www.sportsmonster.co.kr', '02-3213-4547'),
+(5, '서울생활체육회 어린이체육교실', '중구', '서울특별시 중구 을지로 지하 42', 37.566374, 126.977736, NULL, '월-금 09:00-18:00', TRUE, 'http://www.seoulsports.or.kr', '02-490-2700'),
+(5, '올림픽공원 수영장', '송파구', '서울특별시 송파구 올림픽로 424', 37.520509, 127.121929, NULL, '매일 06:00-22:00', TRUE, 'http://www.kspo.or.kr', '02-410-1114'),
+(5, '서울시립청소년스포츠센터', '중랑구', '서울특별시 중랑구 망우로 182', 37.589561, 127.092692, NULL, '월-토 06:00-22:00', TRUE, 'http://www.youth.seoul.kr', '02-490-0100');
+
+-- 기타 (카테고리 ID: 6)
+INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) VALUES
+(6, '서울상상나라 장난감도서관', '광진구', '서울특별시 광진구 능동로 216', 37.548897, 127.081198, NULL, '화-일 10:00-17:00', TRUE, 'http://www.seoulchildrensmuseum.org', '02-6450-9500'),
+(6, '서울시립어린이도서관', '종로구', '서울특별시 종로구 사직로 9길 15-8', 37.572844, 126.969419, NULL, '화-일 09:00-18:00', FALSE, 'http://childlib.sen.go.kr', '02-731-2141'),
+(6, '노원어린이도서관', '노원구', '서울특별시 노원구 동일로 204길 13', 37.654380, 127.073425, NULL, '화-일 09:00-18:00', FALSE, 'http://www.nowonlib.kr', '02-933-7145'),
+(6, '서울시청자미디어센터', '성북구', '서울특별시 성북구 정릉로 308', 37.608151, 127.036301, NULL, '화-일 09:00-18:00', FALSE, 'http://seoul.kcmf.or.kr', '02-6919-5000'),
+(6, '꿈의숲아트센터', '강북구', '서울특별시 강북구 월계로 173', 37.620363, 127.039582, NULL, '화-일 10:00-18:00', TRUE, 'http://www.dfac.or.kr', '02-2289-5401');
 
 -- report reason (신고사유)
 insert ignore into report_reason (report_rs_id, report_rs_name) values

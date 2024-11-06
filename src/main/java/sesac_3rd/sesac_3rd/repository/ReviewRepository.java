@@ -1,5 +1,7 @@
 package sesac_3rd.sesac_3rd.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,18 +20,19 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 장소 별 리뷰 목록 조회
     @Query("SELECT new sesac_3rd.sesac_3rd.dto.review.ReviewUserDTO(" +
             "r, " +
-            "u.id AS writer, "+
+            "u.id AS writer, " +
             "u.nickname, " +
             "u.profileImg, " +
             "u.isBlacklist, " +
-            "(SELECT COUNT(l) FROM Likes l WHERE l.review.id = r.id) AS likeCount, " +
-            "(SELECT COUNT(l) > 0 FROM Likes l WHERE l.review.id = r.id AND l.user.id = :userId) " +
-            "AS isLikedByUser )" +
+            "COUNT(l) AS likeCount, " +
+            "CASE WHEN l.user.id = :userId THEN true ELSE false END AS isLikedByUser) " +
             "FROM Review r " +
             "JOIN r.user u " +
+            "LEFT JOIN Likes l ON l.review.id = r.id AND l.user.id = :userId " +
             "WHERE r.place.id = :placeId AND r.isDeleted = false " +
+            "GROUP BY r.id, u.id " +
             "ORDER BY r.createdAt DESC")
-    List<ReviewUserDTO> findByPlace_PlaceId(@Param("placeId") Long placeId, @Param("userId") Long userId);
+    Page<ReviewUserDTO> findByPlace_PlaceId(@Param("placeId") Long placeId, @Param("userId") Long userId, Pageable pageable);
 
     // 로그인 유저 리뷰별 좋아요 여부
 //   @Query("select round(avg(r.star)) from Review r where place_id=:placeId and is_deleted=false")

@@ -18,7 +18,7 @@ public interface ReviewService {
     public Review createReview(ReviewFormDTO reviewformDTO, Long userId);
 
     // 장소별 리뷰 목록 조회
-    ReviewListDTO getAllReviewByPlaceId(Long placeId, Long userId);
+    ReviewListDTO getAllReviewByPlaceId(Long placeId, Long userId, int page, int size);
 
     // 리뷰 단건 조회
     ReviewDTO getReviewById(Long reviewId);

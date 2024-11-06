@@ -23,7 +23,7 @@ public class PlaceController {
     @Autowired
     private PlaceService placeService;
 
-    //    // 장소 목록 조회
+    // 장소 목록 조회
     @GetMapping
     private ResponseEntity<ResponseHandler<Page<PlaceReviewDTO>>> getAllPlace(
             @RequestParam(defaultValue = "0") int page, //시작 페이지

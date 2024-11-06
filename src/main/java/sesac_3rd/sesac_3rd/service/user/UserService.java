@@ -25,7 +25,6 @@ public interface UserService {
     // 회원가입 - 전화번호 중복 검사
     void isPhonenumDuplicate(String phoneNum);
 
-
     // 회원 정보 단건 조회
     UserDTO getUser(Long userId);
 

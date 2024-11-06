@@ -80,7 +80,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<UserMeetingListDTO> meetingFindByUserId(@Param("userId") Long userId, @Param("validStatus") List<MeetingStatus> validStatus, Pageable pageable);
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
-    @Query("SELECT new sesac_3rd.sesac_3rd.dto.user.UserMeetingTimeListDTO( " +
+    @Query("SELECT DISTINCT new sesac_3rd.sesac_3rd.dto.user.UserMeetingTimeListDTO( " +
+            "m.meetingId, " +
             "m.meetingTitle, " +
             "m.meetingTime) " +
             "FROM Meeting m " +
@@ -96,4 +97,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 승인 대기자 목록(각각 모임에 대한)
     @Query("SELECT um.user FROM UserMeeting um WHERE um.meeting.meetingId = :meetingId AND um.isAccepted IS NULL")
     List<User> getUserMeetingApprovalList(@Param("meetingId") Long meetingId);
+
+    // 탈퇴하지 않은 사용자 수 조회
+    long countByIsDeletedFalse();
 }

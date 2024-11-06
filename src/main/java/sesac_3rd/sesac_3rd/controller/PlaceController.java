@@ -23,16 +23,15 @@ public class PlaceController {
     @Autowired
     private PlaceService placeService;
 
-    // 장소 목록 조회
+//    // 장소 목록 조회
     @GetMapping
-    private ResponseEntity<ResponseHandler<Page>> getAllPlace(
+    private ResponseEntity<ResponseHandler<Page<PlaceReviewDTO>>> getAllPlace(
             @RequestParam(defaultValue = "0") int page, //시작 페이지
             @RequestParam(defaultValue = "10") int size //크기
     ) {
         try{
-            Pageable pageable = PageRequest.of(page, size);
-            Page page1 = placeService.getAllPlace(page, size);
-            ResponseHandler<Page> response = new ResponseHandler<>(
+            Page<PlaceReviewDTO> page1 = placeService.getAllPlace(page, size);
+            ResponseHandler<Page<PlaceReviewDTO>> response = new ResponseHandler<>(
                     page1,
                     HttpStatus.OK.value(), //200
                     "장소 목록 조회 완료"
@@ -45,8 +44,8 @@ public class PlaceController {
 
     // 장소 검색
     @PostMapping
-    private Page<PlaceWithCategoryDTO> findByContaining(
-            @RequestParam(defaultValue = "date") String sort, //정렬 순서
+    private Page<PlaceReviewDTO> findByContaining(
+            @RequestParam(defaultValue = "default") String sort, //정렬 순서
             @RequestParam(defaultValue = "0") int page, //시작 페이지
             @RequestParam(defaultValue = "10") int size, //크기
             @RequestParam(defaultValue = "all") String category, //검색 카테고리

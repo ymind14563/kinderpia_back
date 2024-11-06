@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +18,10 @@ import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/meeting")
 public class MeetingController {
-    @Autowired
-    private TokenProvider tokenProvider;
 
     @Autowired
     private MeetingService meetingService;
@@ -153,7 +153,7 @@ public class MeetingController {
 
     // 모임 종료 (작성자가 닫음)
     @PutMapping("/{meetingId}/end")
-    public ResponseEntity<ResponseHandler<Boolean>> deleteMeeting(
+    public ResponseEntity<ResponseHandler<Boolean>> endMeeting(
             @AuthenticationPrincipal Long userId,
             @PathVariable("meetingId") Long meetingId) {
         try {
@@ -164,7 +164,8 @@ public class MeetingController {
             }
             System.out.println("userId 토큰있음 >> " + userId);
 
-            Boolean result = meetingService.deleteMeeting(userId, meetingId);
+            Boolean result = meetingService.endMeeting(userId, meetingId);
+            log.info("endMeeting 결과: {}", result);
 
             ResponseHandler<Boolean> response = new ResponseHandler<>(
                     result, // true
@@ -174,7 +175,8 @@ public class MeetingController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("endMeeting 호출 중 예외 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

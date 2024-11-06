@@ -20,7 +20,7 @@ public class MeetingFormDTO {
     private String meetingTitle;  // 모임명
     private String meetingContent;  // 모임내용
     private int totalCapacity;  // 총원 (최대 99)
-    private boolean isLimited = false;  // 총원 제한 여부 (기본값 FALSE)
+    private Boolean isLimited = false;  // 총원 제한 여부 (기본값 FALSE)
     private boolean isAuthType = false;  // 인증 여부 (기본값 FALSE)
     private int capacity = 1;  // 현재 참가 인원
     private String meetingLocation;  // 모임 장소

@@ -9,6 +9,7 @@ import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
 import sesac_3rd.sesac_3rd.dto.usermeeting.UserMeetingJoinDTO;
+import sesac_3rd.sesac_3rd.entity.ChatRoom;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.entity.UserMeeting;
@@ -20,6 +21,7 @@ import sesac_3rd.sesac_3rd.mapper.usermeeting.UserMeetingMapper;
 import sesac_3rd.sesac_3rd.repository.MeetingRepository;
 import sesac_3rd.sesac_3rd.repository.PlaceRepository;
 import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
+import sesac_3rd.sesac_3rd.repository.chat.ChatRoomRepository;
 import sesac_3rd.sesac_3rd.service.chat.ChatRoomService;
 
 import java.time.LocalDateTime;
@@ -37,6 +39,9 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Autowired
     private ChatRoomService chatRoomService;
+
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
 
     @Autowired
     private UserMeetingRepository userMeetingRepository;
@@ -134,10 +139,10 @@ public class MeetingServiceImpl implements MeetingService {
         Meeting meeting = MeetingMapper.toMeetingFormEntity(meetingFormDTO); // Meeting 엔티티 생성
         meeting.setCapacity(1); // 모임 생성 시 기본 참가 인원 1명으로 설정
         meeting.setAuthType(meetingFormDTO.isAuthType());
-        meeting.setLimited(meetingFormDTO.isLimited());
+        meeting.setIsLimited(meetingFormDTO.getIsLimited());
         meetingRepository.save(meeting);
 
-        log.info("authType: {}, limited: {}", meetingFormDTO.isAuthType(), meetingFormDTO.isLimited());
+        log.info("authType: {}, limited: {}", meetingFormDTO.isAuthType(), meetingFormDTO.getIsLimited());
 
         // 채팅방 생성
         chatRoomService.createChatRoomIfNotExists(meeting.getMeetingId());
@@ -188,6 +193,9 @@ public class MeetingServiceImpl implements MeetingService {
         if (meetingFormDTO.getTotalCapacity() != -1) { // totalCapacity 가 -1이 아닌 경우에만 업데이트 (프론트에서 -1을 보내면 수정하지 않음)
             meeting.setTotalCapacity(meetingFormDTO.getTotalCapacity());
         }
+        if (meetingFormDTO.getIsLimited() != null) {
+            meeting.setIsLimited(meetingFormDTO.getIsLimited()); // 총원제한 여부 (true/false)
+        }
         if (meetingFormDTO.getMeetingContent() != null) {
             meeting.setMeetingContent(meetingFormDTO.getMeetingContent());
         }
@@ -201,7 +209,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     // 모임 종료 (작성자가 닫음 : END)
     @Override
-    public Boolean deleteMeeting(Long userId, Long meetingId) {
+    public Boolean endMeeting(Long userId, Long meetingId) {
         // meetingId 로 기존 Meeting entity 조회
         Meeting meeting = meetingRepository.findById(meetingId)
                 .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
@@ -211,11 +219,16 @@ public class MeetingServiceImpl implements MeetingService {
             throw new CustomException(ExceptionStatus.USER_NOT_READER);
         }
 
-        // meetingStatus 상태를 DELETED 로 설정
+        // meetingStatus 상태를 END 로 설정
         meeting.setMeetingStatus(MeetingStatus.END);
 
         // 업데이트된 entity 저장
         meetingRepository.save(meeting);
+
+        // 채팅방 비활성화
+        ChatRoom chatRoom = chatRoomRepository.findByMeetingId(meetingId);
+        chatRoom.setIsActive(false);
+        chatRoomRepository.save(chatRoom);
 
         log.info("모임 종료(END) 성공: 종료된 모임ID {}", meetingId);
 

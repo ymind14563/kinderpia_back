@@ -240,7 +240,7 @@ public class UserController {
 
     // 사용자가 모임장인 모임들의 승인 대기자 목록(각각 모임에 대한)
     @GetMapping("/meeting/{meetingId}/pending-approvals")
-    public ResponseEntity<ResponseHandler<List<UserResponseDTO>>> getUserMeetingApprovalList(@PathVariable Long meetingId){
+    public ResponseEntity<ResponseHandler<List<UserResponseDTO>>> getUserMeetingApprovalList(@PathVariable("meetingId") Long meetingId){
         List<UserResponseDTO> getApproval = userService.getUserMeetingApprovalList(meetingId);
         return ResponseHandler.response(getApproval, HttpStatus.OK, "승인 대기자 목록 조회");
     }

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class UserMeetingTimeListDTO {
+    private Long meetingId;  // 모임아이디
     private String meetingTitle;  // 모임명
     private LocalDateTime meetingTime;   // 모임일시
 }

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingStatusDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 
@@ -26,6 +27,9 @@ public interface MeetingService {
     // 모임 수정
     void updateMeeting(Long userId, Long meetingId, MeetingFormDTO meetingFormDTO);
 
-    // 모임 종료
+    // 모임 종료 (모임장이 모임 닫음)
     Boolean endMeeting(Long userId, Long meetingId);
+
+    // meetingStatus 상태 확인
+    MeetingStatusDTO meetingStatus(Long meetingId);
 }

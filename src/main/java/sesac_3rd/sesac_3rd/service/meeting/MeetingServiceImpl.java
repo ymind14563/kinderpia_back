@@ -8,6 +8,7 @@ import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingStatusDTO;
 import sesac_3rd.sesac_3rd.dto.usermeeting.UserMeetingJoinDTO;
 import sesac_3rd.sesac_3rd.entity.ChatRoom;
 import sesac_3rd.sesac_3rd.entity.Meeting;
@@ -207,7 +208,7 @@ public class MeetingServiceImpl implements MeetingService {
         log.info("모임 수정 성공: 수정된 모임ID {}", meetingId);
     }
 
-    // 모임 종료 (작성자가 닫음 : END)
+    // 모임 종료 (모임장이 모임 닫음 : END)
     @Override
     public Boolean endMeeting(Long userId, Long meetingId) {
         // meetingId 로 기존 Meeting entity 조회
@@ -233,5 +234,22 @@ public class MeetingServiceImpl implements MeetingService {
         log.info("모임 종료(END) 성공: 종료된 모임ID {}", meetingId);
 
         return true;
+    }
+
+    // meetingStatus 상태
+    @Override
+    public MeetingStatusDTO meetingStatus(Long meetingId) {
+        Meeting meeting = meetingRepository.findById(meetingId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
+
+        // 현재 참가 인원이 최대 인원을 초과하는 경우, 상태를 COMPLETED 로 설정
+        if (meeting.getCapacity() >= meeting.getTotalCapacity()) {
+            meeting.setMeetingStatus(MeetingStatus.COMPLETED); // meetingStatus 상태를 COMPLETED 로 설정
+            meetingRepository.save(meeting);
+        }
+
+        log.info("meetingStatus 상태 확인: 모임ID {}", meetingId);
+
+        return MeetingMapper.toMeetingStatusDTO(meeting);
     }
 }

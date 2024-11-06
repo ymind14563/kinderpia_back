@@ -29,9 +29,12 @@ public class ReviewController {
 
     // 리뷰 목록 조회
     @GetMapping("/{placeId}")
-    private ResponseEntity<ResponseHandler<ReviewListDTO>> getAllReviewByPlaceId(@PathVariable("placeId") Long placeId){
+    private ResponseEntity<ResponseHandler<ReviewListDTO>> getAllReviewByPlaceId(
+            @PathVariable("placeId") Long placeId,
+            @AuthenticationPrincipal Long userId
+    ){
         try{
-            ReviewListDTO reviewDTO = reviewService.getAllReviewByPlaceId(placeId);
+            ReviewListDTO reviewDTO = reviewService.getAllReviewByPlaceId(placeId, userId);
             System.out.println("reviews" + reviewDTO);
             ResponseHandler<ReviewListDTO> response = new ResponseHandler<>(
                     reviewDTO,

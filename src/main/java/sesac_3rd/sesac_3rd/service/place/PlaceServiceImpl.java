@@ -37,9 +37,10 @@ public class PlaceServiceImpl implements PlaceService{
 
     // 장소 목록 조회
     @Override
-    public Page<PlaceDTO> getAllPlace(int page, int limit){
-        Pageable pageable = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "placeId"));
-        Page<Place> places = placeRepository.getAllPlaceRepo(pageable); // Place 엔티티 페이지 조회
+    public Page<PlaceReviewDTO> getAllPlace(int page, int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageStar"));
+        Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
+        return result;
 
         return places.map(PlaceMapper::convertToDTO); // 인스턴스 메소드로 변환
     }

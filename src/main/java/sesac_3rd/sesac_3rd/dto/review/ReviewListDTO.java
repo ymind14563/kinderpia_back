@@ -15,4 +15,5 @@ import java.util.List;
 public class ReviewListDTO {
     private List<ReviewUserDTO> reviews;
     private Integer averageStar;
+
 }

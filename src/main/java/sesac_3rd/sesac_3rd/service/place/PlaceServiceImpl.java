@@ -41,7 +41,7 @@ public class PlaceServiceImpl implements PlaceService{
     // 장소 목록 조회
     @Override
     public Page<PlaceReviewDTO> getAllPlace(int page, int size){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "placeId"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageStar"));
         Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
         return result;
 

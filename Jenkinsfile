@@ -12,7 +12,7 @@ pipeline {
                 }
                 git branch: 'dev',
                     credentialsId: "${env.GITHUB_CREDENTIAL_ID}",
-                    url: 'https://github.com/orgs/SeSAC-3rd-Kinderpia/repositories'
+                    url: 'https://github.com/SeSAC-3rd-Kinderpia/kinderpia_back.git'
             }
         }
         stage('Build Docker Image') {

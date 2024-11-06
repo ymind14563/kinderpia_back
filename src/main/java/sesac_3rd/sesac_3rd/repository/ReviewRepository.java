@@ -31,10 +31,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             "ORDER BY r.createdAt DESC")
     List<ReviewUserDTO> findByPlace_PlaceId(@Param("placeId") Long placeId, @Param("userId") Long userId);
 
-   // 로그인 유저 리뷰별 좋아요 여부
-//   @Query("select round(avg(r.star)) from Review r where place_id=:placeId and is_deleted=false")
-
-
    // 장소 별 평균 별점 조회
    @Query(value = "select round(avg(r.star)) from Review r where place_id=:placeId and is_deleted=false", nativeQuery = true)
    Integer getAverageStar(@Param("placeId") Long placeId);

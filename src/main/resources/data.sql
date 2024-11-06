@@ -56,14 +56,12 @@ INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, la
 
 -- report reason (신고사유)
 insert ignore into report_reason (report_rs_id, report_rs_name) values
-(1, '부적절한 콘텐츠'),
-(2, '욕설 또는 폭력적인 언어 사용'),
-(3, '허위 정보 또는 스팸'),
-(4, '사기 또는 부정 행위'),
-(5, '개인정보 노출'),
-(6, '성적 또는 음란한 콘텐츠'),
-(8, '불법 행위 또는 범죄 유도'),
-(9, '기타 부적절한 행위');
+(1, '스팸/광고/홍보'),
+(2, '욕설/혐오/비하'),
+(3, '사기/허위정보'),
+(4, '개인정보 노출'),
+(5, '음란물/유해 컨텐츠'),
+(6, '기타');
 
 -- meeting category
 insert ignore into meeting_category (meeting_ctg_name) values ('오락 및 여가'),

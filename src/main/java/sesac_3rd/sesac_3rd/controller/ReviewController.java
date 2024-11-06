@@ -34,21 +34,20 @@ public class ReviewController {
     // localhost:8080/api/review?placeId=2&page=0&size=10
     @GetMapping
     private ResponseEntity<ResponseHandler<ReviewListDTO>> getAllReviewByPlaceId(
-            @RequestParam Long placeId,
+            @RequestParam(required = false) Long placeId,
             @AuthenticationPrincipal Long userId,
             @RequestParam(defaultValue = "0") int page, // 시작 페이지
             @RequestParam(defaultValue = "10") int size // 크기
     ) {
         try {
-            // placeId가 null인 경우에 대한 처리
-//            if (placeId == null) {
-//                ResponseHandler<ReviewListDTO> response = new ResponseHandler<>(
-//                        null,
-//                        HttpStatus.BAD_REQUEST.value(),
-//                        "placeId를 입력해 주세요."
-//                );
-//                return ResponseEntity.badRequest().body(response);
-//            }
+            if (placeId == null) {
+                ResponseHandler<ReviewListDTO> response = new ResponseHandler<>(
+                        null,
+                        HttpStatus.BAD_REQUEST.value(),
+                        "placeId를 입력해 주세요."
+                );
+                return ResponseEntity.badRequest().body(response);
+            }
 
             System.out.println("placeId : " + placeId);
             System.out.println("login userId : " + userId);

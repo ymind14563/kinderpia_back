@@ -79,7 +79,7 @@ public class MeetingController {
         );
     }
 
-    // 모임 상세조회 (모임장 정보 포함)
+    // 모임 상세조회 (profile_img, chatroom_id 포함)
     @GetMapping("/{meetingId}")
     public ResponseEntity<ResponseHandler<MeetingDetailDTO>> getMeetingDetail(@PathVariable("meetingId") Long meetingId) {
         try {

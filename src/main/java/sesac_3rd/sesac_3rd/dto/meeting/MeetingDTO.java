@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class MeetingDTO {
     private Long meetingId;
     private String nickname; // 모임장 닉네임
+    private String profileImg; // 포로필 이미지 (유저)
     private int totalCapacity; // 총원 (최대 99)
     private String district; // 지역구
 //    private String placeName; // 장소명

@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 public class MeetingDetailDTO {
     private Long meetingId;
     private Long userId; // 모임장 ID
+    private String profileImg; // 프로필 이미지 (유저)
+    private Long chatroomId; // 채팅방 ID
     private String nickname; // 모임장 닉네임
     private String meetingCategory; // 카테고리명
     private String meetingTitle; // 모임명

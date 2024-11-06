@@ -117,7 +117,7 @@ public class UserController {
     }
 
     // 회원 정보 단건 조회
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<ResponseHandler<UserDTO>> getUser(@AuthenticationPrincipal Long userId) {
         // 토큰에 문제가 있는 경우
         if (userId == null) {
@@ -136,7 +136,7 @@ public class UserController {
     }
 
     // 회원 정보 수정
-    @PutMapping("/")
+    @PutMapping
     public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@AuthenticationPrincipal Long userId
             , @RequestBody UserFormDTO dto
     ) {

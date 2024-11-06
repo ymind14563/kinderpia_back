@@ -156,8 +156,8 @@ public class UserServiceImpl implements UserService {
         // 탈퇴한 사람이 작성한 리뷰나 모임, 채팅은 삭제하지 않음
         // 모임글은 '닫힘 모임' 처리 -> 탈퇴한 사람이 작성한 모임 중 '모집중' 모임이 모두 '모임종료'(END)로 업데이트
         List<Meeting> userMeetings = meetingRepository.findOngoingMeetingsByUserId(userId);
-        if (!userMeetings.isEmpty()){
-            for (Meeting meeting : userMeetings){
+        if (!userMeetings.isEmpty()) {
+            for (Meeting meeting : userMeetings) {
                 meeting.setMeetingStatus(MeetingStatus.END);
                 meetingRepository.save(meeting);
             }
@@ -178,11 +178,10 @@ public class UserServiceImpl implements UserService {
     }
 
     // 회원 정보 수정
-    // 닉네임, 비번, 전번, 프로필 이미지 수정 가능
+    // 닉네임, 비번, 전번 수정 가능
     // 바꿀 수 있는 4개 컬럼 중 일부만 바뀌어도 수정 되도록(해당 컬럼에 값 있는지 없는지 확인 필요)
-    // 중복 검사 제외(수정 페이지에서도 회원가입 때처럼 중복검사는 input창에서 focusout될때 실행되도록)
     @Override
-    public UserDTO updateUser(Long userId, UserFormDTO dto, MultipartFile image) {
+    public UserDTO updateUser(Long userId, UserFormDTO dto) {
         log.info("update user : {}", userId);
         // 1. 사용자 조회
         User existingUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
@@ -210,25 +209,36 @@ public class UserServiceImpl implements UserService {
             existingUser.setPhoneNum(dto.getPhoneNum());
         }
 
-        // 프로필 이미지 수정
-        if (image != null && !image.isEmpty()) {
-            log.info("profileimg update...");
-
-            // 기존 이미지가 있으면 S3에서 삭제
-            if (StringUtils.hasText(existingUser.getProfileImg())){
-                log.info("delete image .///././././.");
-                s3Service.deleteImgFromS3(existingUser.getProfileImg());
-            }
-            // 새 이미지 업로드 후 url 저장
-            String imgUrl = s3Service.upload(image);
-            log.info("image upload ()(*)(*)(*)(*)(*)(*" + imgUrl);
-            existingUser.setProfileImg(imgUrl);
-        }
         // 수정 날짜 업데이트
         existingUser.setUpdatedAt(LocalDateTime.now());
-        // 수정된 formdto를 entity로 변경
 
         User updatedUser = userRepository.save(existingUser);
+        return UserMapper.toUserDTO(updatedUser);
+    }
+
+    // 회원 정보 수정(프로필 이미지)
+    @Override
+    public UserDTO updateUserProfileImg(Long userId, MultipartFile image) {
+        log.info("update profileImg ././././././././  " + userId);
+
+        // 1. 사용자 조회
+        User existingUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));
+
+        // 프로필 이미지 수정
+        log.info("profileimg update...");
+
+        // 기존 이미지가 있으면 S3에서 삭제
+        if (StringUtils.hasText(existingUser.getProfileImg())) {
+            log.info("delete image .///././././.");
+            s3Service.deleteImgFromS3(existingUser.getProfileImg());
+        }
+        // 새 이미지 업로드 후 url 저장
+        String imgUrl = s3Service.upload(image);
+        log.info("image upload ()(*)(*)(*)(*)(*)(*" + imgUrl);
+        existingUser.setProfileImg(imgUrl);
+        existingUser.setUpdatedAt(LocalDateTime.now());
+        User updatedUser = userRepository.save(existingUser);
+
         return UserMapper.toUserDTO(updatedUser);
     }
 
@@ -378,7 +388,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // MeetingStatus가 'DELETED'인 것만 제외하는 메서드
-    private List<MeetingStatus> validMeetingStatus(){
+    private List<MeetingStatus> validMeetingStatus() {
         List<MeetingStatus> validStatus = Arrays.stream(MeetingStatus.values())
                 .filter(status -> status != MeetingStatus.DELETED)
                 .collect(Collectors.toList());

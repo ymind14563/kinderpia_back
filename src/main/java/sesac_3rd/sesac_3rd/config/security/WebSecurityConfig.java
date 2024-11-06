@@ -45,6 +45,7 @@ public class WebSecurityConfig {
                                 "/api/chatroom/**",
                                 "/api/chatmsg/**",
                                 "/api/report/**",
+                                "/api/manager/**",
                                 "/ws/**"
                         )
                         .permitAll()

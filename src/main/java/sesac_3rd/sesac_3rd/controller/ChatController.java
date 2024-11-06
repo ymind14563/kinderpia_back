@@ -71,17 +71,16 @@ public class ChatController {
     }
 
 
-
     // 메시지 저장 및 전송
     @MessageMapping("/{chatroomId}/chatmsg")
     @SendTo("/topic/chatroom/{chatroomId}")
     public ResponseEntity<ResponseHandler<ChatMessageDTO.ChatMessage>> sendMessage(@DestinationVariable("chatroomId") Long chatroomId,
-                                                                                   @CookieValue("jwt") String token,
+                                                                                   @Header("Authorization") String token,
                                                                                    ChatMessageDTO.ChatMessage chatMessageDTO) {
 
 
         // @MessageMapping에서는 @AuthenticationPrincipal을 직접 사용할 수 없음 (WebSocket 통신, HTTP 요청 차이)
-        String userId = tokenProvider.validateAndGetUserId(token);
+        String userId = tokenProvider.validateAndGetUserId(token.replace("Bearer ", ""));
 
         if (userId == null) {
             return ResponseHandler.unauthorizedResponse();
@@ -98,7 +97,6 @@ public class ChatController {
         return ResponseHandler.response(savedMessage, HttpStatus.OK, "채팅 메세지 전송 성공");
 
     }
-
 
 
     // 메세지 내역 조회 (페이지네이션 적용 - 채팅생성시간 오름차순 적용)

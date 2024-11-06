@@ -81,6 +81,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
     @Query("SELECT new sesac_3rd.sesac_3rd.dto.user.UserMeetingTimeListDTO( " +
+            "m.meetingId, " +
             "m.meetingTitle, " +
             "m.meetingTime) " +
             "FROM Meeting m " +

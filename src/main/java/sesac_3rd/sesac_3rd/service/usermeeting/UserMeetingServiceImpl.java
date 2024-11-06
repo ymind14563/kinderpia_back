@@ -100,9 +100,9 @@ public class UserMeetingServiceImpl implements UserMeetingService {
     }
 
     // 모임 수락
-    public void isAccepted(Long userId, Long meetingId, Long joinUserId) {
-        // 특정 모임과 사용자에 대한 UserMeeting entity 찾기
-        UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(userId, meetingId)
+    public Boolean isAccepted(Long userId, Long meetingId, Long joinUserId) {
+        // 특정 모임과 가입자에 대한 UserMeeting entity 찾기
+        UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(joinUserId, meetingId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
         // Meeting entity 가져오기
@@ -128,12 +128,14 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         meetingRepository.save(meeting);
 
         log.info("모임 수락 처리 성공: meetingId {}, joinUserId {}", meetingId, joinUserId);
+
+        return true;
     }
 
     // 모임 거절
     public Boolean isRejection(Long userId, Long meetingId, Long joinUserId) {
         // 특정 모임과 사용자에 대한 UserMeeting entity 찾기
-        UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(userId, meetingId)
+        UserMeeting userMeeting = userMeetingRepository.findByUser_UserIdAndMeeting_MeetingId(joinUserId, meetingId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
         // Meeting entity 가져오기

@@ -10,7 +10,7 @@ public interface UserMeetingService {
     Boolean exitMeeting(Long userId, Long meetingId);
 
     // 모임 수락
-    void isAccepted(Long userId, Long meetingId, Long joinUserId);
+    Boolean isAccepted(Long userId, Long meetingId, Long joinUserId);
 
     // 모임 거절
     Boolean isRejection(Long userId, Long meetingId, Long joinUserId);

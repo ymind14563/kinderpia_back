@@ -76,11 +76,11 @@ public class UserMeetingController {
     }
 
     // 모임 수락
-    @PutMapping("/{meetingId}/accept/{userId}")
-    public ResponseEntity<ResponseHandler<Void>> acceptMeeting(
+    @PutMapping("/{meetingId}/accept/{joinUserId}")
+    public ResponseEntity<ResponseHandler<Boolean>> acceptMeeting(
             @AuthenticationPrincipal Long userId, // 작성자의 userId
             @PathVariable("meetingId") Long meetingId,
-            @PathVariable("userId") Long joinUserId // 가입하는 사람의 userId
+            @PathVariable("joinUserId") Long joinUserId // 가입하는 사람의 userId
     ) {
         try {
             // 토큰에 문제가 있는 경우
@@ -90,11 +90,11 @@ public class UserMeetingController {
             }
             System.out.println("userId 토큰있음 >> " + userId);
 
-            userMeetingService.isAccepted(userId, meetingId, joinUserId);
+            Boolean result = userMeetingService.isAccepted(userId, meetingId, joinUserId);
 
-            ResponseHandler<Void> response = new ResponseHandler<>(
-                    null,
-                    HttpStatus.OK.value(), // 201
+            ResponseHandler<Boolean> response = new ResponseHandler<>(
+                    result, // true
+                    HttpStatus.OK.value(), // 200
                     "모임 참가자 수락 완료"
             );
 
@@ -105,11 +105,11 @@ public class UserMeetingController {
     }
 
     // 모임 거절
-    @DeleteMapping("/{meetingId}/reject/{userId}")
+    @DeleteMapping("/{meetingId}/reject/{joinUserId}")
     public ResponseEntity<ResponseHandler<Boolean>> rejectMeeting(
             @AuthenticationPrincipal Long userId, // 작성자의 userId
             @PathVariable("meetingId") Long meetingId,
-            @PathVariable("userId") Long joinUserId // 가입하는 사람의 userId
+            @PathVariable("joinUserId") Long joinUserId // 가입하는 사람의 userId
     ) {
         try {
             // 토큰에 문제가 있는 경우

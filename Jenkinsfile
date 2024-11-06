@@ -62,7 +62,7 @@ pipeline {
                                 echo "Docker 로그인 실패!" && exit 1
                             fi
 
-                            echo "2단계: 최신 Docker 이미지 가져오는 중"
+                            echo "2단계: 최신 Docker 이미지 가져오는 중 (Docker Pull)"
                             if docker pull ymind14563/kinderpia_back-image:latest; then
                                 echo "Docker 이미지 가져오기 성공."
                             else
@@ -76,9 +76,14 @@ pipeline {
                                 echo "8080 포트를 사용하는 컨테이너 중지 중 (컨테이너 ID: \$container_id)"
                                 sleep 2
                                 docker ps --filter "publish=8080" -q | xargs -r docker stop
+                                echo "컨테이너 중지 완료를 위한 15초 대기 시작"
                                 sleep 15
-                                docker ps --filter "publish=8080" -q | xargs -r docker rm -f
+                                echo "컨테이너 중지 완료"
+                                sleep 2
+                                echo "\$container_id" | xargs -r docker rm -f
+                                echo "컨테이너 삭제 완료를 위한 15초 대기 시작"
                                 sleep 15
+                                echo "컨테이너 삭제 완료"
                                 echo "8080 포트를 사용하는 컨테이너 중지 및 제거 완료."
                                 sleep 3
                             else

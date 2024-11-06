@@ -48,12 +48,14 @@ public class ReviewServiceImpl implements ReviewService{
 
     // 장소별 리뷰 목록 조회
     @Override
-    public ReviewListDTO getAllReviewByPlaceId(Long placeId){
-        List<ReviewUserDTO> reviews = reviewRepository.findByPlace_PlaceId(placeId);
+    public ReviewListDTO getAllReviewByPlaceId(Long placeId, Long userId){
+        List<ReviewUserDTO> reviews = reviewRepository.findByPlace_PlaceId(placeId, userId);
         System.out.println("reviews = " + reviews);
 
         Integer avgStar = reviewRepository.getAverageStar(placeId);
         System.out.println("avgStar : " + avgStar);
+
+        System.out.println("로그인 유저 아이디 : "+ userId);
 
         return new ReviewListDTO(reviews, avgStar);
     }

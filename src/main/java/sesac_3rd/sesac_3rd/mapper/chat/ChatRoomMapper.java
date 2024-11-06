@@ -55,7 +55,7 @@ public class ChatRoomMapper {
                 .meetingCategoryName(chatRoom.getMeeting().getMeetingCategory().getMeetingCtgName())
                 .lastMessage(lastMessageInfo.getMessageContent())
                 .lastMessageCreatedAt(lastMessageInfo.getCreatedAt())
-                .capacity(chatRoom.getMeeting().getTotalCapacity())
+                .capacity(chatRoom.getMeeting().getCapacity())
                 .isActive(chatRoom.getIsActive())
                 .users(userListInChatRoom)
                 .build();
@@ -83,7 +83,7 @@ public class ChatRoomMapper {
                             .meetingCategoryName(chatRoom.getMeeting().getMeetingCategory().getMeetingCtgName())
                             .lastMessage(lastMessageInfo.getMessageContent())
                             .lastMessageCreatedAt(lastMessageInfo.getCreatedAt())
-                            .capacity(chatRoom.getMeeting().getTotalCapacity())
+                            .capacity(chatRoom.getMeeting().getCapacity())
                             .isActive(chatRoom.getIsActive())
                             .build();
                 })

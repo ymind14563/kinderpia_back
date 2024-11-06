@@ -20,6 +20,7 @@ public class UserMeetingJoinDTO {
     private boolean isBlocked = false; // 차단여부 (기본값 FALSE)
     private boolean isWithdraw = false; // 탈퇴여부 (기본값 FALSE)
     private boolean isAccepted; // 수락여부 (NULL: 대기 중)
+
     private LocalDateTime blockedAt; // 차단일자
     private LocalDateTime acceptedAt; // 수락일자
     private LocalDateTime withdrawAt; // 탈퇴일자

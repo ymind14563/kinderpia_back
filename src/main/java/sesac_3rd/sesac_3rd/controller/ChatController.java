@@ -71,7 +71,6 @@ public class ChatController {
     }
 
 
-
     // 메시지 저장 및 전송
     @MessageMapping("/{chatroomId}/chatmsg")
     @SendTo("/topic/chatroom/{chatroomId}")
@@ -98,7 +97,6 @@ public class ChatController {
         return ResponseHandler.response(savedMessage, HttpStatus.OK, "채팅 메세지 전송 성공");
 
     }
-
 
 
     // 메세지 내역 조회 (페이지네이션 적용 - 채팅생성시간 오름차순 적용)

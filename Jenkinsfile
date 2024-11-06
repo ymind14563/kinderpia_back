@@ -90,6 +90,13 @@ pipeline {
                                 echo "8080 포트를 사용하는 컨테이너가 없습니다."
                             fi
 
+                            # 상태가 exited 또는 created인 모든 컨테이너 삭제
+                            echo "불필요한 상태의 모든 컨테이너 삭제 중..."
+                            docker rm \$(docker ps -a -q --filter "status=exited" --filter "status=created")
+                            echo "불필요한 컨테이너 삭제 완료를 위한 15초 대기 시작"
+                            sleep 15
+                            echo "상태가 exited 또는 created인 컨테이너 삭제 완료."
+
                             echo "4단계: 태그가 없는 이미지 제거 중 (dangling 이미지)"
                             if docker images | grep "<none>" | awk '{print \$3}' | xargs -r docker rmi -f; then
                                 sleep 5

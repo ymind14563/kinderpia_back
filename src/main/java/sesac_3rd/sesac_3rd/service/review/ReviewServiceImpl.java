@@ -2,6 +2,9 @@ package sesac_3rd.sesac_3rd.service.review;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sesac_3rd.sesac_3rd.dto.review.*;
@@ -48,16 +51,21 @@ public class ReviewServiceImpl implements ReviewService{
 
     // 장소별 리뷰 목록 조회
     @Override
-    public ReviewListDTO getAllReviewByPlaceId(Long placeId, Long userId){
-        List<ReviewUserDTO> reviews = reviewRepository.findByPlace_PlaceId(placeId, userId);
+    public ReviewListDTO getAllReviewByPlaceId(Long placeId, Long userId, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<ReviewUserDTO> reviewsPage = reviewRepository.findByPlace_PlaceId(placeId, userId, pageable);
+        List<ReviewUserDTO> reviews = reviewsPage.getContent(); // 현재 페이지의 리뷰 목록
         System.out.println("reviews = " + reviews);
 
         Integer avgStar = reviewRepository.getAverageStar(placeId);
         System.out.println("avgStar : " + avgStar);
 
-        System.out.println("로그인 유저 아이디 : "+ userId);
+        System.out.println("로그인 유저 아이디 : " + userId);
 
-        return new ReviewListDTO(reviews, avgStar);
+        // 페이지 정보 추가
+        return new ReviewListDTO(reviews, avgStar, reviewsPage.getTotalElements(), reviewsPage.getTotalPages());
     }
 
     // 리뷰 단건 조회

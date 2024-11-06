@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.controller;
 
+import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,8 @@ import sesac_3rd.sesac_3rd.dto.review.*;
 import sesac_3rd.sesac_3rd.entity.Likes;
 import sesac_3rd.sesac_3rd.entity.Review;
 import sesac_3rd.sesac_3rd.entity.User;
+import sesac_3rd.sesac_3rd.exception.CustomException;
+import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.review.ReviewService;
 import sesac_3rd.sesac_3rd.config.security.TokenProvider;
@@ -28,17 +31,33 @@ public class ReviewController {
     private TokenProvider tokenProvider;
 
     // 리뷰 목록 조회
-    @GetMapping("/{placeId}")
+    // localhost:8080/api/review?placeId=2&page=0&size=10
+    @GetMapping
     private ResponseEntity<ResponseHandler<ReviewListDTO>> getAllReviewByPlaceId(
-            @PathVariable("placeId") Long placeId,
-            @AuthenticationPrincipal Long userId
-    ){
-        try{
-            ReviewListDTO reviewDTO = reviewService.getAllReviewByPlaceId(placeId, userId);
-            System.out.println("reviews" + reviewDTO);
+            @RequestParam(required = false) Long placeId,
+            @AuthenticationPrincipal Long userId,
+            @RequestParam(defaultValue = "0") int page, // 시작 페이지
+            @RequestParam(defaultValue = "10") int size // 크기
+    ) {
+        try {
+            if (placeId == null) {
+                ResponseHandler<ReviewListDTO> response = new ResponseHandler<>(
+                        null,
+                        HttpStatus.BAD_REQUEST.value(),
+                        "placeId를 입력해 주세요."
+                );
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            System.out.println("placeId : " + placeId);
+            System.out.println("login userId : " + userId);
+            System.out.println("page : " + page);
+            System.out.println("size : " + size);
+            ReviewListDTO reviewDTO = reviewService.getAllReviewByPlaceId(placeId, userId, page, size);
+            System.out.println("reviews: " + reviewDTO);
             ResponseHandler<ReviewListDTO> response = new ResponseHandler<>(
                     reviewDTO,
-                    HttpStatus.OK.value(), //200
+                    HttpStatus.OK.value(), // 200
                     "리뷰 목록 조회 완료"
             );
             return ResponseEntity.ok(response);
@@ -46,6 +65,7 @@ public class ReviewController {
             throw new RuntimeException(e);
         }
     }
+
 
     // 리뷰 단건 조회
     @GetMapping("/review/{reviewid}")
@@ -137,7 +157,6 @@ public class ReviewController {
             throw new RuntimeException(e);
         }
     }
-
 
     // 리뷰 좋아요
     @PostMapping("/likes/{id}")

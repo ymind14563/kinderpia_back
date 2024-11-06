@@ -4,6 +4,7 @@ import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingStatusDTO;
+import sesac_3rd.sesac_3rd.entity.ChatRoom;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.entity.MeetingCategory;
 import sesac_3rd.sesac_3rd.entity.User;
@@ -16,6 +17,7 @@ public class MeetingMapper {
         return MeetingDTO.builder()
                 .meetingId(meeting.getMeetingId())
                 .nickname(meeting.getUser().getNickname()) // 모임장 닉네임
+                .profileImg(meeting.getUser().getProfileImg()) // 포로필 이미지 (유저)
                 .totalCapacity(meeting.getTotalCapacity()) // 총원 (최대 99)
                 .district(meeting.getDistrict()) // 지역구
 //                .placeName(meeting.getPlace().getPlaceName()) // 장소명
@@ -35,6 +37,8 @@ public class MeetingMapper {
         return MeetingDetailDTO.builder()
                 .meetingId(meeting.getMeetingId())
                 .userId(meeting.getUser().getUserId()) // 모임장 ID
+                .profileImg(meeting.getUser().getProfileImg()) // 프로필 이미지 (유저)
+                .chatroomId(meeting.getMeetingId()) // 채팅방 ID
                 .nickname(meeting.getUser().getNickname()) // 모임장 닉네임
                 .meetingCategory(meeting.getMeetingCategory().getMeetingCtgName()) // 카테고리명
                 .meetingTitle(meeting.getMeetingTitle()) // 모임명

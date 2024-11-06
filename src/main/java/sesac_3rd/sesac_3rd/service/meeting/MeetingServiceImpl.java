@@ -115,11 +115,11 @@ public class MeetingServiceImpl implements MeetingService {
         return new PaginationResponseDTO<>(meetingDTOS, meetings);
     }
 
-    // 모임 상세 조회 (모임장 정보 포함)
+    // 모임 상세조회 (profile_img, chatroom_id 포함)
     @Override
     public MeetingDetailDTO getDetailMeeting(Long meetingId) {
         // Meeting 조회 (모임장 정보 포함)
-        Meeting meeting = meetingRepository.findByMeetingIdWithUser(meetingId)
+        Meeting meeting = meetingRepository.findByMeetingIdWithUserAndChatRoom(meetingId)
                 .orElseThrow( () -> new CustomException(ExceptionStatus.MEETING_NOT_FOUND));
 
         log.info("모임 상세 조회 성공: 모임ID {}", meetingId);

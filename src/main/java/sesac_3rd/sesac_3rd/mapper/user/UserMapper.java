@@ -51,7 +51,17 @@ public class UserMapper {
                 .email(user.getEmail())
                 .nickname(user.getNickname())
                 .phoneNum(user.getPhoneNum())
+                .profileImg(user.getProfileImg())
                 .createdAt(user.getCreatedAt())
+                .build();
+    }
+
+    // entity to responsedto for return approval list
+    public static UserResponseDTO toAppResponseDTO(User user){
+        return UserResponseDTO.builder()
+                .profileImg(user.getProfileImg())
+                .userId(user.getUserId())
+                .nickname(user.getNickname())
                 .build();
     }
 

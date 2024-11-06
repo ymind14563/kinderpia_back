@@ -9,9 +9,8 @@ import java.time.LocalDateTime;
 
 public class UserMapper {
     // entity to dto
-    public static UserDTO toUserDTO(User user){
+    public static UserDTO toUserDTO(User user) {
         return UserDTO.builder()
-//                .userPw(user.getUserPw())
                 .loginId(user.getLoginId())
                 .nickname(user.getNickname())
                 .email(user.getEmail())
@@ -22,7 +21,7 @@ public class UserMapper {
     }
 
     // entity to formdto
-    public static UserFormDTO toUserFormDTO(User user){
+    public static UserFormDTO toUserFormDTO(User user) {
         return UserFormDTO.builder()
                 .nickname(user.getNickname())
                 .phoneNum(user.getPhoneNum())
@@ -31,7 +30,7 @@ public class UserMapper {
     }
 
     // formdto to entity for signup
-    public static User toUserEntityForSignup(UserFormDTO formDTO, String encodedPw){
+    public static User toUserEntityForSignup(UserFormDTO formDTO, String encodedPw) {
         return User.builder()
                 .userPw(encodedPw)
                 .loginId(formDTO.getLoginId())
@@ -43,20 +42,9 @@ public class UserMapper {
                 .build();
     }
 
-    // formdto to entity for update user
-//    public static User toUserEntityForUpdate(UserFormDTO formDTO){
-//        return User.builder()
-//                .userPw(formDTO.getUserPw())
-//                .nickname(formDTO.getNickname())
-//                .phoneNum(formDTO.getPhoneNum())
-//                // 프로필 이미지는 dto에서 값 넘어오고 그 값이 비어있지 않다면 entity에 넣기
-//                .profileImg(formDTO.getProfileImg() != null && !formDTO.getProfileImg().isEmpty() ? formDTO.getProfileImg() : null)
-//                .updatedAt(LocalDateTime.now())
-//                .build();
-//    }
 
     // entity to responsedto for return signup
-    public static UserResponseDTO toResponseDTO(User user){
+    public static UserResponseDTO toResponseDTO(User user) {
         return UserResponseDTO.builder()
                 .userId(user.getUserId())
                 .loginId(user.getLoginId())
@@ -68,29 +56,16 @@ public class UserMapper {
     }
 
     // entity to loginformdto for return login success
-    public static LoginFormDTO toLoginFormDTO(User user){
+    public static LoginFormDTO toLoginFormDTO(User user) {
         return LoginFormDTO.builder()
                 .loginId(user.getLoginId())
                 .userId(user.getUserId())
                 .build();
     }
 
-    // user review entity to userreviewdto
-//    public static UserReviewDTO.UserReviewListDTO toUserReviewDTO(Review review){
-//        return UserReviewDTO.UserReviewListDTO.builder()
-//                .reviewId(review.getReviewId())
-//                .star(review.getStar())
-//                .reviewContent(review.getReviewContent())
-//                .createdAt(review.getCreatedAt())
-//                .place(UserReviewDTO.PlaceInfoDTO.builder()
-//                        .placeName(review.getPlace().getPlaceName())
-//                        .placeId(review.getPlace().getPlaceId())
-//                        .build())
-//                .build();
-//    }
 
     // meeting entity to usermeetinglistDTO
-    public static UserMeetingListDTO toUserMeetingListDTO(Meeting meeting){
+    public static UserMeetingListDTO toUserMeetingListDTO(Meeting meeting) {
         return UserMeetingListDTO.builder()
                 .meetingId(meeting.getMeetingId())
                 .meetingTitle(meeting.getMeetingTitle())
@@ -99,6 +74,7 @@ public class UserMapper {
                 .meetingCtgName(meeting.getMeetingCategory().getMeetingCtgName())
                 .meetingLocation(meeting.getMeetingLocation())
                 .capacity(meeting.getCapacity())
+                .totalCapacity(meeting.getTotalCapacity())
                 .createdAt(meeting.getCreatedAt())
                 .nickname(meeting.getUser().getNickname())
                 .profileImg(meeting.getUser().getProfileImg())
@@ -106,7 +82,7 @@ public class UserMapper {
     }
 
     // meeting entity to usermeetinglistDTO for meetingtime
-    public static UserMeetingListDTO toUserMeetingListTimeDTO(Meeting meeting){
+    public static UserMeetingListDTO toUserMeetingListTimeDTO(Meeting meeting) {
         return UserMeetingListDTO.builder()
                 .meetingTitle(meeting.getMeetingTitle())
                 .meetingTime(meeting.getMeetingTime())

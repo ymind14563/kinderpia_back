@@ -15,15 +15,17 @@ public class UserResponseDTO {
     private String nickname;
     private String email;
     private String phoneNum;
+    private String profileImg;
     private LocalDateTime createdAt;
 
     @Builder
-    private UserResponseDTO(Long userId, String loginId, String nickname, String email, String phoneNum, LocalDateTime createdAt){
+    private UserResponseDTO(Long userId, String loginId, String nickname, String email, String phoneNum, String profileImg, LocalDateTime createdAt){
         this.userId = userId;
         this.email = email;
         this.nickname = nickname;
         this.phoneNum = phoneNum;
         this.loginId = loginId;
+        this.profileImg = profileImg;
         this.createdAt = createdAt;
     }
 }

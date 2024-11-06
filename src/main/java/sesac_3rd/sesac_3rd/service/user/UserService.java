@@ -54,5 +54,5 @@ public interface UserService {
     UserMeetingStatusDTO getUserMeetingStatus(Long userId, Long meetingId);
 
     // 승인 대기자 목록(각각 모임에 대한)
-
+    List<UserResponseDTO> getUserMeetingApprovalList(Long meetingId);
 }

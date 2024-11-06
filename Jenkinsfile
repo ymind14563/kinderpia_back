@@ -1,8 +1,8 @@
 pipeline {
     agent any
-    properties([
+    options {
         disableConcurrentBuilds() // 동시에 여러 빌드가 실행되지 않도록 설정
-    ])
+    }
 
     stages {
         stage('Checkout') {
@@ -18,21 +18,20 @@ pipeline {
                     credentialsId: "${env.GITHUB_CREDENTIAL_ID}",
                     url: 'https://github.com/SeSAC-3rd-Kinderpia/kinderpia_back.git'
 
-                // Git 체크아웃 후 현재 브랜치를 가져와 env.BRANCH_NAME 설정
-                def branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
-                env.BRANCH_NAME = branchName
+                // Git 체크아웃 후 현재 브랜치 이름 가져오기
+                script {
+                    def branchName = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+                    if (branchName != 'dev') {
+                        echo "이 빌드는 ${branchName} 브랜치에 대한 푸시로 트리거되었습니다. 'dev' 브랜치가 아니므로 빌드를 건너뜁니다."
+                        currentBuild.result = 'SUCCESS'
+                        return
+                    }
+                }
             }
         }
         stage('Prepare') {
             steps {
                 script {
-                    // 특정 브랜치가 아닌 경우 빌드 종료
-                    if (env.BRANCH_NAME != 'dev') {
-                        echo "This build is triggered by a push to ${env.BRANCH_NAME} branch, skipping build as it is not 'dev' branch."
-                        currentBuild.result = 'SUCCESS'
-                        return
-                    }
-
                     // 현재 실행 중인 빌드를 제외하고, 오래된 대기 중인 빌드를 모두 취소
                     def queue = Jenkins.instance.queue.items.findAll {
                         it.task.name == env.JOB_NAME

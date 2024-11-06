@@ -26,6 +26,6 @@ public interface MeetingService {
     // 모임 수정
     void updateMeeting(Long userId, Long meetingId, MeetingFormDTO meetingFormDTO);
 
-    // 모임 삭제
-    Boolean deleteMeeting(Long userId, Long meetingId);
+    // 모임 종료
+    Boolean endMeeting(Long userId, Long meetingId);
 }

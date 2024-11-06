@@ -65,7 +65,7 @@ public class MeetingMapper {
                 .meetingTitle(meetingFormDTO.getMeetingTitle()) // 모임명
                 .meetingContent(meetingFormDTO.getMeetingContent()) // 모임내용
                 .totalCapacity(meetingFormDTO.getTotalCapacity()) // 총원 (최대 99)
-                .isLimited(meetingFormDTO.isLimited()) // 총원제한여부 (기본값 FALSE)
+                .isLimited(meetingFormDTO.getIsLimited()) // 총원제한여부 (기본값 FALSE)
                 .isAuthType(meetingFormDTO.isAuthType()) // 인증여부 (기본값 FALSE)
                 .capacity(meetingFormDTO.getCapacity()) // 참가인원 (기본값 1)
                 .meetingLocation(meetingFormDTO.getMeetingLocation()) // 모임장소(주소)
@@ -86,6 +86,7 @@ public class MeetingMapper {
                 .meetingTitle(meetingFormDTO.getMeetingTitle())
                 .totalCapacity(meetingFormDTO.getTotalCapacity())
                 .meetingContent(meetingFormDTO.getMeetingContent())
+                .isLimited(meetingFormDTO.getIsLimited())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();

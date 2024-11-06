@@ -41,7 +41,7 @@ public class Meeting {
     private int totalCapacity;  // 총원 (최대 99)
 
     @Column(name = "is_limited", nullable = false)
-    private boolean isLimited = false;  // 총원제한여부 (기본값 FALSE)
+    private Boolean isLimited = false;  // 총원제한여부 (기본값 FALSE)
 
     @Column(name = "is_authtype", nullable = false)
     private boolean isAuthType = false;  // 인증여부 (기본값 FALSE)

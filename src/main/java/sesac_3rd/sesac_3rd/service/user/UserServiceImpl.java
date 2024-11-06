@@ -308,6 +308,14 @@ public class UserServiceImpl implements UserService {
     }
 
     // 승인 대기자 목록(각각 모임에 대한)
+    @Override
+    public List<UserResponseDTO> getUserMeetingApprovalList(Long meetingId) {
+        List<User> getUsers = userRepository.getUserMeetingApprovalList(meetingId);
+
+        return getUsers.stream()
+                .map(UserMapper::toAppResponseDTO)
+                .collect(Collectors.toList());
+    }
 
     // 닉네임 유효성 검사
     private void validateNickname(String nickname) {

@@ -35,9 +35,6 @@ public class PlaceServiceImpl implements PlaceService{
     @Autowired
     private ReviewRepository reviewRepository;
 
-    @Autowired
-    private PlaceMapper placeMapper;
-
     // 장소 목록 조회
     @Override
     public Page<PlaceReviewDTO> getAllPlace(int page, int size){
@@ -45,21 +42,19 @@ public class PlaceServiceImpl implements PlaceService{
         Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
         return result;
 
+        return places.map(PlaceMapper::convertToDTO); // 인스턴스 메소드로 변환
     }
 
     // 검색 결과
     @Override
-    public Page<PlaceReviewDTO> findByContaining(String sort, int page, int size, String category, String keyword){
-
-    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("placeId")));
+    public Page<PlaceWithCategoryDTO> findByContaining(String sort, int page, int size, String category, String keyword){
+    List<Sort.Order> resultPlace = new ArrayList<>();
+    resultPlace.add(Sort.Order.desc("placeId"));
+    Pageable pageable = PageRequest.of(page, size, Sort.by(resultPlace));
     System.out.println("category : "  + category.getClass().getName());
     System.out.println("category value: " + category);
-        System.out.println("sort : " + sort);
-    if(sort.equals("star")){
-        pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("averageStar")));
-    }
-    if (category.equals("title")) {
 
+    if (category.equals("title")) {
         return placeRepository.findByPlaceNameContaining(keyword, pageable);
     }
     else if (category.equals("address")) {
@@ -68,6 +63,7 @@ public class PlaceServiceImpl implements PlaceService{
     else{
         throw new CustomException(ExceptionStatus.CATEGORY_NOT_FOUND);
     }
+
 }
 
     @Override
@@ -77,9 +73,7 @@ public class PlaceServiceImpl implements PlaceService{
         // 장소별 평균 평점 조회
         Integer avgStar = reviewRepository.getAverageStar(placeId);
         System.out.println("avgStar : " + avgStar);
-        PlaceReviewDTO placeReviewDTO = placeMapper.convertToPlaceReviewDTO(place);
-        placeReviewDTO.setAverageStar(avgStar);
 
-        return placeReviewDTO;
+        return new PlaceReviewDTO(place,placeCtgName,avgStar);
     }
 }

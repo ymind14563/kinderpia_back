@@ -62,6 +62,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "mc.meetingCtgName, " +
             "m.meetingLocation, " +
             "m.capacity, " +
+            "m.totalCapacity, " +
             "m.createdAt, " +
             "u.nickname, " +
             "u.profileImg, " +
@@ -91,4 +92,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "        AND um.isBlocked = false)) " +
             "AND m.meetingStatus IN :validStatus")
     List<UserMeetingTimeListDTO> meetingTimeFindByUserId(@Param("userId") Long userId, @Param("validStatus") List<MeetingStatus> validStatus);
+
+    // 승인 대기자 목록(각각 모임에 대한)
+    @Query("SELECT um.user FROM UserMeeting um WHERE um.meeting.meetingId = :meetingId AND um.isAccepted IS NULL")
+    List<User> getUserMeetingApprovalList(@Param("meetingId") Long meetingId);
 }

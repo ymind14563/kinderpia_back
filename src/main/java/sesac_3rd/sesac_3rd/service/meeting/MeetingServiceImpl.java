@@ -147,17 +147,16 @@ public class MeetingServiceImpl implements MeetingService {
         userMeetingJoinDTO.setUserId(userId);
         userMeetingJoinDTO.setMeetingId(meeting.getMeetingId());
         userMeetingJoinDTO.setCapacity(1); // 참가자는 기본 1명으로 설정
-        userMeetingJoinDTO.setAccepted(true); // 모임장은 수락여부 default 로 true
 
         // UserMeetingJoinDTO 를 UserMeeting entity 로 변환
         UserMeeting userMeeting = UserMeetingMapper.toUserMeetingJoinEntity(userMeetingJoinDTO);
         userMeeting.setMeeting(meeting); // UserMeeting 에 Meeting entity 설정
 
         // 인증 여부에 따라 수락 상태 설정
-        if (!meeting.isAuthType()) {
-            userMeeting.setIsAccepted(null); // 인증 대기 상태
+        if (!meeting.isAuthType() || userId.equals(meeting.getUser().getUserId())) {
+            userMeeting.setIsAccepted(true); // 자동 수락 (모임장인 경우 또는 인증된 경우)
         } else {
-            userMeeting.setIsAccepted(true); // 자동  수락
+            userMeeting.setIsAccepted(null); // 인증 대기 상태
         }
 
         // UserMeeting entity 저장

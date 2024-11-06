@@ -62,6 +62,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "mc.meetingCtgName, " +
             "m.meetingLocation, " +
             "m.capacity, " +
+            "m.totalCapacity" +
             "m.createdAt, " +
             "u.nickname, " +
             "u.profileImg, " +

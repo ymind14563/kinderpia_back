@@ -29,26 +29,7 @@ pipeline {
                 }
             }
         }
-        stage('Prepare') {
-            steps {
-                script {
-                    // 현재 실행 중인 빌드를 제외하고, 오래된 대기 중인 빌드를 모두 취소
-                    def queue = Jenkins.instance.queue.items.findAll {
-                        it.task.name == env.JOB_NAME
-                    }
 
-                    if (queue.size() > 1) {
-                        queue[0..-2].each { item ->
-                            println "Cancelling build #${item.id}"
-                            item.doCancelQueue()
-                        }
-                        println "최신 빌드를 제외한 대기 중인 모든 빌드를 취소했습니다."
-                    } else {
-                        println "대기 중인 빌드가 1개 이하이므로 취소 작업을 수행하지 않습니다."
-                    }
-                }
-            }
-        }
         stage('Build Docker Image') {
             steps {
                 script {
@@ -57,6 +38,7 @@ pipeline {
                 }
             }
         }
+
         stage('Push Docker Image') {
             steps {
                 script {
@@ -67,6 +49,7 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy') {
             steps {
                 script {

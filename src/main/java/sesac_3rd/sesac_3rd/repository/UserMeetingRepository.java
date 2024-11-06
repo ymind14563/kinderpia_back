@@ -13,8 +13,8 @@ import java.util.Optional;
 public interface UserMeetingRepository extends JpaRepository<UserMeeting, Long> {
     // 사용자가 모임에 참가중인지 확인
     boolean existsByUser_UserIdAndMeeting_MeetingId(Long userId, Long meetingId);
-    // 특정 모임과 사용자에 대한 UserMeeting entity 찾기
-    Optional<UserMeeting> findByUser_UserIdAndMeeting_MeetingId(Long userId, Long meetingId);
+    // 특정 모임과 가입자에 대한 UserMeeting entity 찾기
+    Optional<UserMeeting> findByUser_UserIdAndMeeting_MeetingId(Long joinUserId, Long meetingId);
 
     List<UserMeeting> findByMeeting_MeetingId(Long meetingId);
 

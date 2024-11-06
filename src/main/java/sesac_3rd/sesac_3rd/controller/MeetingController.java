@@ -170,7 +170,7 @@ public class MeetingController {
             ResponseHandler<Boolean> response = new ResponseHandler<>(
                     result, // true
                     HttpStatus.OK.value(), // 200
-                    "모임 삭제 완료"
+                    "모임 종료 완료"
             );
 
             return ResponseEntity.ok(response);

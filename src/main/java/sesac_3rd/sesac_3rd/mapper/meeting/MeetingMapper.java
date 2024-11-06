@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.mapper.meeting;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingFormDTO;
+import sesac_3rd.sesac_3rd.dto.meeting.MeetingStatusDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.entity.MeetingCategory;
 import sesac_3rd.sesac_3rd.entity.User;
@@ -89,6 +90,14 @@ public class MeetingMapper {
                 .isLimited(meetingFormDTO.getIsLimited())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
+    // [ 모임 상태 ]
+    public static MeetingStatusDTO toMeetingStatusDTO(Meeting meeting) {
+        return MeetingStatusDTO.builder()
+                .meetingId(meeting.getMeetingId())
+                .meetingStatus(meeting.getMeetingStatus())
                 .build();
     }
 }

@@ -195,7 +195,7 @@ public class UserController {
     }
 
     // 비밀번호 일치 확인 - ( 회원 수정, 탈퇴시 )
-    @PostMapping("/check/userpw")
+    @PostMapping("/check/userPw")
     public ResponseEntity<ResponseHandler<Boolean>> checkUserPw(@AuthenticationPrincipal Long userId, @RequestBody LoginFormDTO dto) {
         // 토큰에 문제가 있는 경우
         if (userId == null) {

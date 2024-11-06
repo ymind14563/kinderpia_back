@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.mapper.place;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
+import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.entity.PlaceCategory;
 import sesac_3rd.sesac_3rd.repository.PlaceCategoryRepository;
@@ -54,6 +55,23 @@ public class PlaceMapper {
                 .isPaid(place.isPaid())
                 .homepageUrl(place.getHomepageUrl())
                 .placeNum(place.getPlaceNum())
+                .build();
+    }
+    //  Entity to PlaceReviewDTO
+    public PlaceReviewDTO convertToPlaceReviewDTO(Place place) {
+        return PlaceReviewDTO.builder()
+                .placeId(place.getPlaceId())
+                .placeName(place.getPlaceName())
+                .location(place.getLocation())
+                .detailAddress(place.getDetailAddress())
+                .operatingDate(place.getOperatingDate())
+                .latitude(place.getLatitude())
+                .longitude(place.getLongitude())
+                .placeImg(place.getPlaceImg())
+                .isPaid(place.isPaid())
+                .homepageUrl(place.getHomepageUrl())
+                .placeNum(place.getPlaceNum())
+                .placeCtgName(place.getPlaceCategory().getPlaceCtgName())
                 .build();
     }
 }

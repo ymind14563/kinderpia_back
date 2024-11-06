@@ -137,8 +137,8 @@ public class UserController {
     // 회원 정보 수정
     @PutMapping(value = "/{userId}")
     public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId
-                                                                , @RequestPart("user") UserFormDTO dto
-                                                                , @RequestPart(value = "image", required = false) MultipartFile image  // 이미지는 선택
+            , @RequestPart("user") UserFormDTO dto
+            , @RequestPart(value = "image", required = false) MultipartFile image  // 이미지는 선택
     ) {
         UserDTO updatedUser = userService.updateUser(userId, dto, image);
         ResponseHandler<UserDTO> response = new ResponseHandler<>(
@@ -181,9 +181,9 @@ public class UserController {
     // 사용자 리뷰 목록 조회(장소 정보까지 같이)
     @GetMapping("/review/list/{userId}")
     public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserReviewDTO>>> getUserReviewList(@PathVariable Long userId,
-                                                                                                    @RequestParam(defaultValue = "0") int page,
-                                                                                                    @RequestParam(defaultValue = "10") int size
-                                                                                                    ) {
+                                                                                                   @RequestParam(defaultValue = "0") int page,
+                                                                                                   @RequestParam(defaultValue = "10") int size
+    ) {
         PaginationResponseDTO<UserReviewDTO> getReviewList = userService.getUserReviewList(userId, size, page);
 
         return ResponseHandler.response(getReviewList, HttpStatus.OK, "사용자 리뷰 목록 조회");
@@ -229,10 +229,8 @@ public class UserController {
 
     // 사용자가 모임장인 모임들의 승인 대기자 목록(각각 모임에 대한)
     @GetMapping("/meeting/{meetingId}/pending-approvals")
-    public ResponseEntity<ResponseHandler<List<UserResponseDTO>>> getUserMeetingApprovalList(@PathVariable Long meetingId){
-        List<UserResponseDTO> getApprovalList = userService.getUserMeetingApprovalList(meetingId);
-
-        return ResponseHandler.response(getApprovalList, HttpStatus.OK, "승인 대기자 목록 조회");
+    public ResponseEntity<ResponseHandler> getUserMeetingApprovalList(@PathVariable Long meetingId){
+        return null;
     }
 
 }

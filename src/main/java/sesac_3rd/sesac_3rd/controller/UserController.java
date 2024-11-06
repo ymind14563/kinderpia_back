@@ -117,9 +117,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // 로그아웃
-//    void logout();
-
     // 회원 정보 단건 조회
     @GetMapping("/{userId}")
     public ResponseEntity<ResponseHandler<UserDTO>> getUser(@PathVariable Long userId) {
@@ -135,16 +132,30 @@ public class UserController {
     }
 
     // 회원 정보 수정
-    @PutMapping(value = "/{userId}")
+    @PutMapping("/{userId}")
     public ResponseEntity<ResponseHandler<UserDTO>> updateUser(@PathVariable Long userId
-            , @RequestPart("user") UserFormDTO dto
-            , @RequestPart(value = "image", required = false) MultipartFile image  // 이미지는 선택
+            , @RequestBody UserFormDTO dto
     ) {
-        UserDTO updatedUser = userService.updateUser(userId, dto, image);
+        UserDTO updatedUser = userService.updateUser(userId, dto);
         ResponseHandler<UserDTO> response = new ResponseHandler<>(
                 updatedUser,
                 HttpStatus.OK.value(),  // 200
                 "사용자 수정 완료"
+        );
+        return ResponseEntity.ok(response);
+
+    }
+
+    // 회원 정보 수정(프로필 이미지)
+    @PutMapping("/{userId}/profileImg")
+    public ResponseEntity<ResponseHandler<UserDTO>> updateUserProfileImg(@PathVariable Long userId
+            , @RequestPart(value = "image") MultipartFile image
+    ) {
+        UserDTO updatedUser = userService.updateUserProfileImg(userId, image);
+        ResponseHandler<UserDTO> response = new ResponseHandler<>(
+                updatedUser,
+                HttpStatus.OK.value(),  // 200
+                "사용자 프로필 수정 완료"
         );
         return ResponseEntity.ok(response);
 

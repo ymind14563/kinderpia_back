@@ -196,8 +196,13 @@ public class UserController {
 
     // 비밀번호 일치 확인 - ( 회원 수정, 탈퇴시 )
     @PostMapping("/check/userpw")
-    public ResponseEntity<ResponseHandler<Boolean>> checkUserPw(@RequestBody LoginFormDTO dto) {
-        userService.checkUserPw(dto.getUserId(), dto.getUserPw());
+    public ResponseEntity<ResponseHandler<Boolean>> checkUserPw(@AuthenticationPrincipal Long userId, @RequestBody LoginFormDTO dto) {
+        // 토큰에 문제가 있는 경우
+        if (userId == null) {
+            return ResponseHandler.unauthorizedResponse();
+        }
+
+        userService.checkUserPw(userId, dto.getUserPw());
 
         ResponseHandler<Boolean> response = new ResponseHandler<>(
                 true,

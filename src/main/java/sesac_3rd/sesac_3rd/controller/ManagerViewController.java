@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ManagerViewController {
     @GetMapping({"/admin", "/admin/**"})
     public String serveReactApp(){
-        return "forward:/index.html";
+        return "forward:/index2.html";
     }
 }

@@ -56,7 +56,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<Meeting> meetingFindByLeaderUserId(@Param("userId") Long userId, @Param("validStatus") List<MeetingStatus> validStatus, Pageable pageable);
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
-    @Query("SELECT new sesac_3rd.sesac_3rd.dto.user.UserMeetingListDTO( " +
+    @Query("SELECT DISTINCT new sesac_3rd.sesac_3rd.dto.user.UserMeetingListDTO( " +
             "m.meetingId, " +
             "m.meetingTitle, " +
             "m.meetingStatus, " +

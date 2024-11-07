@@ -5,9 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.manager.ManagerDTO;
+import sesac_3rd.sesac_3rd.dto.manager.MeetingCategoryCountDTO;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.user.ManagerService;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -48,5 +51,37 @@ public class ManagerController {
         Map<String, Object> stats = managerService.getDailyStat(yearMonth);
 
         return ResponseHandler.response(stats, HttpStatus.OK, "일별 가입자 수");
+    }
+
+    // 총 모임 수('모집중' 수)
+    @GetMapping("/total/meetingCnt")
+    public ResponseEntity<ResponseHandler<Long>> totalMeetingCount() {
+        Long meetingCnt = managerService.ongoingMeetingCount();
+
+        return ResponseHandler.response(meetingCnt, HttpStatus.OK, "모집중 모임 수");
+    }
+
+    // 일별 모임 참여자 수(수락된 사람들)
+    @GetMapping("/acceptedUserCnt/daily")
+    public ResponseEntity<ResponseHandler<Map<LocalDate, Long>>> getDailyAcceptedUsers() {
+        Map<LocalDate, Long> userCnt = managerService.getDailyAcceptedUsers();
+
+        return ResponseHandler.response(userCnt, HttpStatus.OK, "일별 모임 참여쟈 수");
+    }
+
+    // 카테고리별 모임 수('삭제'된 모임 제외)
+    @GetMapping("/meetingCnt/category")
+    public ResponseEntity<ResponseHandler<List<MeetingCategoryCountDTO>>> getMeetingCntByCategory() {
+        List<MeetingCategoryCountDTO> meetingCnt = managerService.getMeetingCntByCategory();
+
+        return ResponseHandler.response(meetingCnt, HttpStatus.OK, "카테고리별 모임 수");
+    }
+
+    // 총 신고 수
+    @GetMapping("/total/reportCnt")
+    public ResponseEntity<ResponseHandler<Long>> getReportCnt() {
+        Long reportCnt = managerService.getTotalReportCnt();
+
+        return ResponseHandler.response(reportCnt, HttpStatus.OK, "총 신고 수");
     }
 }

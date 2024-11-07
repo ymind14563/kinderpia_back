@@ -30,4 +30,17 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     // 특정 사용자의 진행중 모임 목록 조회
     @Query("SELECT m FROM Meeting m WHERE m.user.userId = :userId AND m.meetingStatus = 'ONGOING'")
     List<Meeting> findOngoingMeetingsByUserId(@Param("userId") Long userId);
+
+    // 총 모임 수('모집중' 수)
+    long countByMeetingStatus(MeetingStatus meetingStatus);
+
+    // 카테고리별 모임 수('삭제'된 모임 제외)
+    @Query("SELECT " +
+            "m.meetingCategory.meetingCtgId as categoryId, " +
+            "m.meetingCategory.meetingCtgName as categoryName, " +
+            "COUNT(m) as meetingCount " +
+            "FROM Meeting m " +
+            "WHERE m.meetingStatus != 'DELETED' " +
+            "GROUP BY m.meetingCategory.meetingCtgId, m.meetingCategory.meetingCtgName")
+    List<Object[]> countMeetingsByCategory();
 }

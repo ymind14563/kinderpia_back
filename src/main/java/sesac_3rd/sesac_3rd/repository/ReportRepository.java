@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sesac_3rd.sesac_3rd.entity.*;
 
@@ -32,4 +33,8 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     // 모임상세 접근시 사용자 상태 조회(신고여부)
     boolean existsByMeeting_MeetingIdAndReporter_UserId(Long meetingId, Long userId);
+
+    // 총 신고 수
+    @Query("SELECT COUNT(r.reportId) FROM Report r")
+    long countById();
 }

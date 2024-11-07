@@ -88,7 +88,7 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         Meeting meeting = userMeeting.getMeeting();
 
         // 수용 인원(capacity) 업데이트
-        int updatedCapacity = meeting.getCapacity() - 1;
+        int updatedCapacity = meeting.getCapacity() - userMeeting.getCapacity();
         meeting.setCapacity(Math.max(0, updatedCapacity)); // 음수 방지
         meeting.setMeetingStatus(MeetingStatus.ONGOING); // meetingStatus 상태를 ONGOING 로 설정
         meetingRepository.save(meeting);

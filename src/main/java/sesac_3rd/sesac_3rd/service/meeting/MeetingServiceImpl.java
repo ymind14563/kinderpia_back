@@ -210,7 +210,7 @@ public class MeetingServiceImpl implements MeetingService {
         return true;
     }
 
-    // 모임삭제 (모임장이 삭제, 관리자가 삭제)
+    // 모임삭제 (모임장이 삭제, 관리자가 삭제 : DELETED)
     @Override
     public Boolean deletedMeeting(Long userId, Long meetingId) {
         // meetingId 로 기존 Meeting entity 조회
@@ -248,12 +248,6 @@ public class MeetingServiceImpl implements MeetingService {
             throw new CustomException(ExceptionStatus.USER_NOT_READER);
         }
 
-        // 현재 참가 인원이 최대 인원을 초과하는 경우, 상태를 COMPLETED 로 설정
-        if (meeting.getCapacity() >= meeting.getTotalCapacity()) {
-            meeting.setMeetingStatus(MeetingStatus.COMPLETED); // meetingStatus 상태를 COMPLETED 로 설정
-            meetingRepository.save(meeting);
-        }
-
         // meetingStatus 상태를 COMPLETED 로 설정
         meeting.setMeetingStatus(MeetingStatus.COMPLETED);
 
@@ -273,6 +267,12 @@ public class MeetingServiceImpl implements MeetingService {
         // 현재 참가 인원이 최대 인원을 초과하는 경우, 상태를 COMPLETED 로 설정
         if (meeting.getCapacity() >= meeting.getTotalCapacity()) {
             meeting.setMeetingStatus(MeetingStatus.COMPLETED); // meetingStatus 상태를 COMPLETED 로 설정
+            meetingRepository.save(meeting);
+        }
+
+        // 모임 기간이 종료되었을 경우, 상태를 END 로 설정
+        if (meeting.getMeetingTime().isBefore(LocalDateTime.now())) { // 현재 시간보다 이전인지 비교
+            meeting.setMeetingStatus(MeetingStatus.END); // meetingStatus 상태를 END 로 설정
             meetingRepository.save(meeting);
         }
 

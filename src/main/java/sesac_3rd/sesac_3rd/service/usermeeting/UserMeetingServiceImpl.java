@@ -3,6 +3,7 @@ package sesac_3rd.sesac_3rd.service.usermeeting;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.usermeeting.UserMeetingJoinDTO;
 import sesac_3rd.sesac_3rd.entity.Meeting;
@@ -89,6 +90,7 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         // 수용 인원(capacity) 업데이트
         int updatedCapacity = meeting.getCapacity() - 1;
         meeting.setCapacity(Math.max(0, updatedCapacity)); // 음수 방지
+        meeting.setMeetingStatus(MeetingStatus.ONGOING); // meetingStatus 상태를 ONGOING 로 설정
         meetingRepository.save(meeting);
 
         // UserMeeting entity 삭제

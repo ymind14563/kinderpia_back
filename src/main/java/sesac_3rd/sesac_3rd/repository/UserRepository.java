@@ -121,7 +121,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE u.isDeleted = false " +
             "AND YEAR(u.createdAt) = :year " +
             "AND MONTH(u.createdAt) = :month " +
-            "AND DAY(u.createdAt) <= DAY(CURRENT_TIMESTAMP) " +
+            "AND u.createdAt <= CURRENT_TIMESTAMP " +
             "GROUP BY DAY(u.createdAt) " +
             "ORDER BY DAY(u.createdAt)")
     List<DailyUserStatisticsDTO> findDailyStatByYearAndMonth(@Param("year") int year, @Param("month") int month);

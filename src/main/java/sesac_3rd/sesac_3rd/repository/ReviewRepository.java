@@ -39,7 +39,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
 
     // 장소 별 평균 별점 조회
-    @Query(value = "select round(avg(r.star)) from Review r where place_id=:placeId and is_deleted=false", nativeQuery = true)
+    @Query(value = "select round(avg(r.star)) from review r where place_id=:placeId and is_deleted=false", nativeQuery = true)
     Integer getAverageStar(@Param("placeId") Long placeId);
 
     // 리뷰 작성

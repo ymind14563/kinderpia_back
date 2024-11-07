@@ -22,4 +22,12 @@ public interface UserMeetingRepository extends JpaRepository<UserMeeting, Long> 
 
     boolean existsByUser_UserIdAndMeeting_MeetingIdAndIsAcceptedTrue(Long userId, Long meetingId);
 
+    // 일별 모임 참여자 수(수락된 사람들)
+    @Query("SELECT FUNCTION('DATE', um.acceptedAt) as date, COUNT(um) " +
+            "FROM UserMeeting um " +
+            "WHERE um.isAccepted = true " +
+            "AND um.acceptedAt IS NOT NULL " +
+            "GROUP BY FUNCTION('DATE', um.acceptedAt) " +
+            "ORDER BY FUNCTION('DATE', um.acceptedAt) ASC")
+    List<Object[]> countDailyAcceptedUsers();
 }

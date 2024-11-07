@@ -1,7 +1,9 @@
 package sesac_3rd.sesac_3rd.service.user;
 
+import sesac_3rd.sesac_3rd.dto.manager.MeetingCategoryCountDTO;
 import sesac_3rd.sesac_3rd.dto.user.UserDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -19,12 +21,16 @@ public interface ManagerService {
     Map<String, Object> getDailyStat(String yearMonth);
 
     // 총 모임 수('모집중' 수)
+    long ongoingMeetingCount();
 
     // 일별 모임 참여자 수(수락된 사람들)
+    Map<LocalDate, Long> getDailyAcceptedUsers();
 
     // 카테고리별 모임 수('삭제'된 모임 제외)
+    List<MeetingCategoryCountDTO> getMeetingCntByCategory();
 
-    // 신고 내역 목록 조회
+    // 전체 신고 수
+    long getTotalReportCnt();
 
     // 블랙리스트 추가
     void insertBlacklist(String userId);

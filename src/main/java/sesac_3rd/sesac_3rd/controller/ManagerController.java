@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.manager.ManagerDTO;
+import sesac_3rd.sesac_3rd.dto.manager.ManagerLoginResponse;
 import sesac_3rd.sesac_3rd.dto.manager.MeetingCategoryCountDTO;
 import sesac_3rd.sesac_3rd.dto.user.LoginResponse;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
@@ -22,12 +23,12 @@ public class ManagerController {
 
     // 관리자 로그인
     @PostMapping
-    public ResponseEntity<LoginResponse> managerLogin(@RequestBody ManagerDTO dto) {
+    public ResponseEntity<ManagerLoginResponse> managerLogin(@RequestBody ManagerDTO dto) {
         managerService.managerLogin(dto.getManagerLoginId(), dto.getManagerPw());
 
-        LoginResponse response = new LoginResponse();
-        response.setSuccess(true);
+        ManagerLoginResponse response = new ManagerLoginResponse();
         response.setRedirectUrl("/admin");
+        response.setSuccess(true);
 
         return ResponseEntity.ok(response);
     }

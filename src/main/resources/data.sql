@@ -70,3 +70,6 @@ insert ignore into meeting_category (meeting_ctg_name) values ('오락 및 여�
                                                     ('체험 및 활동'),
                                                     ('스포츠 및 운동'),
                                                     ('기타');
+
+-- manager
+insert into manager (manager_login_id, nickname, manager_pw) values ("admin","admin1","admin1111");

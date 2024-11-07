@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.manager.ManagerDTO;
 import sesac_3rd.sesac_3rd.dto.manager.MeetingCategoryCountDTO;
+import sesac_3rd.sesac_3rd.dto.user.LoginResponse;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.user.ManagerService;
 
@@ -21,10 +22,14 @@ public class ManagerController {
 
     // 관리자 로그인
     @PostMapping
-    public ResponseEntity<ResponseHandler<Boolean>> managerLogin(@RequestBody ManagerDTO dto) {
+    public ResponseEntity<LoginResponse> managerLogin(@RequestBody ManagerDTO dto) {
         managerService.managerLogin(dto.getManagerLoginId(), dto.getManagerPw());
 
-        return ResponseHandler.response(true, HttpStatus.OK, "관리자 로그인");
+        LoginResponse response = new LoginResponse();
+        response.setSuccess(true);
+        response.setRedirectUrl("/admin");
+
+        return ResponseEntity.ok(response);
     }
 
     // 전체 가입자 수(탈퇴한 사용자 제외)

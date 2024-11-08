@@ -50,6 +50,29 @@ public class MeetingController {
         }
     }
 
+    // 모임 목록 (meetingTime - 모임 시간순 정렬)
+    @GetMapping("/list/meetingTime")
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<MeetingDTO>>> getMeetingTimeMeetings(
+            @RequestParam(value = "page", defaultValue = "1") int page, // 기본 페이지는 1
+            @RequestParam(value = "size", defaultValue = "6") int size // 기본 크기는 6
+    ) {
+        try {
+            Pageable pageable = PageRequest.of(page - 1, size);
+            PaginationResponseDTO<MeetingDTO> paginationResponse = meetingService.getAllMeetings(pageable);
+
+            // ResponseHandler 생성 및 반환
+            ResponseHandler<PaginationResponseDTO<MeetingDTO>> response = new ResponseHandler<>(
+                    paginationResponse,
+                    HttpStatus.OK.value(), // 200
+                    "모임 목록 조회[전체] 완료"
+            );
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // 모임 목록 (open - 열려있는 것만 정렬)
     @GetMapping("/list/open")
     public ResponseEntity<ResponseHandler<PaginationResponseDTO<MeetingDTO>>> getOpenMeetings(

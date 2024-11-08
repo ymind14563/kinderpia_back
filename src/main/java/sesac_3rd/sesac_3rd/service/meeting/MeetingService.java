@@ -12,6 +12,9 @@ public interface MeetingService {
     // 모임 목록 (default - 최신순 정렬)
     PaginationResponseDTO<MeetingDTO> getAllMeetings(Pageable pageable);
 
+    // 모임 목록 (meetingTime - 모임 시간순 정렬)
+    PaginationResponseDTO<MeetingDTO> getMeetingTimeMeetings(Pageable pageable);
+
     // 모임 목록 (open - 열려있는것만 정렬)
     PaginationResponseDTO<MeetingDTO> getOpenMeetings(Pageable pageable);
 

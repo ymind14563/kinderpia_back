@@ -62,10 +62,12 @@ public class ReviewServiceImpl implements ReviewService{
         Integer avgStar = reviewRepository.getAverageStar(placeId);
         System.out.println("avgStar : " + avgStar);
 
+        Integer reviewCount = reviewRepository.getReviewCount(placeId);
+
         System.out.println("로그인 유저 아이디 : " + userId);
 
         // 페이지 정보 추가
-        return new ReviewListDTO(reviews, avgStar, reviewsPage.getTotalElements(), reviewsPage.getTotalPages());
+        return new ReviewListDTO(reviews, avgStar, reviewCount, reviewsPage.getTotalElements(), reviewsPage.getTotalPages());
     }
 
     // 리뷰 단건 조회

@@ -43,6 +43,8 @@ public class PlaceServiceImpl implements PlaceService{
     public Page<PlaceReviewDTO> getAllPlace(int page, int size){
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageStar"));
         Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
+
+
         return result;
 
     }

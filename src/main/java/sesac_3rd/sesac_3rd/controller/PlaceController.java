@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO;
+import sesac_3rd.sesac_3rd.dto.review.ReviewListDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.place.PlaceService;
@@ -31,6 +32,9 @@ public class PlaceController {
     ) {
         try{
             Page<PlaceReviewDTO> page1 = placeService.getAllPlace(page, size);
+
+
+
             ResponseHandler<Page<PlaceReviewDTO>> response = new ResponseHandler<>(
                     page1,
                     HttpStatus.OK.value(), //200

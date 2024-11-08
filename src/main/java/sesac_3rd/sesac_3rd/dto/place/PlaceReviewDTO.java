@@ -27,4 +27,5 @@ public class PlaceReviewDTO {
     private boolean isPaid;
     private String placeCtgName;
     private Integer averageStar;
+    private Integer totalReviewCount;
 }

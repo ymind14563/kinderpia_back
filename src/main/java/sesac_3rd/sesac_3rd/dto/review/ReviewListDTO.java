@@ -15,6 +15,7 @@ import java.util.List;
 public class ReviewListDTO {
     private List<ReviewUserDTO> reviews;
     private Integer averageStar;
-    private long totalElements; // 총 리뷰 수
+    private Integer totalReviewCount; // 총 리뷰 수
+    private long totalElements;
     private int totalPages; // 총 페이지 수
 }

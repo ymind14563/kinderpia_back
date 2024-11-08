@@ -80,12 +80,6 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         // UserMeeting 엔티티 저장
         userMeetingRepository.save(userMeeting);
 
-        // 채팅방 입장 메세지 띄우기
-        ChatRoom chatRoom = chatRoomRepository.findById(meetingId)
-                .orElseThrow(() -> new CustomException(ExceptionStatus.CHATROOM_NOT_FOUND));
-        String userNickname = userMeeting.getUser().getNickname(); // 가입자 닉네임 가져오기
-        chatMessageService.sendJoinMessage(chatRoom, userNickname);
-
         log.info("모임 참가 성공: 참가한 userId {}", userId);
     }
 
@@ -145,11 +139,12 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         // 변경된 Meeting 저장
         meetingRepository.save(meeting);
 
-        // 채팅방 입장 메세지 띄우기
-        ChatRoom chatRoom = chatRoomRepository.findById(meetingId)
-                .orElseThrow(() -> new CustomException(ExceptionStatus.CHATROOM_NOT_FOUND));
-        String userNickname = userMeeting.getUser().getNickname(); // 가입자 닉네임 가져오기
-        chatMessageService.sendJoinMessage(chatRoom, userNickname);
+//        // 채팅방 입장 메세지 띄우기
+//        ChatRoom chatRoom = chatRoomRepository.findByMeetingId(meetingId);
+//        System.out.println("charRoom >>>>>>>>>>>>>>>" + chatRoom);
+//        String userNickname = userMeeting.getUser().getNickname(); // 가입자 닉네임 가져오기
+//        chatMessageService.sendJoinMessage(chatRoom, userNickname);
+//        System.out.println("userNickname >>>>>>>>>>>>>>>" + userNickname);
 
         log.info("모임 수락 처리 성공: meetingId {}, joinUserId {}", meetingId, joinUserId);
 

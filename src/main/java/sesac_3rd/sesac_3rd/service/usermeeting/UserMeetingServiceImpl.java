@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
+import sesac_3rd.sesac_3rd.dto.chat.ChatRoomDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
 import sesac_3rd.sesac_3rd.dto.usermeeting.UserMeetingJoinDTO;
+import sesac_3rd.sesac_3rd.entity.ChatRoom;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.entity.UserMeeting;
 import sesac_3rd.sesac_3rd.exception.CustomException;
@@ -13,6 +15,8 @@ import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.mapper.usermeeting.UserMeetingMapper;
 import sesac_3rd.sesac_3rd.repository.MeetingRepository;
 import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
+import sesac_3rd.sesac_3rd.repository.chat.ChatRoomRepository;
+import sesac_3rd.sesac_3rd.service.chat.ChatMessageService;
 import sesac_3rd.sesac_3rd.service.meeting.MeetingService;
 
 import java.time.LocalDateTime;
@@ -28,6 +32,12 @@ public class UserMeetingServiceImpl implements UserMeetingService {
 
     @Autowired
     MeetingService meetingService;
+
+    @Autowired
+    ChatMessageService chatMessageService;
+
+    @Autowired
+    ChatRoomRepository chatRoomRepository;
 
     // 모임 가입
     @Override
@@ -69,6 +79,12 @@ public class UserMeetingServiceImpl implements UserMeetingService {
 
         // UserMeeting 엔티티 저장
         userMeetingRepository.save(userMeeting);
+
+        // 채팅방 입장 메세지 띄우기
+        ChatRoom chatRoom = chatRoomRepository.findById(meetingId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.CHATROOM_NOT_FOUND));
+        String userNickname = userMeeting.getUser().getNickname(); // 가입자 닉네임 가져오기
+        chatMessageService.sendJoinMessage(chatRoom, userNickname);
 
         log.info("모임 참가 성공: 참가한 userId {}", userId);
     }
@@ -128,6 +144,12 @@ public class UserMeetingServiceImpl implements UserMeetingService {
 
         // 변경된 Meeting 저장
         meetingRepository.save(meeting);
+
+        // 채팅방 입장 메세지 띄우기
+        ChatRoom chatRoom = chatRoomRepository.findById(meetingId)
+                .orElseThrow(() -> new CustomException(ExceptionStatus.CHATROOM_NOT_FOUND));
+        String userNickname = userMeeting.getUser().getNickname(); // 가입자 닉네임 가져오기
+        chatMessageService.sendJoinMessage(chatRoom, userNickname);
 
         log.info("모임 수락 처리 성공: meetingId {}, joinUserId {}", meetingId, joinUserId);
 

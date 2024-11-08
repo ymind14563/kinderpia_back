@@ -72,6 +72,31 @@ public class MeetingServiceImpl implements MeetingService {
         return new PaginationResponseDTO<>(meetingDTOS, meetings);
     }
 
+    // 모임 목록 (meetingTime - 모임 시간순 정렬)
+    @Override
+    public PaginationResponseDTO<MeetingDTO> getMeetingTimeMeetings(Pageable pageable) {
+        // 정렬 설정
+        Sort sort = Sort.by(Sort.Direction.DESC, "meetingTime");
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+
+        Page<Meeting> meetings = meetingRepository.findAll(sortedPageable);
+
+        if (meetings.isEmpty()) {
+            throw new CustomException(ExceptionStatus.MEETING_NOT_FOUND);
+        }
+
+        List<MeetingDTO> meetingDTOS = new ArrayList<>();
+
+        for (Meeting meeting : meetings) {
+            MeetingDTO meetingDTO = MeetingMapper.toMeetingDTO(meeting);
+            meetingDTOS.add(meetingDTO);
+        }
+
+        log.info("모임 목록 조회[모임일시] 성공: 총 {}건", meetingDTOS.size());
+
+        return new PaginationResponseDTO<>(meetingDTOS, meetings);
+    }
+
     // 모임 목록 (open - 열려있는 것만 정렬)
     @Override
     public PaginationResponseDTO<MeetingDTO> getOpenMeetings(Pageable pageable) {

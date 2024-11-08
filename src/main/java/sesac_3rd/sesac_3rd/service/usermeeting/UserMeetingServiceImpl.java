@@ -139,12 +139,22 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         // 변경된 Meeting 저장
         meetingRepository.save(meeting);
 
-//        // 채팅방 입장 메세지 띄우기
-//        ChatRoom chatRoom = chatRoomRepository.findByMeetingId(meetingId);
-//        System.out.println("charRoom >>>>>>>>>>>>>>>" + chatRoom);
-//        String userNickname = userMeeting.getUser().getNickname(); // 가입자 닉네임 가져오기
-//        chatMessageService.sendJoinMessage(chatRoom, userNickname);
-//        System.out.println("userNickname >>>>>>>>>>>>>>>" + userNickname);
+        // 채팅방 입장 메세지 띄우기
+        ChatRoom chatRoom = chatRoomRepository.findByMeetingId(meetingId);
+        // ChatRoom 확인 로그
+        if (chatRoom == null) {
+            log.error("ChatRoom이 존재하지 않음: meetingId {}", meetingId);
+        } else {
+            log.info("ChatRoom 조회 성공: chatRoomId {}", chatRoom.getChatroomId());
+        }
+        // UserNickname 확인 로그
+        String userNickname = userMeeting.getUser().getNickname();
+        if (userNickname == null) {
+            log.error("UserNickname이 null입니다: userId {}", joinUserId);
+        } else {
+            log.info("UserNickname 조회 성공: {}", userNickname);
+        }
+        chatMessageService.sendJoinMessage(chatRoom, userNickname);
 
         log.info("모임 수락 처리 성공: meetingId {}, joinUserId {}", meetingId, joinUserId);
 

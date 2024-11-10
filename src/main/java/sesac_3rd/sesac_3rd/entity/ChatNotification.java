@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ChatNotification")
+@Table(name = "ChatNotification", uniqueConstraints = { @UniqueConstraint(columnNames = {"user_id", "chatroom_id"}) })
 @Entity
 public class ChatNotification {
     @Id

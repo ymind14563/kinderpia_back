@@ -13,13 +13,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.dto.chat.ChatMessageDTO;
+import sesac_3rd.sesac_3rd.dto.chat.ChatNotificationDTO;
 import sesac_3rd.sesac_3rd.dto.chat.ChatRoomDTO;
 import sesac_3rd.sesac_3rd.dto.chat.ChatRoomRequestDTO;
+import sesac_3rd.sesac_3rd.entity.ChatNotification;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
 import sesac_3rd.sesac_3rd.mapper.chat.ChatMessageMapper;
 import sesac_3rd.sesac_3rd.mapper.chat.ChatRoomMapper;
+import sesac_3rd.sesac_3rd.repository.chat.ChatRoomRepository;
 import sesac_3rd.sesac_3rd.service.chat.ChatMessageService;
+import sesac_3rd.sesac_3rd.service.chat.ChatNotificationService;
 import sesac_3rd.sesac_3rd.service.chat.ChatRoomService;
 
 
@@ -33,6 +37,8 @@ public class ChatController {
     private final ChatMessageMapper chatMessageMapper;
     private final TokenProvider tokenProvider;
 //    private final SimpMessagingTemplate messagingTemplate;
+    private final ChatNotificationService chatNotificationService;
+
 
     // 전체 채팅 목록 조회 (페이지네이션 적용)
     // /api/chatroom/list?page={page}&size={size}
@@ -92,7 +98,11 @@ public class ChatController {
         // Long.parseLong(userId) 으로 형변환하여 산입
         chatMessageDTO.setSenderId(Long.parseLong(userId));
 
+        // 메세지 저장
         ChatMessageDTO.ChatMessage savedMessage = chatMessageService.saveMessage(chatroomId, chatMessageDTO);
+
+        // 알림 전송
+        chatNotificationService.unreadNotification(chatroomId, Long.parseLong(userId));
 
         return ResponseHandler.response(savedMessage, HttpStatus.OK, "채팅 메세지 전송 성공");
 

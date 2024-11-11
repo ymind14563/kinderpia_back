@@ -61,17 +61,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-    // req.headers 에서 Bearer Token 을 꺼내오는 메서드
-    private String parseBearerToken(HttpServletRequest request){
+//    // req.headers 에서 Bearer Token 을 꺼내오는 메서드
+//    private String parseBearerToken(HttpServletRequest request){
+//        String bearerToken = request.getHeader("Cookie");
+//
+//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("jwt=")){
+//            System.out.println("bearer>>>>>>>>" + bearerToken.substring(4));
+//            return bearerToken.substring(4);
+//            // req.header jwt 토큰이 다음과 같이 들어있으므로 문자열 슬라이싱 진행하여 반환
+//            // Authentication: "Bearer asdfasdf.asdfasdf.asdfasdf"
+//        }
+//
+//        return null;
+//    }
+
+    // req.headers 에서 Bearer Token 을 꺼내오는 메서드 (`jwt=` 를 명확히 추출)
+    private String parseBearerToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Cookie");
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("jwt=")){
-            System.out.println("bearer>>>>>>>>" + bearerToken.substring(4));
-            return bearerToken.substring(4);
-            // req.header jwt 토큰이 다음과 같이 들어있으므로 문자열 슬라이싱 진행하여 반환
-            // Authentication: "Bearer asdfasdf.asdfasdf.asdfasdf"
+        // "Cookie" 헤더에 "jwt="라는 쿠키가 있는지 확인
+        if (StringUtils.hasText(bearerToken) && bearerToken.contains("jwt=")) {
+            // 여러 개의 쿠키가 있을 수 있으므로 ";"로 분리하고 "jwt="로 시작하는 쿠키 찾기
+            for (String cookie : bearerToken.split(";")) {
+                cookie = cookie.trim();
+                if (cookie.startsWith("jwt=")) {
+                    System.out.println("bearer>>>>>>>>" + cookie.substring(4));
+                    return cookie.substring(4); // "jwt=" 이후의 토큰 값 반환
+                }
+            }
         }
 
-        return null;
+        return null; // "jwt=" 쿠키가 없을 경우 null 반환
     }
 }

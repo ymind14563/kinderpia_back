@@ -34,10 +34,10 @@ public class ReviewController {
     // localhost:8080/api/review?placeId=2&page=0&size=10
     @GetMapping
     private ResponseEntity<ResponseHandler<ReviewListDTO>> getAllReviewByPlaceId(
-            @RequestParam(required = false) Long placeId,
+            @RequestParam(value = "placeId", required = false) Long placeId,
             @AuthenticationPrincipal Long userId,
-            @RequestParam(defaultValue = "0") int page, // 시작 페이지
-            @RequestParam(defaultValue = "10") int size // 크기
+            @RequestParam(value = "page", defaultValue = "0") int page, // 시작 페이지
+            @RequestParam(value = "size", defaultValue = "10") int size // 크기
     ) {
         try {
             if (placeId == null) {
@@ -69,7 +69,7 @@ public class ReviewController {
 
     // 리뷰 단건 조회
     @GetMapping("/review/{reviewid}")
-    private ResponseEntity<ResponseHandler<ReviewDTO>> getReviewById(@PathVariable("reviewid") Long reviewId){
+    private ResponseEntity<ResponseHandler<ReviewDTO>> getReviewById(@PathVariable(value = "reviewid") Long reviewId){
         try{
             ReviewDTO reviewDTO = reviewService.getReviewById(reviewId);
             ResponseHandler<ReviewDTO> response = new ResponseHandler<>(
@@ -110,7 +110,7 @@ public class ReviewController {
     // 리뷰 수정
     @PutMapping("/update/{id}")
     private ResponseEntity<ResponseHandler<ReviewFormDTO>> updateReview(
-            @PathVariable("id") Long reviewId,
+            @PathVariable(value = "id") Long reviewId,
             @AuthenticationPrincipal Long userId,
             @RequestBody ReviewFormDTO rfdto){
         try{
@@ -135,7 +135,7 @@ public class ReviewController {
     // 리뷰 삭제
     @DeleteMapping("/delete/{id}")
     private ResponseEntity<ResponseHandler<Boolean>> deleteReview(
-            @PathVariable("id") Long reviewId,
+            @PathVariable(value = "id") Long reviewId,
             @AuthenticationPrincipal Long userId
     ){
         try{
@@ -161,7 +161,7 @@ public class ReviewController {
     // 리뷰 좋아요
     @PostMapping("/likes/{id}")
     private ResponseEntity<ResponseHandler<Likes>> postLike(
-            @PathVariable("id") Long reviewId,
+            @PathVariable(value = "id") Long reviewId,
             @AuthenticationPrincipal Long userId){
         try {
             // 토큰에 문제가 있는 경우

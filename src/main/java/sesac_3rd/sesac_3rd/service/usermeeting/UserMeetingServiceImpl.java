@@ -133,6 +133,21 @@ public class UserMeetingServiceImpl implements UserMeetingService {
         // UserMeeting entity 삭제
         userMeetingRepository.delete(userMeeting);
 
+        // 채팅방 나가기 메세지 띄우기
+        ChatRoom chatRoom = chatRoomRepository.findByMeetingId(meetingId);
+        if (chatRoom == null) {
+            log.error("ChatRoom 존재하지 않음: meetingId {}", meetingId);
+        } else {
+            log.info("chatRoom 존재함: chatRoomId {}", chatRoom.getChatroomId());
+        }
+        String userNickname = userMeeting.getUser().getNickname();
+        if (userNickname == null) {
+            log.error("UserNickname이 null임: userId {}", userId);
+        } else {
+            log.info("UserNickname 존재함: {}", userNickname);
+        }
+        chatMessageService.sendLeaveMessage(chatRoom, userNickname);
+
         log.info("모임 탈퇴 성공: 탈퇴한 userId {}", userId);
 
         return true;

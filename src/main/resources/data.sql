@@ -7,7 +7,6 @@ insert IGNORE into place_category (place_ctg_name) values ('오락 및 여가'),
                                                     ('기타');
 -- place
 -- 오락 및 여가 (카테고리 ID: 1)
--- 오락 및 여가 (카테고리 ID: 1)
 INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, latitude, longitude, place_img, operating_date, is_paid, homepage_url, place_num) VALUES
 (1, '롯데월드', '서울', '서울특별시 송파구 잠실동 40', 37.5125, 127.1020, 'lotteworld.jpg', '2024-01-01', 0, 'http://www.lotteworld.com', '02-1234-5678'),
 (1, '에버랜드', '용인', '경기도 용인시 처인구 포곡읍 201-1', 37.2953, 127.1826, 'everland.jpg', '2024-01-01', 0, 'http://www.everland.com', '031-2345-6789'),

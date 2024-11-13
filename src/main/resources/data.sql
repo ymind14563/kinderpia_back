@@ -100,7 +100,7 @@ INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, la
 (6, '제주 돌문화공원', '제주', '제주특별자치도 제주시', 33.4894, 126.4950, 'jeju_stonepark.jpg', '2024-01-01', 0, 'http://www.jejudo.com', 9);
 
 -- 후기 랜덤 추가
-INSERT INTO Review (place_id, user_id, star, review_content, is_deleted, created_at, updated_at)  VALUES
+INSERT IGNORE INTO Review (place_id, user_id, star, review_content, is_deleted, created_at, updated_at)  VALUES
 (51, FLOOR(1 + RAND() * 50), FLOOR(1 + RAND() * 5), '이 장소는 정말 좋았어요!', false,
     DATE_FORMAT(DATE_ADD('2023-10-01', INTERVAL FLOOR(RAND() * 31) DAY), '%Y-%m-%d %H:%i:%s'),
     DATE_FORMAT(DATE_ADD('2023-10-01', INTERVAL FLOOR(RAND() * 31) DAY), '%Y-%m-%d %H:%i:%s')),

@@ -61,10 +61,13 @@ public class PlaceServiceImpl implements PlaceService{
             pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("averageStar")));
         }
         if (category.equals("title")) {
-
             return placeRepository.findByPlaceNameContaining(keyword, pageable);
         }
         else if (category.equals("address")) {
+            if(keyword.equals("seoul")){
+                System.out.println("category addr / keyword : seoul ");
+                return placeRepository.findBySeoulContaining(pageable);
+            }
             return placeRepository.findByLocationContaining(keyword, pageable);
         }
         else{

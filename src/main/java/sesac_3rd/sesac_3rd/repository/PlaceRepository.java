@@ -52,4 +52,18 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
             "WHERE p.placeName LIKE %:keyword% " +
             "GROUP BY p.placeId, p.placeName, p.location, p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName")
     Page<PlaceReviewDTO> findByPlaceNameContaining(@Param("keyword") String keyword, Pageable pageable);
+
+    // 검색 - 서울시 전체
+    @Query("SELECT new sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO(" +
+            "p.placeId, p.placeName, p.location, " +
+            "p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName, " +
+            "CAST(COALESCE(ROUND(AVG(CASE WHEN r.isDeleted = false THEN r.star ELSE null END)), 0) AS int) AS averageStar, " +
+            "CAST(COUNT(CASE WHEN r.isDeleted = false THEN r.id ELSE null END) AS int) AS totalReviewCount) " +
+            "FROM Place p " +
+            "JOIN p.placeCategory pc " +
+            "LEFT JOIN Review r ON p.placeId = r.place.placeId " +
+            "WHERE p.detailAddress LIKE '서울%' " +
+            "GROUP BY p.placeId, p.placeName, p.location, p.detailAddress, p.operatingDate, p.latitude, p.longitude, p.placeImg, p.homepageUrl, p.placeNum, p.isPaid, pc.placeCtgName")
+    Page<PlaceReviewDTO> findBySeoulContaining(Pageable pageable);
+
 }

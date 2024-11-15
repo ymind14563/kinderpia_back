@@ -50,6 +50,24 @@ public class MeetingController {
         }
     }
 
+    // 모임 목록 (더보기: 모임 시간순으로 정렬 + deleted 제외)
+    @GetMapping("/list/notDeleted")
+    public ResponseEntity<ResponseHandler<PaginationResponseDTO<MeetingDTO>>> getMeetings(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "6") int size
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        PaginationResponseDTO<MeetingDTO> paginationResponse = meetingService.getMeetings(pageable);
+
+        ResponseHandler<PaginationResponseDTO<MeetingDTO>> response = new ResponseHandler<>(
+                paginationResponse,
+                HttpStatus.OK.value(), // 200
+                "모임 목록 조회[DELETED 제외] 완료"
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
     // 모임 목록 (open - 열려있는 것만 정렬 + 모임 시간순으로 정렬)
     @GetMapping("/list/open")
     public ResponseEntity<ResponseHandler<PaginationResponseDTO<MeetingDTO>>> getOpenMeetings(

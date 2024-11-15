@@ -12,13 +12,10 @@ public interface MeetingService {
     // 모임 목록 (default - 최신순 정렬)
     PaginationResponseDTO<MeetingDTO> getAllMeetings(Pageable pageable);
 
-    // 모임 목록 (meetingTime - 모임 시간순 정렬)
-    PaginationResponseDTO<MeetingDTO> getMeetingTimeMeetings(Pageable pageable);
-
-    // 모임 목록 (open - 열려있는것만 정렬)
+    // 모임 목록 (open - 열려있는것만 정렬 + 모임 시간순으로 정렬)
     PaginationResponseDTO<MeetingDTO> getOpenMeetings(Pageable pageable);
 
-    // 키워드로 타이틀과 장소 검색
+    // 키워드로 타이틀과 장소 검색 (모임 시간순으로 정렬)
     PaginationResponseDTO<MeetingDTO> searchMeetingsByKeyword(String keyword, Pageable pageable);
 
     // 모임 상세조회 (profile_img, chatroom_id 포함)

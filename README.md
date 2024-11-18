@@ -33,6 +33,17 @@
 <br>
 <br>
 
+## :raising_hand: Backend Developers
+| 이름     | 역할              | GitHub 링크                                                                 |
+|----------|-------------------|----------------------------------------------------------------------------|
+| 석원준   | 백엔드      | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/qldirr) |
+| 유예진   | 백엔드      | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/yjyoo6831) |
+| 김어진   | 백엔드      | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/qldirr) |
+| 윤예슬   | 백엔드      | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/errorose) |
+
+<br>
+<br>
+
 ## 📙 사용한 기술
 
 | **Category**         | **Technologies**                                                                 |
@@ -50,19 +61,19 @@
 <br>
 <br>
 
-
-## :raising_hand: Backend Developers
-| 이름     | 역할              | GitHub 링크                                                                 |
-|----------|-------------------|----------------------------------------------------------------------------|
-| 석원준   | 백엔드      | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/qldirr) |
-| 유예진   | 백엔드      | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/yjyoo6831) |
-| 김어진   | 백엔드      | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/qldirr) |
-| 윤예슬   | 백엔드      | [![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/errorose) |
-
-
+## ❓ 주요 기술 채택 이유
+- **Spring Boot** : 모듈화된 아키텍처를 제공하며, 의존성 주입(Dependency Injection)같은 프로그래밍 패턴을 이해하고 많은 예제 및 라이브러리 사용을 위함.
+- **Spring Security** : Spring Security와 통합되어 있어, 인증 및 권한 부여에 강력한 기능을 제공하기 위해 채택
+- **JPA** : 객체 간 관계를 매핑해 복잡한 연관 관계도 손쉽게 관리할 수 있어 유지보수 편리성을 위해 채택
+- **JWT** (JSON Web Token) : 보안 및 서버의 부하를 줄이고, 확장성을 높이기 위해 채택
+- **WebSocket(STOMP)** : 채팅 기능을 위해 실시간 양방향 통신이 가능하고, 다양한 이벤트를 쉽게 처리하기 위해 채택
+- **Multipart** : AWS 서버에 파일을 업로드하여 서버의 저장 공간 절약 및 파일 관리의 용이성과 파일 형식 및 크기 제한을 위해 채택
+- **AWS** : 현재 클라우드 시장에서 가장 큰 점유율을 차지하고 있으며, EC2, S3, RDS 등 다양한 서비스를 지원하고, 자원을 확대/축소 하는 등 유연성의 이점으로 인해 채택
+- **Jenkins** : 코드의 자동 빌드 및 배포 프로세스를 수행하여 버전관리의 용이 및 유지보수성 향상을 위함.
 
 <br>
 <br>
+
 
 ## ⭐️ 내가 맡은 역할
 ### 백엔드
@@ -72,6 +83,8 @@
     - 신고 데이터를 채팅 메시지, 리뷰, 모임 단위로 저장 및 관리
     - 신고 수를 기준으로 자동 블랙리스트 처리
     - 관리자 페이지에서 신고 내역을 pagination 및 정렬 기능으로 조회
+ <br>
+ 
   - 채팅방 생성 및 메시지 전송
     - WebSocket과 STOMP를 사용해 실시간 메시지 전송 처리
     - 참여한 채팅방 목록 확인
@@ -89,18 +102,7 @@
 <br>
 <br>
 
-## ❓ 주요 기술 채택 이유
-- **Spring Boot** : 모듈화된 아키텍처를 제공하며, 의존성 주입(Dependency Injection)같은 프로그래밍 패턴을 이해하고 많은 예제 및 라이브러리 사용을 위함.
-- **Spring Security** : Spring Security와 통합되어 있어, 인증 및 권한 부여에 강력한 기능을 제공하기 위해 채택
-- **JPA** : 객체 간 관계를 매핑해 복잡한 연관 관계도 손쉽게 관리할 수 있어 유지보수 편리성을 위해 채택
-- **JWT** (JSON Web Token) : 보안 및 서버의 부하를 줄이고, 확장성을 높이기 위해 채택
-- **WebSocket(STOMP)** : 채팅 기능을 위해 실시간 양방향 통신이 가능하고, 다양한 이벤트를 쉽게 처리하기 위해 채택
-- **Multipart** : AWS 서버에 파일을 업로드하여 서버의 저장 공간 절약 및 파일 관리의 용이성과 파일 형식 및 크기 제한을 위해 채택
-- **AWS** : 현재 클라우드 시장에서 가장 큰 점유율을 차지하고 있으며, EC2, S3, RDS 등 다양한 서비스를 지원하고, 자원을 확대/축소 하는 등 유연성의 이점으로 인해 채택
-- **Jenkins** : 코드의 자동 빌드 및 배포 프로세스를 수행하여 버전관리의 용이 및 유지보수성 향상을 위함.
 
-<br>
-<br>
 
 ## 🧰 Architecture
 ![아키텍쳐](https://file.notion.so/f/f/2b05e2ab-2434-4f23-af54-0262da5521d9/86452292-994c-4ba2-8706-c0252607f863/image.png?table=block&id=140f2360-e2bf-802f-a675-c8f0746e59d6&spaceId=2b05e2ab-2434-4f23-af54-0262da5521d9&expirationTimestamp=1732032000000&signature=_U7bCCqv9gQw9tp4K2Qc1yO_D__XaFgCcoIZR6oXIb8&downloadName=image.png)

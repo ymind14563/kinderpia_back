@@ -33,6 +33,24 @@
 <br>
 <br>
 
+### 📙 사용한 기술
+
+| **Category**         | **Technologies**                                                                 |
+|-----------------------|----------------------------------------------------------------------------------|
+| **Backend**          | Java 17, Spring Boot v3.3.4, JPA, WebSocket(STOMP) v6.1.13, Node.js v20.14.0     |
+| **Frontend**         | React v18.3.1, Redux-Toolkit v2.3.0                                             |
+| **Database**         | MySQL v8.4.3 LTS                                                               |
+| **Cloud**            | AWS EC2, RDS, S3                                                               |
+| **Proxy Server**     | NGINX v1.24.0                                                                  |
+| **Containerization** | Docker v24.0.5                                                                 |
+| **Process Manager**  | PM2 (Node.js)                                                                  |
+| **CI/CD**            | Jenkins v2.479.1 LTS                                                          |
+| **Tool**             | JIRA, GitHub                                                                  |
+
+<br>
+<br>
+
+
 ## :raising_hand: Backend Developers
 | 이름     | 역할              | GitHub 링크                                                                 |
 |----------|-------------------|----------------------------------------------------------------------------|

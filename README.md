@@ -17,7 +17,7 @@
 * Test Password: user1111
 * 로그인 테스트 계정 **입력 없이 원클릭으로 로그인** 하실 수 있습니다. (하단 이미지 참고) <br><br>
 🌱[로그인 바로가기](http://ec2-3-38-150-41.ap-northeast-2.compute.amazonaws.com/user/login)
-<img src="https://file.notion.so/f/f/2b05e2ab-2434-4f23-af54-0262da5521d9/33fe209d-4924-44ce-9992-637b2a1e2305/%EB%A1%9C%EA%B7%B8%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80.png?table=block&id=140f2360-e2bf-8062-85aa-fcac22aebab2&spaceId=2b05e2ab-2434-4f23-af54-0262da5521d9&expirationTimestamp=1732032000000&signature=OPe8sW0WnaLYq_XqnN45sGlgWKm8i0q7tvKarPFZA2k&downloadName=%EB%A1%9C%EA%B7%B8%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80.png" alt="로그인 이미지" width="500"/>
+<img src="https://github.com/user-attachments/assets/7cc6b451-b238-4356-b41f-afa79b9c1346" alt="로그인 이미지" width="500"/>
 
 <br>
 <br>
@@ -132,7 +132,7 @@
 <br>
 
 ## 📚 데이터베이스 ERD
-![ERD](https://file.notion.so/f/f/2b05e2ab-2434-4f23-af54-0262da5521d9/0306b995-b5b0-42d3-bbeb-09b53494ad12/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2024-11-16_031813.png?table=block&id=13ff2360-e2bf-80b2-9da7-c91d97ac0a80&spaceId=2b05e2ab-2434-4f23-af54-0262da5521d9&expirationTimestamp=1732032000000&signature=nDbmChh8-20ruWImqUpABOeEzV75TJezZUcu0XXKBzo&downloadName=%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7+2024-11-16+031813.png)
+![ERD](https://github.com/user-attachments/assets/1dd5f175-0388-4dbc-bb6c-08b34e99480f)
 
 <br>
 

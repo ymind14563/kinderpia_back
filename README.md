@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://file.notion.so/f/f/2b05e2ab-2434-4f23-af54-0262da5521d9/e76a713d-31e2-4ebb-8926-cf582e10ef11/386970390-268aa27c-f1da-4a2c-8eca-ebb656a43084.png?table=block&id=142f2360-e2bf-8048-8a1b-e27110cd7f09&spaceId=2b05e2ab-2434-4f23-af54-0262da5521d9&expirationTimestamp=1732032000000&signature=127Sr01rCq0vdl7cQutOdIwsOMTUiC0gU9GWtbsCZwQ&downloadName=386970390-268aa27c-f1da-4a2c-8eca-ebb656a43084.png" alt="MovieMemo" width="300"/>
+<img src="https://github.com/user-attachments/assets/059aa078-4e83-43d4-a3c5-af13bb783534" alt="kinderpia" width="300"/>
 </div>
 
 ![대표이미지](https://github.com/user-attachments/assets/39a60aa5-e550-46d4-a9bb-9c3129840c91)
@@ -105,7 +105,7 @@
 
 
 ## 🧰 Architecture
-![아키텍쳐](https://file.notion.so/f/f/2b05e2ab-2434-4f23-af54-0262da5521d9/86452292-994c-4ba2-8706-c0252607f863/image.png?table=block&id=140f2360-e2bf-802f-a675-c8f0746e59d6&spaceId=2b05e2ab-2434-4f23-af54-0262da5521d9&expirationTimestamp=1732032000000&signature=_U7bCCqv9gQw9tp4K2Qc1yO_D__XaFgCcoIZR6oXIb8&downloadName=image.png)
+![아키텍쳐](https://github.com/user-attachments/assets/dca26725-669e-484d-ae92-84e58bcbf076)
 
 
 <br>

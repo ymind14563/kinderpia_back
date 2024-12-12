@@ -15,11 +15,11 @@ public class ChatNotification {
     @Column(name = "chatnoti_id", nullable = false) // Primary Key
     private Long chatnotiId;
 
-    @ManyToOne(fetch = FetchType.LAZY) // User와 다대일 관계
+    @ManyToOne // User와 다대일 관계
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY) // ChatRoom과 다대일 관계
+    @ManyToOne // ChatRoom과 다대일 관계
     @JoinColumn(name = "chatroom_id", nullable = false)
     private ChatRoom chatRoom;
 

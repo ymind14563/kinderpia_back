@@ -113,22 +113,6 @@ public class ReportService {
     private void checkAndUpdateBlacklist(User reported) {
         long reportCount = reportRepository.countByReported(reported);
 
-        /*
-         문제: `isBlacklist` 필드의 Getter/Setter 충돌 문제
-         boolean 필드 `isBlacklist`에 대해 Lombok이 기본적으로 `isBlacklist()`와 `setBlacklist()` 메서드를 생성함.
-         하지만 호출 시 직접 `getIsBlacklist()`를 사용할 경우 충돌 발생.
-
-         해결방법: Lombok의 Getter/Setter 설정 방식 세 가지
-         1. 체이닝 설정 추가
-            - Lombok의 @Accessors(chain = true) 어노테이션을 사용해 `User` 엔티티에 체이닝 방식의 Getter/Setter 생성 가능.
-
-         2. User Entity 에 직접 Getter/Setter 메서드 작성
-            - `isBlacklist()`와 `setIsBlacklist()` 메서드를 수동으로 작성해 명확히 호출할 수 있도록 설정 가능.
-
-         3. Lombok 자동 생성 메서드 사용 (현재 방식)
-            - `User` 엔티티 수정 없이 Lombok이 자동 생성한 `isBlacklist()`와 `setBlacklist()` 메서드를 그대로 활용함.
-        */
-
         if (reportCount >= 5 && !reported.isBlacklist()) {
             reported.setBlacklist(true);
             userRepository.save(reported);

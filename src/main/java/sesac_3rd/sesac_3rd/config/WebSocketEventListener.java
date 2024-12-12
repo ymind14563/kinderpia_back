@@ -26,8 +26,9 @@ public class WebSocketEventListener {
     private final ChatNotificationService chatNotificationService;
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
-    private ChatRoomStatusRepository chatRoomStatusRepository;
-    private TokenProvider tokenProvider;
+    private final ChatRoomStatusRepository chatRoomStatusRepository;
+    private final TokenProvider tokenProvider;
+
 
     /**
      * WebSocket 구독 이벤트를 처리
@@ -39,32 +40,43 @@ public class WebSocketEventListener {
         // StompHeaderAccessor로 이벤트 메시지에서 헤더 정보를 가져옴
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String destination = headerAccessor.getDestination(); // 구독 목적지 경로 ("/topic/chatroom/{chatroomId}" 또는 "/topic/chatroom/notification")
-        System.out.println("destination>>>>"  + destination);
+        System.out.println("destination>>>>" + destination);
 
         if (destination != null) {
             Long chatroomId = extractChatroomId(destination);
 
             // 알림 구독 경로인지 확인
             if (chatroomId == null && destination.endsWith("notification")) {
-                // 알림 경로일 경우 특별히 처리할 내용이 있다면 여기에 추가
                 System.out.println("알림 구독 경로로 연결됨.");
             } else if (chatroomId != null) {
-                // 채팅방 구독 경로일 경우 chatroomId를 사용하여 처리
-                // 헤더에서 사용자 ID 추출
-                Long userId = getUserIdFromHeader(headerAccessor);
+                // 세션 속성에서 userId 가져오기
+                Object userIdObj = headerAccessor.getSessionAttributes().get("userId");
+                if (userIdObj == null) {
+                    System.out.println("세션 속성에서 userId를 찾을 수 없습니다.");
+                    return;
+                }
 
-                System.out.println(userId + "사용자가  " + chatroomId + "번 채팅방 구독 경로로 연결됨.");
+                Long userId;
+                try {
+                    userId = Long.valueOf(userIdObj.toString()); // String을 Long으로 변환
+                } catch (NumberFormatException e) {
+                    System.out.println("userId를 Long으로 변환하는 데 실패했습니다.");
+                    return;
+                }
+
+                System.out.println(userId + " 사용자가 " + chatroomId + "번 채팅방 구독 경로로 연결됨.");
+
                 if (chatroomId != null && userId != null) {
-                    // Redis에 입장 상태 기록
                     chatRoomStatusRepository.enterChatRoom(chatroomId, userId);
                     System.out.println("<<<<<User " + userId + " entered chatroom " + chatroomId);
 
                     chatNotificationService.resetUnreadCount(chatroomId, userId);
-                    System.out.println("안 읽은 메세지 수 초기화");
+                    System.out.println("안 읽은 메시지 수 초기화");
                 }
             }
         }
     }
+
 
 
     @EventListener
@@ -75,7 +87,21 @@ public class WebSocketEventListener {
 
         if (destination != null && destination.startsWith("/topic/chatroom/")) {
             Long chatroomId = extractChatroomId(destination);
-            Long userId = getUserIdFromHeader(headerAccessor);
+
+            // 세션 속성에서 userId 가져오기
+            Object userIdObj = headerAccessor.getSessionAttributes().get("userId");
+            if (userIdObj == null) {
+                System.out.println("세션 속성에서 userId를 찾을 수 없습니다.");
+                return;
+            }
+
+            Long userId;
+            try {
+                userId = Long.valueOf(userIdObj.toString()); // String을 Long으로 변환
+            } catch (NumberFormatException e) {
+                System.out.println("userId를 Long으로 변환하는 데 실패했습니다.");
+                return;
+            }
 
             // 사용자 퇴장 처리
             if (chatroomId != null && userId != null) {
@@ -85,6 +111,7 @@ public class WebSocketEventListener {
             }
         }
     }
+
 
 
     /**
@@ -111,23 +138,23 @@ public class WebSocketEventListener {
     /**
      * 사용자 ID는 STOMP "Authorization" 헤더에 포함된 JWT 에서 추출
      */
-    private Long getUserIdFromHeader(StompHeaderAccessor headerAccessor) {
-        // Authorization 헤더에서 "Bearer "로 시작하는 부분을 추출하여 JWT 토큰을 가져옵니다.
-        String authorizationHeader = headerAccessor.getFirstNativeHeader("Authorization");
-        System.out.println("authorizationHeader >>>" + authorizationHeader);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            // JWT 토큰 부분을 추출
-            String token = authorizationHeader.substring(7);  // "Bearer "를 제외한 부분을 추출
-            System.out.println("token>>>>>"+ token);
-            // tokenProvider를 사용해 토큰에서 userId를 추출
-            String userId = tokenProvider.validateAndGetUserId(token);
-            System.out.println("userId>>>>>"+ userId);
-            // userId가 존재하면 Long 타입으로 변환하여 반환, 없으면 null
-            return userId != null ? Long.parseLong(userId) : null;
-        }
-
-        return null;  // Authorization 헤더가 없거나 "Bearer "로 시작하지 않으면 null 반환
-    }
+//    private Long getUserIdFromHeader(StompHeaderAccessor headerAccessor) {
+//        // Authorization 헤더에서 "Bearer "로 시작하는 부분을 추출하여 JWT 토큰을 가져옵니다.
+//        String authorizationHeader = headerAccessor.getFirstNativeHeader("Authorization");
+//        System.out.println("authorizationHeader >>>" + authorizationHeader);
+//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+//            // JWT 토큰 부분을 추출
+//            String token = authorizationHeader.substring(7);  // "Bearer "를 제외한 부분을 추출
+//            System.out.println("token>>>>>"+ token);
+//            // tokenProvider를 사용해 토큰에서 userId를 추출
+//            String userId = tokenProvider.validateAndGetUserId(token);
+//            System.out.println("userId>>>>>"+ userId);
+//            // userId가 존재하면 Long 타입으로 변환하여 반환, 없으면 null
+//            return userId != null ? Long.parseLong(userId) : null;
+//        }
+//
+//        return null;  // Authorization 헤더가 없거나 "Bearer "로 시작하지 않으면 null 반환
+//    }
 
 
 }

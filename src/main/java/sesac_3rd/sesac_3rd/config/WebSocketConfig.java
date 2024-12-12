@@ -27,6 +27,12 @@ queue: 특정 클라이언트만 메시지를 받을 수 있게 설계되어서,
 @EnableWebSocketMessageBroker // WebSocket 메시지 브로커를 활성화하여 STOMP 기반의 메시지 처리
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    private final WebSocketHandshakeInterceptor handshakeInterceptor;
+
+    public WebSocketConfig(WebSocketHandshakeInterceptor handshakeInterceptor) {
+        this.handshakeInterceptor = handshakeInterceptor;
+    }
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // 클라이언트로 메세지를 보내기 위한 경로에 대해 메시지 브로커 설정
@@ -52,6 +58,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         서버가 "/ws" 엔드포인트를 통해 WebSocket 을 활성화해주면 (= registry.addEndpoint("/ws")) STOMP 프로토콜을 사용하여 클라이언트와 실시간 통신 가능
         */
         registry.addEndpoint("/ws")
+                .addInterceptors(handshakeInterceptor)  // 인터셉터
                 .setAllowedOrigins("http://localhost:3000")
              /*
                  "/ws" 경로로 클라이언트가 연결 요청을 보낼 수 있도록 설정

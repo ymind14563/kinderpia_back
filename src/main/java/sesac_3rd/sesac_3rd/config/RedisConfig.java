@@ -24,7 +24,12 @@ public class RedisConfig {
         // Redis 에 저장될 값을 문자열로 직렬화 설정
         template.setValueSerializer(new StringRedisSerializer());
 
+        // Redis Hash Key와 Value를 문자열로 직렬화 설정
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new StringRedisSerializer());
+
         // 완성된 RedisTemplate 을 빈으로 반환하여 사용 가능하게 함
         return template;
     }
 }
+

@@ -4,7 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO;
+import sesac_3rd.sesac_3rd.dto.place.PopularPlaceDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
+
+import java.util.List;
 
 @Service
 public interface PlaceService {
@@ -17,5 +20,9 @@ public interface PlaceService {
 
     // 장소 상세 조회
     PlaceReviewDTO getPlaceById(Long placeId);
+
+    List<PopularPlaceDTO> getPopularPlaces();
+
+    void savePopularPlacesToRedis(List<PopularPlaceDTO> popularPlaces);
 
 }

@@ -13,9 +13,11 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Review")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "Review", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"place_id","user_id","review_content"})
+})
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -216,8 +216,8 @@ public class UserController {
     // 사용자 리뷰 목록 조회(장소 정보까지 같이)
     @GetMapping("/review/list")
     public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserReviewDTO>>> getUserReviewList(@AuthenticationPrincipal Long userId,
-                                                                                                   @RequestParam(defaultValue = "0") int page,
-                                                                                                   @RequestParam(defaultValue = "10") int size
+                                                                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                                                   @RequestParam(name = "size", defaultValue = "10") int size
     ) {
         // 토큰에 문제가 있는 경우
         if (userId == null) {
@@ -245,8 +245,8 @@ public class UserController {
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
     @GetMapping("/meeting/list")
     public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserMeetingListDTO>>> getUserMeetingList(@AuthenticationPrincipal Long userId,
-                                                                                                         @RequestParam(defaultValue = "0") int page,
-                                                                                                         @RequestParam(defaultValue = "10") int size) {
+                                                                                                         @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                                                         @RequestParam(name = "size", defaultValue = "10") int size) {
         // 토큰에 문제가 있는 경우
         if (userId == null) {
             return ResponseHandler.unauthorizedResponse();
@@ -260,8 +260,8 @@ public class UserController {
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
     @GetMapping("/meeting/leader/list")
     public ResponseEntity<ResponseHandler<PaginationResponseDTO<UserMeetingListDTO>>> getUserLeaderMeetingList(@AuthenticationPrincipal Long userId,
-                                                                                                               @RequestParam(defaultValue = "0") int page,
-                                                                                                               @RequestParam(defaultValue = "10") int size
+                                                                                                               @RequestParam(name = "page", defaultValue = "0") int page,
+                                                                                                               @RequestParam(name = "size", defaultValue = "10") int size
     ) {
         // 토큰에 문제가 있는 경우
         if (userId == null) {

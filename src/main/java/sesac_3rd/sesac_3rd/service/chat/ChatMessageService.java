@@ -20,6 +20,12 @@ import sesac_3rd.sesac_3rd.repository.UserMeetingRepository;
 import sesac_3rd.sesac_3rd.repository.UserRepository;
 import sesac_3rd.sesac_3rd.repository.chat.ChatMessageRepository;
 import sesac_3rd.sesac_3rd.repository.chat.ChatRoomRepository;
+import sesac_3rd.sesac_3rd.repository.chat.RedisChatMessageRepository;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -32,6 +38,7 @@ public class ChatMessageService {
     private final ChatMessageMapper chatMessageMapper;
     private final UserMeetingRepository userMeetingRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final RedisChatMessageRepository redisChatMessageRepository;
 
     // 메세지 저장
     public ChatMessageDTO.ChatMessage saveMessage(Long chatroomId, ChatMessageDTO.ChatMessage chatMessageDTO) {
@@ -81,7 +88,13 @@ public class ChatMessageService {
 //        return responseMessage;
 
         ChatMessage chatMessage = chatMessageMapper.ChatMessageDTOtoEntity(chatMessageDTO, chatRoom, sender);
+
+        // db 저장
         chatMessageRepository.save(chatMessage);
+
+        // redis 저장
+        redisChatMessageRepository.saveMessageToRedis(chatroomId, chatMessageDTO);
+
         return chatMessageMapper.ChatMessageToChatMessageResponseDTO(chatMessage);
     }
 
@@ -149,6 +162,28 @@ public class ChatMessageService {
 
         Sort sort = Sort.by(Sort.Order.desc("createdAt")); // 생성시간으로 내림차순
 
+        // Redis에서 먼저 조회
+        Set<ChatMessageDTO.ChatMessage> redisMessages = redisChatMessageRepository.getMessagesFromRedis(chatroomId);
+
+        if (!redisMessages.isEmpty()) {
+
+            // Redis에서 받은 메시지들을 생성일자 기준으로 정렬
+            List<ChatMessageDTO.ChatMessage> sortedMessages = redisMessages.stream()
+                    .sorted(Comparator.comparing(ChatMessageDTO.ChatMessage::getCreatedAt))
+                    .collect(Collectors.toList());
+
+            // PaginationResponseDTO 생성 시, List로 변환
+            ChatMessageDTO.ChatMessageList redisMessageList = ChatMessageDTO.ChatMessageList.builder()
+                    .chatroomId(chatroomId)
+                    .chatmsgList(sortedMessages)
+                    .build();
+
+            // Redis 에서 이미 정렬된 메시지 리스트를 다룰 수 있기 때문에 null 로 처리
+            return new PaginationResponseDTO<>(redisMessageList, null);
+        }
+
+
+
         /*
         Sort.Direction direction = Sort.Direction.fromOptionalString(sortDirection).orElse(Sort.Direction.ASC); // asc, desc 등
         Sort.Direction.fromOptionalString 사용 이유: String 값을 [Sort.Direction 값으로 바꾸고, asc, desc 가 아닌 경우 예외 처리] 를 위함
@@ -157,6 +192,8 @@ public class ChatMessageService {
         * 만약 ASC, DESC 가 정확하게 입력된다면 Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortProperty); 만 사용해도 무방함(추천안함)
         */
 
+
+        // Redis 에 없으면 DB 에서 조회
         PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
 
         Page<ChatMessage> chatMessagesPage = chatMessageRepository.findByChatRoomChatroomId(chatroomId, pageRequest);

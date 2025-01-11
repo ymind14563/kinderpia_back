@@ -6,8 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
+import sesac_3rd.sesac_3rd.dto.place.PopularPlaceDTO;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.service.place.PlaceService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/place")
@@ -61,6 +64,24 @@ public class PlaceController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+
+    // 인기 장소 조회
+    @GetMapping("/popular")
+    public ResponseEntity<ResponseHandler<List<PopularPlaceDTO>>> getPopularPlaces() {
+        try {
+            List<PopularPlaceDTO> popularPlaces = placeService.getPopularPlaces();
+
+            ResponseHandler<List<PopularPlaceDTO>> response = new ResponseHandler<>(
+                    popularPlaces,
+                    HttpStatus.OK.value(),
+                    "인기 장소 조회 완료"
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            throw new RuntimeException("인기 장소 조회 중 오류 발생", e);
         }
     }
 }

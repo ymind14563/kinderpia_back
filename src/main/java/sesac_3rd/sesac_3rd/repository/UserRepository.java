@@ -52,7 +52,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
-    @Query("SELECT m, u.nickname, u.profileImg, c.meetingCtgName FROM Meeting m JOIN m.user u JOIN m.meetingCategory c WHERE u.userId = :userId AND m.meetingStatus IN :validStatus ORDER BY m.createdAt DESC")
+    @Query("SELECT m, u.nickname, u.profileImg, c.meetingCtgName FROM Meeting m JOIN m.user u JOIN m.meetingCategory c WHERE u.userId = :userId AND m.meetingStatus IN :validStatus ORDER BY m.meetingTime DESC")
     Page<Meeting> meetingFindByLeaderUserId(@Param("userId") Long userId, @Param("validStatus") List<MeetingStatus> validStatus, Pageable pageable);
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
@@ -78,7 +78,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "        AND um.isWithdraw = false " +
             "        AND um.isAccepted = true " +
             "        AND um.isBlocked = false)) " +
-            "AND m.meetingStatus IN :validStatus ORDER BY m.createdAt DESC")
+            "AND m.meetingStatus IN :validStatus ORDER BY m.meetingTime DESC")
     Page<UserMeetingListDTO> meetingFindByUserId(@Param("userId") Long userId, @Param("validStatus") List<MeetingStatus> validStatus, Pageable pageable);
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)

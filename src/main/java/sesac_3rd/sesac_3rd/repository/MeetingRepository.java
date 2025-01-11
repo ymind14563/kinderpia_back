@@ -15,6 +15,11 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     // 모임 목록 (open - 열려있는것만 정렬)
     Page<Meeting> findByMeetingStatus(MeetingStatus status, Pageable pageable);
 
+    // 모임 목록 (더보기: 모임 시간순으로 정렬 + deleted 제외)
+    @Query("SELECT m FROM Meeting m " +
+            "WHERE m.meetingStatus != 'DELETED' ")
+    Page<Meeting> findByMeetingStatusNotDeleted(Pageable pageable);
+
     // 키워드로 타이틀, 장소 검색
 //    @Query("SELECT m FROM Meeting m " +
 //            "WHERE m.meetingTitle LIKE %:keyword% OR m.district LIKE %:keyword%")

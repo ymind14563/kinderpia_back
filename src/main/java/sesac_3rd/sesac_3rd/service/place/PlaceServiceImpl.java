@@ -112,6 +112,11 @@ public class PlaceServiceImpl implements PlaceService{
 
     // Redis에 인기 장소 저장
     public void savePopularPlacesToRedis(List<PopularPlaceDTO> popularPlaces) {
+
+//        // 기존 인기 장소 삭제
+//        redisTemplate.delete(POPULAR_PLACES_KEY);
+
+        // 새로운 인기 장소 저장 (opsForValue().set = 덮어쓰기)
         redisTemplate.opsForValue().set(POPULAR_PLACES_KEY, popularPlaces, Duration.ofDays(1));
     }
 }

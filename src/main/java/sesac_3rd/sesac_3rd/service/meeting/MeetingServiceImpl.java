@@ -121,7 +121,12 @@ public class MeetingServiceImpl implements MeetingService {
     // 키워드로 타이틀과 장소 검색
     @Override
     public PaginationResponseDTO<MeetingDTO> searchMeetingsByKeyword(String keyword, Pageable pageable) {
-        Page<Meeting> meetings = meetingRepository.findByMeetingTitleOrDistrict(
+//      // 기존 Like 검색 방식
+//      Page<Meeting> meetings = meetingRepository.findByMeetingTitleOrDistrict(
+//              keyword, pageable);
+
+        // Full Text Index 방식
+        Page<Meeting> meetings = meetingRepository.searchMeetingsByKeywordUsingFullTextIndex(
                 keyword, pageable);
 
         if (meetings.isEmpty()) {

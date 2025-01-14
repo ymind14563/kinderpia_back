@@ -21,9 +21,18 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     Page<Meeting> findByMeetingStatusNotDeleted(Pageable pageable);
 
     // 키워드로 타이틀, 장소 검색
-    @Query("SELECT m FROM Meeting m " +
-            "WHERE m.meetingTitle LIKE %:keyword% OR m.district LIKE %:keyword%")
-    Page<Meeting> findByMeetingTitleOrDistrict(@Param("keyword") String keyword, Pageable pageable);
+//    @Query("SELECT m FROM Meeting m " +
+//            "WHERE m.meetingTitle LIKE %:keyword% OR m.district LIKE %:keyword%")
+//    Page<Meeting> findByMeetingTitleOrDistrict(@Param("keyword") String keyword, Pageable pageable);
+
+
+    // 키워드로 타이틀, 장소 검색 (Full Text Index 방식)
+    // ALTER TABLE meeting ADD FULLTEXT(meetingTitle, district);
+    @Query(value = "SELECT m FROM Meeting m " +
+        "WHERE MATCH(m.meetingTitle, m.district) AGAINST (:keyword IN BOOLEAN MODE)",
+        nativeQuery = true)
+    Page<Meeting> searchMeetingsByKeywordUsingFullTextIndex(@Param("keyword") String keyword, Pageable pageable);
+
 
     // 모임 상세조회 (profile_img, chatroom_id 포함)
     @Query("SELECT m FROM Meeting m " +

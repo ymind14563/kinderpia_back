@@ -125,12 +125,19 @@ public class MeetingServiceImpl implements MeetingService {
     // 키워드로 타이틀과 장소 검색 (모임 시간순으로 정렬)
     @Override
     public PaginationResponseDTO<MeetingDTO> searchMeetingsByKeyword(String keyword, Pageable pageable) {
+
         // 정렬 meetingTime
         Sort sort = Sort.by(Sort.Direction.DESC, "meetingTime");
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-        Page<Meeting> meetings = meetingRepository.findByMeetingTitleOrDistrict(
+//      // 기존 Like 검색 방식
+//      Page<Meeting> meetings = meetingRepository.findByMeetingTitleOrDistrict(
+//              keyword, sortedPageable);
+
+        // Full Text Index 방식
+        Page<Meeting> meetings = meetingRepository.searchMeetingsByKeywordUsingFullTextIndex(
                 keyword, sortedPageable);
+
 
         if (meetings.isEmpty()) {
             throw new CustomException(ExceptionStatus.MEETING_NOT_FOUND);

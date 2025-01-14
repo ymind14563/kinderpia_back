@@ -6,10 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO;
+import sesac_3rd.sesac_3rd.dto.place.PopularPlaceDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.entity.PlaceCategory;
 import sesac_3rd.sesac_3rd.exception.CustomException;
@@ -20,6 +22,8 @@ import sesac_3rd.sesac_3rd.repository.PlaceRepository;
 import sesac_3rd.sesac_3rd.repository.ReviewRepository;
 
 import static sesac_3rd.sesac_3rd.mapper.place.PlaceMapper.convertToDTO;
+
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +41,11 @@ public class PlaceServiceImpl implements PlaceService{
 
     @Autowired
     private PlaceMapper placeMapper;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    private static final String POPULAR_PLACES_KEY = "popular_places";
 
     // 장소 목록 조회
     @Override
@@ -86,5 +95,31 @@ public class PlaceServiceImpl implements PlaceService{
         placeReviewDTO.setAverageStar(avgStar);
 
         return placeReviewDTO;
+    }
+
+    // 인기 장소 조회 (redis key-value 방식을 활용, 따로 RedisRepository 없어도 됨)
+    @Override
+    public List<PopularPlaceDTO> getPopularPlaces() {
+        // Redis에서 인기 장소 데이터 조회
+        List<PopularPlaceDTO> popularPlaces = (List<PopularPlaceDTO>) redisTemplate.opsForValue().get(POPULAR_PLACES_KEY);
+
+        if (popularPlaces == null || popularPlaces.isEmpty()) {
+
+            // Redis에 데이터가 없으면 DB에서 가져오고 Redis에 저장
+            popularPlaces = placeRepository.getTop8PopularPlaces();
+            savePopularPlacesToRedis(popularPlaces);
+        }
+
+        return popularPlaces;
+    }
+
+    // Redis에 인기 장소 저장
+    public void savePopularPlacesToRedis(List<PopularPlaceDTO> popularPlaces) {
+
+//        // 기존 인기 장소 삭제
+//        redisTemplate.delete(POPULAR_PLACES_KEY);
+
+        // 새로운 인기 장소 저장 (opsForValue().set = 덮어쓰기)
+        redisTemplate.opsForValue().set(POPULAR_PLACES_KEY, popularPlaces, Duration.ofDays(1));
     }
 }

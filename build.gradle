@@ -40,6 +40,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+	implementation 'net.javacrumbs.shedlock:shedlock-spring:4.44.0' // ShedLock Core
+	implementation 'net.javacrumbs.shedlock:shedlock-provider-redis-spring:4.44.0' // Redis Lock Provider
 }
 
 tasks.named('test') {

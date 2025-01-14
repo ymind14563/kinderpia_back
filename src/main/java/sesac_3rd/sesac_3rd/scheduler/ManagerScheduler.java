@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.scheduler;
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ public class ManagerScheduler {
 
     // 매일 새벽 1시 30분에 Redis 캐싱 데이터 갱신
     @Scheduled(cron = "0 30 1 * * ?")
+    @SchedulerLock(name = "updateManagerData", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
     public void updateManagerData() {
         try {
             System.out.println("Manager 관련 Redis 데이터 갱신 시작");

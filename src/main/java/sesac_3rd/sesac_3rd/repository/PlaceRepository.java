@@ -80,7 +80,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
             "LEFT JOIN Review r ON p.placeId = r.place.placeId " +
             "GROUP BY p.placeId, p.placeName, p.placeImg, p.isPaid, pc.placeCtgName " +
             "ORDER BY averageStar DESC")
-    List<PopularPlaceDTO> getTop8PopularPlaces();
+    List<PopularPlaceDTO> getTop8PopularPlaces(Pageable pageable);
 
 }
 

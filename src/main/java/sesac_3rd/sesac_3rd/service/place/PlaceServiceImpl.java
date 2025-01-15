@@ -1,5 +1,7 @@
 package sesac_3rd.sesac_3rd.service.place;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,8 +47,14 @@ public class PlaceServiceImpl implements PlaceService{
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    private final ObjectMapper objectMapper;
+
     private static final String POPULAR_PLACES_KEY = "popular_places";
 
+    public PlaceServiceImpl(RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
+        this.redisTemplate = redisTemplate;
+        this.objectMapper = objectMapper;
+    }
     // 장소 목록 조회
     @Override
     public Page<PlaceReviewDTO> getAllPlace(int page, int size){
@@ -100,26 +108,55 @@ public class PlaceServiceImpl implements PlaceService{
     // 인기 장소 조회 (redis key-value 방식을 활용, 따로 RedisRepository 없어도 됨)
     @Override
     public List<PopularPlaceDTO> getPopularPlaces() {
-        // Redis에서 인기 장소 데이터 조회
-        List<PopularPlaceDTO> popularPlaces = (List<PopularPlaceDTO>) redisTemplate.opsForValue().get(POPULAR_PLACES_KEY);
+        try {
+            // Redis에서 JSON 데이터를 가져오기
+            String cachedData = (String) redisTemplate.opsForValue().get(POPULAR_PLACES_KEY);
+            System.out.println("Redis에서 조회 완료");
+            List<PopularPlaceDTO> popularPlaces;
+            if (cachedData == null || cachedData.isEmpty()) {
+                // Redis에 데이터가 없으면 DB에서 가져오기 (상위 8개)
+                Pageable pageable = PageRequest.of(0, 8);
+                popularPlaces = placeRepository.getTop8PopularPlaces(pageable);
+                System.out.println("DB에서 조회 완료");
+                savePopularPlacesToRedis(popularPlaces);
+            } else {
+                // JSON 문자열을 List<PopularPlaceDTO>로 역직렬화
+                popularPlaces = objectMapper.readValue(cachedData, new TypeReference<List<PopularPlaceDTO>>() {});
+            }
 
-        if (popularPlaces == null || popularPlaces.isEmpty()) {
-
-            // Redis에 데이터가 없으면 DB에서 가져오고 Redis에 저장
-            popularPlaces = placeRepository.getTop8PopularPlaces();
-            savePopularPlacesToRedis(popularPlaces);
+            return popularPlaces;
+        } catch (Exception e) {
+            throw new RuntimeException("인기 장소 조회 중 오류 발생", e);
         }
-
-        return popularPlaces;
     }
+
+
+//    // DB에서 인기장소 직접 조회
+//    @Override
+//    public List<PopularPlaceDTO> getPopularPlaces() {
+//        try {
+//            Pageable pageable = PageRequest.of(0, 8);
+//            List<PopularPlaceDTO> popularPlaces = placeRepository.getTop8PopularPlaces(pageable);
+//            System.out.println("DB에서 조회 완료");
+//
+//            return popularPlaces;
+//        } catch (Exception e) {
+//            throw new RuntimeException("인기 장소 조회 중 오류 발생", e);
+//        }
+//    }
+
 
     // Redis에 인기 장소 저장
     public void savePopularPlacesToRedis(List<PopularPlaceDTO> popularPlaces) {
+        try {
+            // List를 JSON 문자열로 직렬화
+            String serializedData = objectMapper.writeValueAsString(popularPlaces);
 
-//        // 기존 인기 장소 삭제
-//        redisTemplate.delete(POPULAR_PLACES_KEY);
-
-        // 새로운 인기 장소 저장 (opsForValue().set = 덮어쓰기)
-        redisTemplate.opsForValue().set(POPULAR_PLACES_KEY, popularPlaces, Duration.ofDays(1));
+            // Redis에 저장 (opsForValue().set)
+            redisTemplate.opsForValue().set(POPULAR_PLACES_KEY, serializedData, Duration.ofDays(1));
+            System.out.println("Redis에 저장 완료");
+        } catch (Exception e) {
+            throw new RuntimeException("Redis에 인기 장소 저장 중 오류 발생", e);
+        }
     }
 }

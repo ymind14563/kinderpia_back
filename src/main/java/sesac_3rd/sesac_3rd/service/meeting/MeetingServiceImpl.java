@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.service.meeting;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -14,6 +15,7 @@ import sesac_3rd.sesac_3rd.entity.ChatRoom;
 import sesac_3rd.sesac_3rd.entity.Meeting;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.entity.UserMeeting;
+import sesac_3rd.sesac_3rd.exception.CommonFallbackHandler;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
@@ -47,8 +49,14 @@ public class MeetingServiceImpl implements MeetingService {
     @Autowired
     private UserMeetingRepository userMeetingRepository;
 
+    @Autowired
+    private CommonFallbackHandler commonFallbackHandler;
+
+
+
     // 모임 목록 (default - 최신순 정렬)
     @Override
+    @CircuitBreaker(name = "meetingService", fallbackMethod = "getAllMeetingsFallback")
     public PaginationResponseDTO<MeetingDTO> getAllMeetings(Pageable pageable) {
         // 정렬 설정
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
@@ -157,6 +165,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     // 모임 상세조회 (profile_img, chatroom_id 포함)
     @Override
+    @CircuitBreaker(name = "meetingService", fallbackMethod = "getDetailMeetingFallback")
     public MeetingDetailDTO getDetailMeeting(Long meetingId) {
         // Meeting 조회 (모임장 정보 포함)
         Meeting meeting = meetingRepository.findByMeetingIdWithUserAndChatRoom(meetingId)
@@ -319,5 +328,14 @@ public class MeetingServiceImpl implements MeetingService {
         log.info("meetingStatus 상태 확인: 모임ID {}", meetingId);
 
         return MeetingMapper.toMeetingStatusDTO(meeting);
+    }
+
+    // Fallback
+    private PaginationResponseDTO<MeetingDTO> getAllMeetingsFallback(Pageable pageable, Throwable throwable) {
+        return commonFallbackHandler.handlePaginationFallback(pageable, throwable, MeetingDTO.class, true);
+    }
+
+    private MeetingDetailDTO getDetailMeetingFallback(Long meetingId, Throwable throwable) {
+        return commonFallbackHandler.handleSingleResponseFallback(throwable, MeetingDetailDTO.class);
     }
 }

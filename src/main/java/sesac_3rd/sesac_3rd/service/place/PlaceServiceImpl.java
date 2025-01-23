@@ -2,6 +2,7 @@ package sesac_3rd.sesac_3rd.service.place;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO;
 import sesac_3rd.sesac_3rd.dto.place.PopularPlaceDTO;
 import sesac_3rd.sesac_3rd.entity.Place;
 import sesac_3rd.sesac_3rd.entity.PlaceCategory;
+import sesac_3rd.sesac_3rd.exception.CommonFallbackHandler;
 import sesac_3rd.sesac_3rd.exception.CustomException;
 import sesac_3rd.sesac_3rd.exception.ExceptionStatus;
 import sesac_3rd.sesac_3rd.mapper.place.PlaceMapper;
@@ -47,6 +49,10 @@ public class PlaceServiceImpl implements PlaceService{
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    private CommonFallbackHandler commonFallbackHandler;
+
+
     private final ObjectMapper objectMapper;
 
     private static final String POPULAR_PLACES_KEY = "popular_places";
@@ -57,6 +63,7 @@ public class PlaceServiceImpl implements PlaceService{
     }
     // 장소 목록 조회
     @Override
+    @CircuitBreaker(name = "placeService", fallbackMethod = "getAllPlaceFallback")
     public Page<PlaceReviewDTO> getAllPlace(int page, int size){
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageStar"));
         Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
@@ -159,4 +166,11 @@ public class PlaceServiceImpl implements PlaceService{
             throw new RuntimeException("Redis에 인기 장소 저장 중 오류 발생", e);
         }
     }
+
+    // Fallback
+    private Page<PlaceReviewDTO> getAllPlaceFallback(int page, int size, Throwable throwable) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageStar"));
+        return commonFallbackHandler.handlePageFallback(pageable, throwable);
+    }
+
 }

@@ -42,6 +42,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
 	implementation 'net.javacrumbs.shedlock:shedlock-spring:4.44.0' // ShedLock Core
 	implementation 'net.javacrumbs.shedlock:shedlock-provider-redis-spring:4.44.0' // Redis Lock Provider
+	implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
 }
 
 tasks.named('test') {

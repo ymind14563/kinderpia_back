@@ -63,6 +63,7 @@ public class ReportService {
 
 
     // 신고된 채팅 메시지 목록 조회 (관리자 전용) - 페이지네이션 적용 (동적 설정)
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<ReportDTO.ReportList> getChatMessageReports(int page, int size, String sortDirection, String sortProperty) {
 
         // 정렬 방향과 기준 필드를 동적으로 설정
@@ -80,6 +81,7 @@ public class ReportService {
 
 
     // 신고된 리뷰 목록 조회 (관리자 전용) - 페이지네이션 적용 (동적 설정)
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<ReportDTO.ReportList> getReviewReports(int page, int size, String sortDirection, String sortProperty) {
         Sort.Direction direction = Sort.Direction.fromOptionalString(sortDirection).orElse(Sort.Direction.ASC);
         Sort sort = Sort.by(direction, sortProperty);
@@ -93,6 +95,7 @@ public class ReportService {
 
 
     // 신고된 모임 목록 조회 (관리자 전용) - 페이지네이션 적용 (동적 설정)
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<ReportDTO.ReportList> getMeetingReports(int page, int size, String sortDirection, String sortProperty) {
         Sort.Direction direction = Sort.Direction.fromOptionalString(sortDirection).orElse(Sort.Direction.ASC);
         Sort sort = Sort.by(direction, sortProperty);
@@ -158,6 +161,7 @@ public class ReportService {
     }
 
     // 중복 신고 확인
+    @Transactional(readOnly = true)
     public boolean isReportExist(Long reporterId, Long chatMessageId, Long reviewId, Long meetingId) {
         User reporter = userRepository.findById(reporterId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));

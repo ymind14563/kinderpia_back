@@ -51,6 +51,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     // 장소별 리뷰 목록 조회
     @Override
+    @Transactional(readOnly = true)
     public ReviewListDTO getAllReviewByPlaceId(Long placeId, Long userId, int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
@@ -72,6 +73,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     // 리뷰 단건 조회
     @Override
+    @Transactional(readOnly = true)
     public ReviewDTO getReviewById(Long reviewId){
         Review review = reviewRepository.findById(reviewId).orElseThrow(()->new CustomException(ExceptionStatus.REVIEWID_NOT_FOUND));
         return convertToDTO(review);

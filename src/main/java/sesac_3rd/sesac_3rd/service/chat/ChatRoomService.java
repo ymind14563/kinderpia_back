@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sesac_3rd.sesac_3rd.dto.chat.ChatRoomDTO;
 import sesac_3rd.sesac_3rd.entity.ChatRoom;
 import sesac_3rd.sesac_3rd.entity.Meeting;
@@ -31,6 +32,7 @@ public class ChatRoomService {
 
 
     // 유저 소속 채팅방 목록 조회
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<ChatRoomDTO.ChatRoomList> getChatRooms(Long userId, int page, int size) {
 
 
@@ -78,6 +80,7 @@ public class ChatRoomService {
 
 
     // 단일 채팅방 조회
+    @Transactional(readOnly = true)
     public ChatRoomDTO.ChatRoom getChatRoomById(Long userId, Long chatroomId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatroomId)
                 .orElseThrow(() -> new CustomException(ExceptionStatus.CHATROOM_NOT_FOUND));

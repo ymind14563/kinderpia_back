@@ -1,5 +1,7 @@
 package sesac_3rd.sesac_3rd.service.chat;
 
+//import jakarta.transaction.Transactional; // readOnly 옵션이 없어서 아래 주석으로 변경
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -44,6 +46,7 @@ public class ChatMessageService {
     private final RedisChatMessageRepository redisChatMessageRepository;
 
     // 메세지 저장
+    @Transactional
     public ChatMessageDTO.ChatMessage saveMessage(Long chatroomId, ChatMessageDTO.ChatMessage chatMessageDTO) {
 
         log.info("[WebSocket] 메시지 도착: chatroomId={}, senderId={}, content={}",
@@ -155,6 +158,7 @@ public class ChatMessageService {
 
 
     // 채팅 메시지 목록 조회
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<ChatMessageDTO.ChatMessageList> getChatMessages(Long userId, Long chatroomId, int page, int size) {
 
         // ChatRoom 존재 여부 확인

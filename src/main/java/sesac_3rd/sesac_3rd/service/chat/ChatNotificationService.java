@@ -1,6 +1,7 @@
 package sesac_3rd.sesac_3rd.service.chat;
 
-import jakarta.transaction.Transactional;
+//import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -100,12 +101,13 @@ public class ChatNotificationService {
 //        chatNotificationRepository.save(chatNotification);
 //    }
 
+
+
     // 안 읽은 메시지 수 초기화
 
-    // @Modifying이 붙은 JPA 쿼리는 데이터베이스에서 데이터를 변경(UPDATE, DELETE)하기 위한 쿼리
-    //이 쿼리를 실행하려면 트랜잭션 컨텍스트 내에서 실행되어야 함.
+    // @Modifying 이 붙은 JPA 쿼리는 데이터베이스에서 데이터를 변경(UPDATE, DELETE)하기 위한 쿼리
+    // 이 쿼리를 실행하려면 트랜잭션 컨텍스트 내에서 실행되어야 함.
     @Transactional
-
     public void resetUnreadCount(Long chatroomId, Long userId) {
         chatNotificationRepository.resetUnreadCount(chatroomId, userId);
     }

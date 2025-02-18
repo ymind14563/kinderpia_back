@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sesac_3rd.sesac_3rd.config.security.TokenProvider;
@@ -170,6 +171,7 @@ public class UserServiceImpl implements UserService {
 
     // 회원 정보 단건 조회
     @Override
+    @Transactional(readOnly = true)
     public UserDTO getUser(Long userId) {
         log.info("get user : {}", userId);
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));  //new CustomException(ErrorCode.USER_NOT_FOUND)
@@ -258,6 +260,7 @@ public class UserServiceImpl implements UserService {
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장이거나 모임에 속해 있는 경우) - 페이지네이션
     @Override
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<UserMeetingListDTO> getUserMeetingList(Long userId, int size, int page) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
 
@@ -268,6 +271,7 @@ public class UserServiceImpl implements UserService {
 
     // 사용자 모임 목록 조회(모임 삭제 상태 제외하고, 사용자가 모임장인 모임) - 페이지네이션
     @Override
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<UserMeetingListDTO> getUserLeaderMeetingList(Long userId, int size, int page) {
 
         PageRequest pageRequest = PageRequest.of(page - 1, size);
@@ -284,6 +288,7 @@ public class UserServiceImpl implements UserService {
 
     // 사용자 모임 일정 목록 조회(사용자가 모임장이거나 속해있는 모임, 삭제된 모임 제외)
     @Override
+    @Transactional(readOnly = true)
     public List<UserMeetingTimeListDTO> getUserMeetingScheduleList(Long userId) {
 
         List<UserMeetingTimeListDTO> getScheduleList = userRepository.meetingTimeFindByUserId(userId, validMeetingStatus());
@@ -293,6 +298,7 @@ public class UserServiceImpl implements UserService {
 
     // 사용자 리뷰 목록 조회(장소 정보까지 같이), 삭제된 리뷰도 보이게 할건지??
     @Override
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<UserReviewDTO> getUserReviewList(Long userId, int size, int page) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionStatus.USER_NOT_FOUND));    // 404
 
@@ -306,6 +312,7 @@ public class UserServiceImpl implements UserService {
 
     // 모임상세 접근시 사용자 상태 조회(신고여부, 신청여부, 수락여부)
     @Override
+    @Transactional(readOnly = true)
     public UserMeetingStatusDTO getUserMeetingStatus(Long userId, Long meetingId) {
         // 신청여부
         boolean isJoined = userMeetingRepository.existsByUser_UserIdAndMeeting_MeetingId(userId, meetingId);
@@ -319,6 +326,7 @@ public class UserServiceImpl implements UserService {
 
     // 승인 대기자 목록(각각 모임에 대한)
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getUserMeetingApprovalList(Long meetingId) {
         List<User> getUsers = userRepository.getUserMeetingApprovalList(meetingId);
 

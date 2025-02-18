@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sesac_3rd.sesac_3rd.dto.place.PlaceDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceReviewDTO;
 import sesac_3rd.sesac_3rd.dto.place.PlaceWithCategoryDTO;
@@ -64,6 +65,7 @@ public class PlaceServiceImpl implements PlaceService{
     // 장소 목록 조회
     @Override
     @CircuitBreaker(name = "placeService", fallbackMethod = "getAllPlaceFallback")
+    @Transactional(readOnly = true)
     public Page<PlaceReviewDTO> getAllPlace(int page, int size){
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageStar"));
         Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
@@ -75,6 +77,7 @@ public class PlaceServiceImpl implements PlaceService{
 
     // 검색 결과
     @Override
+    @Transactional(readOnly = true)
     public Page<PlaceReviewDTO> findByContaining(String sort, int page, int size, String category, String keyword){
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("placeId")));
@@ -100,6 +103,7 @@ public class PlaceServiceImpl implements PlaceService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PlaceReviewDTO getPlaceById(Long placeId){
         Place place = placeRepository.findById(placeId).orElseThrow(()->new CustomException(ExceptionStatus.PLACE_NOT_FOUND));
         String placeCtgName = place.getPlaceCategory().getPlaceCtgName();
@@ -114,6 +118,7 @@ public class PlaceServiceImpl implements PlaceService{
 
     // 인기 장소 조회 (redis key-value 방식을 활용, 따로 RedisRepository 없어도 됨)
     @Override
+    @Transactional(readOnly = true)
     public List<PopularPlaceDTO> getPopularPlaces() {
         try {
             // Redis에서 JSON 데이터를 가져오기

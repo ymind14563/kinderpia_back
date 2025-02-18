@@ -66,5 +66,12 @@ public class ChatRoomDTO {
         private LocalDateTime createdAt;
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatRoomRequest {
+        private Long chatroomId;
+    }
+
 
 }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sesac_3rd.sesac_3rd.constant.MeetingStatus;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDTO;
 import sesac_3rd.sesac_3rd.dto.meeting.MeetingDetailDTO;
@@ -57,6 +58,7 @@ public class MeetingServiceImpl implements MeetingService {
     // 모임 목록 (default - 최신순 정렬)
     @Override
     @CircuitBreaker(name = "meetingService", fallbackMethod = "getAllMeetingsFallback")
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<MeetingDTO> getAllMeetings(Pageable pageable) {
         // 정렬 설정
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
@@ -82,6 +84,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     // 모임 목록 (더보기: 모임 시간순으로 정렬 + deleted 제외)
     @Override
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<MeetingDTO> getMeetings(Pageable pageable) {
         // 정렬 설정
         Sort sort = Sort.by(Sort.Direction.DESC, "meetingTime");
@@ -107,6 +110,7 @@ public class MeetingServiceImpl implements MeetingService {
 
     // 모임 목록 (open - 열려있는 것만 정렬 + 모임 시간순으로 정렬)
     @Override
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<MeetingDTO> getOpenMeetings(Pageable pageable) {
         // 정렬 meetingTime
         Sort sort = Sort.by(Sort.Direction.DESC, "meetingTime");
@@ -132,10 +136,11 @@ public class MeetingServiceImpl implements MeetingService {
 
     // 키워드로 타이틀과 장소 검색 (모임 시간순으로 정렬)
     @Override
+    @Transactional(readOnly = true)
     public PaginationResponseDTO<MeetingDTO> searchMeetingsByKeyword(String keyword, Pageable pageable) {
 
         // 정렬 meetingTime
-        Sort sort = Sort.by(Sort.Direction.DESC, "meetingTime");
+        Sort sort = Sort.by(Sort.Direction.DESC, "meeting_time");
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
 //      // 기존 Like 검색 방식
@@ -166,6 +171,7 @@ public class MeetingServiceImpl implements MeetingService {
     // 모임 상세조회 (profile_img, chatroom_id 포함)
     @Override
     @CircuitBreaker(name = "meetingService", fallbackMethod = "getDetailMeetingFallback")
+    @Transactional(readOnly = true)
     public MeetingDetailDTO getDetailMeeting(Long meetingId) {
         // Meeting 조회 (모임장 정보 포함)
         Meeting meeting = meetingRepository.findByMeetingIdWithUserAndChatRoom(meetingId)

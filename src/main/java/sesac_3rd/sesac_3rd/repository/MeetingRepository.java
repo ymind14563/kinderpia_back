@@ -27,7 +27,7 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
 
     // 키워드로 타이틀, 장소 검색 (Full Text Index 방식)
-    // ALTER TABLE meeting ADD FULLTEXT(meetingTitle, district);
+    // ALTER TABLE meeting ADD FULLTEXT INDEX idx_fulltext_meeting (meeting_title, district) WITH PARSER ngram;
     @Query(value = "SELECT * FROM meeting " +
             "WHERE MATCH(meeting_title, district) AGAINST (:keyword IN BOOLEAN MODE)",
             nativeQuery = true)

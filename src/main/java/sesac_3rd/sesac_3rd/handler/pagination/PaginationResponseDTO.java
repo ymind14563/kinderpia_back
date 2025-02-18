@@ -25,16 +25,17 @@ public class PaginationResponseDTO<T> {
     // 리스트 데이터용 생성자
     public PaginationResponseDTO(List<T> dataList, Page page) {
         this.dataList = dataList;
-        this.pageInfo = createPageInfo(page);
-    }
+        this.pageInfo = (page != null) ? createPageInfo(page) : null;    }
 
     // 단일 데이터용 생성자 (ex.DTO)
     public PaginationResponseDTO(T data, Page page) {
         this.data = data;
-        this.pageInfo = createPageInfo(page);
-    }
+        this.pageInfo = (page != null) ? createPageInfo(page) : null;    }
 
     private PageInfo createPageInfo(Page page) {
+        if (page == null) {
+            return null;
+        }
         return new PageInfo(
                 page.getNumber() + 1,
                 page.getSize(),

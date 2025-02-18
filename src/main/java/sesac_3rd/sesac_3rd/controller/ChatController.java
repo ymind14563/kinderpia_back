@@ -15,7 +15,6 @@ import sesac_3rd.sesac_3rd.config.security.TokenProvider;
 import sesac_3rd.sesac_3rd.dto.chat.ChatMessageDTO;
 import sesac_3rd.sesac_3rd.dto.chat.ChatNotificationDTO;
 import sesac_3rd.sesac_3rd.dto.chat.ChatRoomDTO;
-import sesac_3rd.sesac_3rd.dto.chat.ChatRoomRequestDTO;
 import sesac_3rd.sesac_3rd.entity.ChatNotification;
 import sesac_3rd.sesac_3rd.handler.ResponseHandler;
 import sesac_3rd.sesac_3rd.handler.pagination.PaginationResponseDTO;
@@ -65,7 +64,7 @@ public class ChatController {
     // 단일 채팅방 조회
     @PostMapping
     public ResponseEntity<ResponseHandler<ChatRoomDTO.ChatRoom>> getChatRoomById(@AuthenticationPrincipal Long userId,
-                                                                                 @RequestBody ChatRoomRequestDTO chatRoomRequestDTO) {
+                                                                                 @RequestBody ChatRoomDTO.ChatRoomRequest chatRoomRequestDTO) {
 
         // 토큰에 문제가 있는 경우
         if (userId == null) {
@@ -85,8 +84,10 @@ public class ChatController {
                                                                                    ChatMessageDTO.ChatMessage chatMessageDTO) {
 
 
+
         // @MessageMapping에서는 @AuthenticationPrincipal을 직접 사용할 수 없음 (WebSocket 통신, HTTP 요청 차이)
         String userId = tokenProvider.validateAndGetUserId(token.replace("Bearer ", ""));
+
 
         if (userId == null) {
             return ResponseHandler.unauthorizedResponse();
@@ -114,7 +115,7 @@ public class ChatController {
     // /api/chatroom/chatmsg/{chatroomId}?page={page}&size={size}
     public ResponseEntity<ResponseHandler<PaginationResponseDTO<ChatMessageDTO.ChatMessageList>>> getChatMessages(
             @AuthenticationPrincipal Long userId,
-            @RequestBody ChatRoomRequestDTO chatRoomRequestDTO,
+            @RequestBody ChatRoomDTO.ChatRoomRequest chatRoomRequestDTO,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
             @RequestParam(value = "size", required = false, defaultValue = "99") int size) {
 
@@ -124,6 +125,7 @@ public class ChatController {
 
         System.out.println(userId);
         System.out.println(chatRoomRequestDTO.getChatroomId());
+        System.out.println(page);
         PaginationResponseDTO<ChatMessageDTO.ChatMessageList> chatMessages = chatMessageService.getChatMessages(userId, chatRoomRequestDTO.getChatroomId(), page, size);
 
         return ResponseHandler.response(chatMessages, HttpStatus.OK, "채팅 메시지 리스트 조회 성공");

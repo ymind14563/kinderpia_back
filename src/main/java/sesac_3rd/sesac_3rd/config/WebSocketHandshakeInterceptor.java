@@ -23,7 +23,7 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
         String token = null;
         if (request.getHeaders().containsKey("Cookie")) {
             for (String cookie : request.getHeaders().get("Cookie")) {
-                System.out.println("Received Cookie: " + cookie); // 디버깅용 로그
+                System.out.println("Received Cookie: " + cookie);
                 // 쿠키 이름이 "jwt="로 시작하는 경우 추출
                 if (cookie.contains("jwt=")) {
                     token = cookie.substring(cookie.indexOf("jwt=") + 4);
@@ -36,19 +36,22 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
         if (token != null) {
             // 토큰을 검증하고 사용자 ID 추출
             String userId = tokenProvider.validateAndGetUserId(token);
-            System.out.println("Extracted userId: " + userId); // 디버깅
+            System.out.println("Extracted userId: " + userId);
             if (userId != null) {
                 attributes.put("userId", userId); // WebSocket 세션에 userId 저장
             } else {
                 System.out.println("Invalid token, handshake rejected.");
-                return false; // 토큰 검증 실패 시 연결을 끊음
+                // 토큰 검증 실패 시 연결을 끊음
+                return false;
             }
         } else {
             System.out.println("JWT cookie not found, handshake rejected.");
-            return false; // 토큰이 없으면 연결 거부
+            // 토큰이 없으면 연결 거부
+            return false;
         }
 
-        return true; // JWT가 있으면 연결을 진행
+        // JWT가 있으면 연결을 진행
+        return true;
     }
 
 

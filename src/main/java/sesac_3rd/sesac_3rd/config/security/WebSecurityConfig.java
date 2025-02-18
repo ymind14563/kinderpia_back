@@ -48,6 +48,8 @@ public class WebSecurityConfig {
                                 "/api/manager/**",
                                 "/admin/**",
                                 "/ws/**"
+//                                "/topic/**",
+//                                "/app/**"
                         )
                         .permitAll()
                         .anyRequest().authenticated());

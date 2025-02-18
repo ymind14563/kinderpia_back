@@ -75,6 +75,18 @@ public class ChatMessageMapper {
     }
 
 
+    // Redis에서 가져온 `ChatMessageDTO.ChatMessage` 리스트를 그대로 `ChatMessageList` 형태로 변환할 때 사용
+    // 기존 ChatMessageListToChatMessageListResponseDTO 는 엔티티(ChatMessage)를 DTO 로 변환하는데
+    // ChatMessageListDTOToResponseDTO 는 DTO 리스트를 그대로 `ChatMessageList`에 매핑하는 역할을 함
+    // 오버로딩도 고려하였으나 제너릭 타입 소거 문제로 새로운 메서드 만듬
+    public static ChatMessageDTO.ChatMessageList ChatMessageListDTOToResponseDTO(Long chatroomId, List<ChatMessageDTO.ChatMessage> chatMessages) {
+        return ChatMessageDTO.ChatMessageList.builder()
+                .chatroomId(chatroomId)
+                .chatmsgList(chatMessages)
+                .build();
+    }
+
+
     // 일반 메시지 생성 (CHAT)
     public ChatMessage ChatMessageDTOtoEntity(ChatMessageDTO.ChatMessage messageDTO, ChatRoom chatRoom, User sender) {
         ChatMessage chatMessage = new ChatMessage();

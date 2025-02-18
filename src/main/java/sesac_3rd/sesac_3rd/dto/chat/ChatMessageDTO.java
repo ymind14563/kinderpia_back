@@ -38,7 +38,16 @@ public class ChatMessageDTO {
         private String chatmsgContent;
         private LocalDateTime createdAt;
         private MessageType messageType;
-    }
 
+
+//    메시지 생성 시간을 타임스탬프(밀리초)로 변환하여 반환
+//    Redis 정렬을 위해 사용 (메시지가 생성된 시간 (createdAt)을 기준으로)
+//    `createdAt`이 `null`인 경우 0L을 반환하여 예외 방지
+//    기존에는 메시지가 Redis 에 저장된 시간이 기준이라 정확한 순서 보장이 어려움
+
+        public long getCreatedAtTimestamp() {
+            return createdAt != null ? createdAt.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli() : 0L;
+        }
+    }
 
 }

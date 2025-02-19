@@ -1,5 +1,6 @@
 package sesac_3rd.sesac_3rd.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -29,6 +30,21 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final WebSocketHandshakeInterceptor handshakeInterceptor;
 
+    @Value("${spring.rabbitmq.host:localhost}")
+    private String rabbitMqHost;
+
+    @Value("${spring.rabbitmq.port}")
+    private int rabbitMqPort;
+
+    @Value("${spring.rabbitmq.username}")
+    private String rabbitMqUser;
+
+    @Value("${spring.rabbitmq.password}")
+    private String rabbitMqPassword;
+
+    @Value("${rabbitmq.enabled:true}")
+    private boolean rabbitEnabled;
+
     public WebSocketConfig(WebSocketHandshakeInterceptor handshakeInterceptor) {
         this.handshakeInterceptor = handshakeInterceptor;
     }
@@ -36,7 +52,27 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // 클라이언트로 메세지를 보내기 위한 경로에 대해 메시지 브로커 설정
-        config.enableSimpleBroker("/topic"); // "/topic" 경로를 구독하는 클라이언트에게 메시지 전송
+        if (rabbitEnabled) {
+
+            try {
+                // RabbitMQ를 STOMP 브로커로 사용
+                config.enableStompBrokerRelay("/topic")
+                        .setRelayHost(rabbitMqHost)
+                        .setRelayPort(rabbitMqPort)
+                        .setSystemLogin(rabbitMqUser)
+                        .setSystemPasscode(rabbitMqPassword);
+                System.out.println("RabbitMQ를 STOMP 브로커로 사용");
+            } catch (Exception e) {
+                // 기본 Spring 내장 STOMP 브로커
+                config.enableSimpleBroker("/topic"); // "/topic" 경로를 구독하는 클라이언트에게 메시지 전송
+                System.out.println("RabbitMQ 연결 실패, 기본 STOMP 브로커로 사용");
+            }
+        } else {
+            System.out.println("RabbitMQ 비활성화됨, 기본 STOMP 브로커 사용");
+            config.enableSimpleBroker("/topic");
+        }
+
+
         config.setApplicationDestinationPrefixes("/app"); // 클라이언트가 서버로 메시지를 전송할 때 "/app"으로 시작하는 경로를 사용
         /*
         * ChatController 에서 @MessageMapping로 경로를 지정하면

@@ -174,8 +174,8 @@ public class PlaceServiceImpl implements PlaceService{
 
     // Fallback
     private Page<PlaceReviewDTO> getAllPlaceFallback(int page, int size, Throwable throwable) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageStar"));
-        return commonFallbackHandler.handlePageFallback(pageable, throwable);
+        Pageable pageable = PageRequest.of(page, size);
+        return commonFallbackHandler.handlePageFallback(pageable, throwable, PlaceReviewDTO.class);
     }
 
 }

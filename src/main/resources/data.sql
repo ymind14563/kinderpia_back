@@ -86,7 +86,7 @@ INSERT IGNORE INTO place (place_ctg_id, place_name, location, detail_address, la
 (6, '제주 돌문화공원', '제주특별자치도', '제주특별자치도 제주시', 33.4894, 126.4950, 'jeju_stonepark.jpg', '매일 09:00~21:00', 0, 'http://www.jejudo.com', '064-9012-3456');
 
 -- 후기 랜덤 추가
-INSERT IGNORE INTO Review (place_id, user_id, star, review_content, is_deleted, created_at, updated_at) VALUES
+INSERT IGNORE INTO review (place_id, user_id, star, review_content, is_deleted, created_at, updated_at) VALUES
 (31, 1, 4, '이 장소는 정말 좋았어요!', false, '2023-10-01 10:00:00', '2023-10-01 10:00:00'),
 (32, 2, 5, '아주 만족스러운 경험이었습니다.', false, '2023-10-02 11:00:00', '2023-10-02 11:00:00'),
 (33, 3, 3, '서비스가 훌륭했습니다.', false, '2023-10-03 12:00:00', '2023-10-03 12:00:00'),

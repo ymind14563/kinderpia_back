@@ -123,17 +123,20 @@ public class PlaceServiceImpl implements PlaceService{
         try {
             // Redis에서 JSON 데이터를 가져오기
             String cachedData = (String) redisTemplate.opsForValue().get(POPULAR_PLACES_KEY);
-            System.out.println("Redis에서 조회 완료");
             List<PopularPlaceDTO> popularPlaces;
+            System.out.println("cachedData = " + cachedData);
             if (cachedData == null || cachedData.isEmpty()) {
                 // Redis에 데이터가 없으면 DB에서 가져오기 (상위 8개)
                 Pageable pageable = PageRequest.of(0, 8);
                 popularPlaces = placeRepository.getTop8PopularPlaces(pageable);
+                System.out.println(">>> db-popularPlaces = " + popularPlaces);
                 System.out.println("DB에서 조회 완료");
                 savePopularPlacesToRedis(popularPlaces);
             } else {
                 // JSON 문자열을 List<PopularPlaceDTO>로 역직렬화
                 popularPlaces = objectMapper.readValue(cachedData, new TypeReference<List<PopularPlaceDTO>>() {});
+                System.out.println(">>> redis-popularPlaces = " + popularPlaces);
+                System.out.println("Redis에서 조회 완료");
             }
 
             return popularPlaces;
@@ -166,6 +169,8 @@ public class PlaceServiceImpl implements PlaceService{
 
             // Redis에 저장 (opsForValue().set)
             redisTemplate.opsForValue().set(POPULAR_PLACES_KEY, serializedData, Duration.ofDays(1));
+            String checkData = (String) redisTemplate.opsForValue().get(POPULAR_PLACES_KEY);
+            System.out.println("Redis에 저장된 데이터: " + checkData);
             System.out.println("Redis에 저장 완료");
         } catch (Exception e) {
             throw new RuntimeException("Redis에 인기 장소 저장 중 오류 발생", e);

@@ -68,6 +68,7 @@ public class PlaceServiceImpl implements PlaceService{
     @Transactional(readOnly = true)
     public Page<PlaceReviewDTO> getAllPlace(int page, int size){
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "averageStar"));
+//        throw new RuntimeException("강제 오류 발생");
         Page<PlaceReviewDTO> result = placeRepository.getAllPlace(pageable);
 
 

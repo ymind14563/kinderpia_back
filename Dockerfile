@@ -7,6 +7,9 @@ WORKDIR /app
 # 소스 코드 복사
 COPY . .
 
+# 테스트 실행 (테스트용 properties 사용)
+RUN gradle test --no-daemon -Dspring.config.location=classpath:/application-dev.properties
+
 # Gradle 빌드 실행 (테스트 제외: 이유 - properties 파일을 이미지에 포함시키지 않기 때문)
 RUN gradle build -x test --no-daemon
 

@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.Token;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 import sesac_3rd.sesac_3rd.config.security.TokenProvider;
@@ -134,6 +135,22 @@ public class WebSocketEventListener {
         }
     }
 
+    @EventListener
+    public void handleWebSocketDisconnect(SessionDisconnectEvent event) {
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+
+        // 세션 ID 가져오기
+        String sessionId = headerAccessor.getSessionId();
+        System.out.println("WebSocket 연결 종료 감지: 세션 ID = " + sessionId);
+
+        // 세션 속성에서 userId 가져오기
+        Object userIdObj = headerAccessor.getSessionAttributes().get("userId");
+        if (userIdObj != null) {
+            Long userId = Long.valueOf(userIdObj.toString());
+            System.out.println("User " + userId + " WebSocket 연결 종료됨.");
+
+        }
+    }
 
     /**
      * 사용자 ID는 STOMP "Authorization" 헤더에 포함된 JWT 에서 추출

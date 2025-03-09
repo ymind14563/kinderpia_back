@@ -71,4 +71,9 @@ public class DataSourceConfig {
                 .driverClassName(replicaDriver)
                 .build();
     }
+
+    @Bean
+    public DataSource dataSource() {
+        return routingDataSource();
+    }
 }

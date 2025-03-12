@@ -129,7 +129,7 @@ pipeline {
                             fi
 
                             echo "5단계: 새로운 Docker 컨테이너 시작 중"
-                            if docker run -d -p 8080:8080 -v /home/ubuntu/application.properties:/config/application.properties ymind14563/kinderpia_back-image:latest --spring.config.location=file:/config/application.properties; then
+                            if docker run -d -p 8080:8080 --memory="512m" -v /home/ubuntu/application.properties:/config/application.properties ymind14563/kinderpia_back-image:latest --spring.config.location=file:/config/application.properties; then
                                 sleep 3
                                 echo "새로운 Docker 컨테이너가 성공적으로 시작되었습니다."
                             else

@@ -4,6 +4,10 @@ FROM gradle:8.10.2-jdk17 AS build
 # 작업 디렉토리 설정
 WORKDIR /app
 
+# Gradle 의존성 파일만 먼저 복사하여 캐시 활용
+COPY build.gradle settings.gradle ./
+RUN gradle dependencies --no-daemon
+
 # 소스 코드 복사
 COPY . .
 
@@ -11,7 +15,8 @@ COPY . .
 RUN gradle test --no-daemon -Dspring.config.location=classpath:/application-dev.properties
 
 # Gradle 빌드 실행 (테스트 제외: 이유 - properties 파일을 이미지에 포함시키지 않기 때문)
-RUN gradle build -x test --no-daemon
+# 빌드 캐쉬 활성화
+RUN gradle build -x test --no-daemon --build-cache
 
 # 실제 실행에 사용할 경량화된 JDK 이미지 설정
 FROM openjdk:17-jdk-slim
